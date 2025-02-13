@@ -38,7 +38,7 @@ class ConversationManager {
     ConversationModel? model = state.conversations
         .firstWhereOrNull((element) => element.roomId == wsMsg.msg.roomId);
     if (wsMsg.msg.msgType == MessageModelType.text.code) {
-      model?.text = wsMsg.msg.getBodyModel<TextMessageModel>()?.content ?? '';
+      model?.text = wsMsg.msg.body.content;
     }
     model?.activeTime = wsMsg.msg.sendTime;
     // 调用refresh通知监听者刷新

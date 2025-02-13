@@ -9,6 +9,7 @@ import 'package:relax_chat/network/result.dart';
 import '../../manager/user_manager.dart';
 import '../../manager/event_bus_manager.dart';
 import '../../manager/log_manager.dart';
+import '../../model/msg_body_model.dart';
 import '../../model/msg_model.dart';
 import '../../model/req/text_msg_req.dart';
 import '../../model/resp/msg_list_resp.dart';
@@ -100,10 +101,10 @@ class ChatLogic extends GetxController {
 
     UserModel me = UserManager.instance.state.user.value;
 
-    TextMessageModel textMessageModel = TextMessageModel.fromJson({})
+    MessageBodyModel messageBodyModel = MessageBodyModel.fromJson({})
       ..content = message;
     MessageModel messageModel = MessageModel.fromJson({})
-      ..body = textMessageModel
+      ..body = messageBodyModel
       ..msgType = MessageModelType.text.code
       ..messageId =
           '${UserManager.instance.state.user.value.uid}${DateTime.now().millisecondsSinceEpoch}${Random().nextInt(10000)}'

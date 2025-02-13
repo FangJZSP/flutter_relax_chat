@@ -18,7 +18,7 @@ MessageModel _$MessageModelFromJson(Map<String, dynamic> json) => MessageModel(
       (json['status'] as num?)?.toInt() ?? 0,
       defaultMessageMarkModel(json['messageMark']),
       defaultMessageReplyModel(json['reply']),
-      json['body'],
+      defaultMessageBodyModel(json['body']),
     );
 
 Map<String, dynamic> _$MessageModelToJson(MessageModel instance) =>
@@ -35,23 +35,4 @@ Map<String, dynamic> _$MessageModelToJson(MessageModel instance) =>
       'reply': instance.reply,
       'messageId': instance.messageId,
       'body': instance.body,
-    };
-
-TextMessageModel _$TextMessageModelFromJson(Map<String, dynamic> json) =>
-    TextMessageModel(
-      json['content'] as String? ?? '',
-      json['urlContentMap'] as Map<String, dynamic>? ?? {},
-      (json['atUidList'] as List<dynamic>?)
-              ?.map((e) => (e as num).toInt())
-              .toList() ??
-          [],
-      defaultMessageReplyModel(json['reply']),
-    );
-
-Map<String, dynamic> _$TextMessageModelToJson(TextMessageModel instance) =>
-    <String, dynamic>{
-      'content': instance.content,
-      'urlContentMap': instance.urlContentMap,
-      'atUidList': instance.atUidList,
-      'reply': instance.reply,
     };

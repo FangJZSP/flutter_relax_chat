@@ -51,8 +51,6 @@ class _MsgCellState extends State<MsgCell> {
   }
 
   Widget sendMsgCell() {
-    TextMessageModel? textMsgModel =
-        _model.msg.getBodyModel<TextMessageModel>();
     return Container(
       padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
       color: Colors.transparent,
@@ -86,18 +84,18 @@ class _MsgCellState extends State<MsgCell> {
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        if (textMsgModel?.reply.id != 0)
+                        if (_model.msg.reply.id != 0)
                           Padding(
                             padding: const EdgeInsets.only(bottom: 4.0),
                             child: Text(
-                              '| ${textMsgModel?.reply.username}: ${textMsgModel?.reply.body}',
+                              '| ${_model.msg.reply.username}: ${_model.msg.reply.body}',
                               style: Styles.textNormal(14)
                                   .copyWith(color: Styles.grey),
                               overflow: TextOverflow.fade,
                             ),
                           ),
                         Text(
-                          textMsgModel?.content ?? '',
+                          _model.msg.body.content,
                           style: Styles.textNormal(14)
                               .copyWith(color: Styles.black),
                           overflow: TextOverflow.fade,
@@ -159,8 +157,6 @@ class _MsgCellState extends State<MsgCell> {
   }
 
   Widget receiveMsgCell() {
-    TextMessageModel? textMsgModel =
-        _model.msg.getBodyModel<TextMessageModel>();
     return Container(
       padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
       color: Colors.transparent,
@@ -202,18 +198,18 @@ class _MsgCellState extends State<MsgCell> {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    if (textMsgModel?.reply.id != 0)
+                    if (_model.msg.reply.id != 0)
                       Padding(
                         padding: const EdgeInsets.only(bottom: 4.0),
                         child: Text(
-                          '| ${textMsgModel?.reply.username}: ${textMsgModel?.reply.body}',
+                          '| ${_model.msg.reply.username}: ${_model.msg.reply.body}',
                           style: Styles.textNormal(14)
                               .copyWith(color: Styles.grey),
                           overflow: TextOverflow.fade,
                         ),
                       ),
                     Text(
-                      textMsgModel?.content ?? '',
+                      _model.msg.body.content,
                       style:
                           Styles.textNormal(14).copyWith(color: Styles.black),
                       overflow: TextOverflow.fade,

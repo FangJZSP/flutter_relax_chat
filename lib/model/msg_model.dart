@@ -1,5 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:relax_chat/model/msg_reply_model.dart';
+import 'msg_body_model.dart';
 import 'msg_mark_model.dart';
 
 part 'msg_model.g.dart';
@@ -56,6 +57,9 @@ class MessageModel {
   int id;
 
   @JsonKey(defaultValue: 0)
+  int roomId;
+
+  @JsonKey(defaultValue: 0)
   int senderId;
 
   @JsonKey(defaultValue: '')
@@ -65,13 +69,7 @@ class MessageModel {
   String senderAvatar;
 
   @JsonKey(defaultValue: 0)
-  int roomId;
-
-  @JsonKey(defaultValue: 0)
   int msgType;
-
-  @JsonKey(defaultValue: 0)
-  int status;
 
   @JsonKey(defaultValue: 0)
   int sendTime;
@@ -82,11 +80,16 @@ class MessageModel {
   @JsonKey(fromJson: defaultMessageReplyModel)
   MessageReplyModel reply;
 
+  @JsonKey(fromJson: defaultMessageBodyModel)
+  MessageBodyModel body;
+
+  /// 发送消息标识消息id 用于更新
   @JsonKey(defaultValue: '')
   String messageId;
 
-  // todo 判断消息类型
-  dynamic body;
+  /// 发送消息时消息的状态
+  @JsonKey(defaultValue: 0)
+  int status;
 
   MessageModel(
     this.id,
@@ -103,19 +106,6 @@ class MessageModel {
     this.body,
   );
 
-  T? getBodyModel<T>() {
-    switch (MessageModelType.fromCode(msgType)) {
-      case MessageModelType.text:
-        if (body is T) {
-          return body;
-        } else {
-          return TextMessageModel.fromJson(body) as T?;
-        }
-      default:
-        return null;
-    }
-  }
-
   factory MessageModel.fromJson(Map<String, dynamic> json) =>
       _$MessageModelFromJson(json);
 
@@ -127,27 +117,4 @@ MessageModel defaultMessageModel(var value) {
     return MessageModel.fromJson({});
   }
   return MessageModel.fromJson(value);
-}
-
-@JsonSerializable()
-class TextMessageModel {
-  @JsonKey(defaultValue: '')
-  String content;
-
-  @JsonKey(defaultValue: {})
-  Map<String, dynamic> urlContentMap;
-
-  @JsonKey(defaultValue: [])
-  List<int> atUidList;
-
-  @JsonKey(fromJson: defaultMessageReplyModel)
-  MessageReplyModel reply;
-
-  TextMessageModel(
-      this.content, this.urlContentMap, this.atUidList, this.reply);
-
-  factory TextMessageModel.fromJson(Map<String, dynamic> json) =>
-      _$TextMessageModelFromJson(json);
-
-  Map<String, dynamic> toJson() => _$TextMessageModelToJson(this);
 }
