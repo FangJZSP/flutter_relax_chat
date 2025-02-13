@@ -29,9 +29,9 @@ class MySocket {
 
   SocketConnectStatus _connectStatus = SocketConnectStatus.disconnect;
 
-  bool get didConnect => _connectStatus == SocketConnectStatus.connected;
+  bool get isConnect => _connectStatus == SocketConnectStatus.connected;
 
-  bool get didDisconnect => _connectStatus == SocketConnectStatus.disconnect;
+  bool get isDisconnect => _connectStatus == SocketConnectStatus.disconnect;
 
   bool get isConnecting => _connectStatus == SocketConnectStatus.connecting;
 
@@ -43,10 +43,11 @@ class MySocket {
     _setConnectStatus(SocketConnectStatus.connecting);
     try {
       _channel = WebSocketChannel.connect(_socketUri);
-      _setConnectStatus(SocketConnectStatus.connected);
       streamSubscription = _channel?.stream.listen((message) {
+        _setConnectStatus(SocketConnectStatus.connected);
         _onReceiveData(message);
       }, onError: (error, trace) {
+        _setConnectStatus(SocketConnectStatus.disconnect);
         logger.d('ws onError $error, $trace');
       }, onDone: () {
         logger.d('ws onDone');
@@ -112,12 +113,12 @@ class MySocket {
       return;
     }
     _connectStatus = value;
-    if (_connectStatus == SocketConnectStatus.connected) {
+    if (isConnect) {
       logger.d('ws 连接成功');
-    } else if (_connectStatus == SocketConnectStatus.connecting) {
+    } else if (isConnecting) {
       logger.d('ws 连接中...');
-    } else if (_connectStatus == SocketConnectStatus.disconnect) {
-      logger.d('ws 断开连接');
+    } else if (isDisconnect) {
+      logger.d('ws 连接失败');
     }
   }
 }

@@ -39,7 +39,10 @@ class RoundAvatarState extends State<RoundAvatar> {
         height: widget.height,
       );
     } else {
-      return const Icon(Icons.error_outline);
+      return Icon(
+        Icons.error_outline,
+        size: widget.height,
+      );
     }
   }
 }

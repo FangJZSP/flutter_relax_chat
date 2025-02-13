@@ -11,6 +11,9 @@ class RootLogic extends GetxController {
   void onReady() {
     super.onReady();
     Get.toNamed(GlobalManager.instance.state.firstRoute);
+    if (!GlobalManager.instance.state.allowFirstFrame) {
+      GlobalManager.instance.state.allowFirstFrame = true;
+    }
   }
 
   void backToHome() {

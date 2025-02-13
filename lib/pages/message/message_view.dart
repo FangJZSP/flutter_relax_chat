@@ -75,7 +75,9 @@ class MessagePage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  UserManager.instance.state.user.value.name,
+                  UserManager.instance.state.user.value.name.isNotEmpty
+                      ? UserManager.instance.state.user.value.name
+                      : '无',
                   style:
                       Styles.textNormal(14.w).copyWith(color: Styles.blackText),
                 ),
@@ -126,6 +128,7 @@ class MessagePage extends StatelessWidget {
       },
       child: Container(
         margin: EdgeInsets.fromLTRB(0, 10.w, 0, 10.w),
+        color: Styles.transparent,
         child: Row(
           children: [
             RoundAvatar(

@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:relax_chat/helper/toast_helper.dart';
 
 import '../../common/info.dart';
 import '../global_manager.dart';
@@ -17,7 +18,7 @@ class SocketManager {
 
   static MySocket? _socket;
 
-  RxBool get didConnect => (_socket?.didConnect ?? false).obs;
+  RxBool get didConnect => (_socket?.isConnect ?? false).obs;
 
   void init() {
     setup(
@@ -43,6 +44,10 @@ class SocketManager {
   }
 
   void send(String message) {
+    if (!didConnect.value) {
+      showTipsToast('ws 断连中...');
+      return;
+    }
     _socket?.send(message);
   }
 }

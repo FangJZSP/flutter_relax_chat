@@ -2,7 +2,6 @@ import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:relax_chat/route/my_route_observer.dart';
 import 'package:get/get.dart';
-import 'package:relax_chat/pages/root/root_logic.dart';
 import 'package:relax_chat/route/routes.dart';
 
 import 'common/styles.dart';
@@ -12,7 +11,6 @@ class RelaxChatApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Get.lazyPut(() => RootLogic());
     return GetMaterialApp(
       title: 'Relaxing',
       debugShowCheckedModeBanner: false,
@@ -22,7 +20,7 @@ class RelaxChatApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Styles.lightBlue),
         useMaterial3: true,
       ),
-      initialRoute: '/',
+      initialRoute: Routes.root,
       getPages: Routes.getPages,
     );
   }

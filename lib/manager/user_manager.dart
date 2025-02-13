@@ -9,7 +9,6 @@ import 'package:relax_chat/manager/socket/socket_manager.dart';
 import 'package:relax_chat/pages/root/root_logic.dart';
 
 import '../model/ws/req/ws_token_req.dart';
-import '../route/routes.dart';
 import 'event_bus_manager.dart';
 import 'global_manager.dart';
 import '../model/user_model.dart';
@@ -34,7 +33,7 @@ class UserManager {
   StreamSubscription? loginSuccessSubscription;
 
   Future<void> init() async {
-    await _initUser();
+    _initUser();
   }
 
   Future<void> loadUserInfo() async {
@@ -54,8 +53,10 @@ class UserManager {
       WSTokenReq wsReq = WSTokenReq(3, TokenData(net.token));
       SocketManager.instance.send(jsonEncode(wsReq.toJson()));
     } else {
-      showTipsToast('登录状态已失效～');
-      Get.find<RootLogic>().backToLogin();
+      GlobalManager.instance.doFirstFrameCallback(() {
+        showTipsToast('登录状态已失效～');
+        Get.find<RootLogic>().backToLogin();
+      });
     }
   }
 }

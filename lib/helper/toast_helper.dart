@@ -1,13 +1,20 @@
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
+import 'package:relax_chat/manager/global_manager.dart';
 
 import '../common/common.dart';
 
 void cleanAllToast() {
+  if (!GlobalManager.instance.state.allowFirstFrame) {
+    return;
+  }
   BotToast.cleanAll();
 }
 
 void showLoadingToast({double? opacity}) {
+  if (!GlobalManager.instance.state.allowFirstFrame) {
+    return;
+  }
   var alpha = 0.1;
   if (opacity != null) {
     alpha = opacity;
@@ -37,50 +44,54 @@ void showTipsToast(
   double? borderRadius,
   TextAlign textAlign = TextAlign.start,
 }) {
+  if (!GlobalManager.instance.state.allowFirstFrame) {
+    return;
+  }
   int time = 1500;
   if (durationTime != null) {
     time = int.parse((durationTime * 1000).toStringAsFixed(0));
   }
   cleanAllToast();
   BotToast.showCustomNotification(
-      toastBuilder: (CancelFunc cancelFunc) => Card(
-            margin: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(borderRadius ?? 8),
+    toastBuilder: (CancelFunc cancelFunc) => Card(
+      margin: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(borderRadius ?? 8),
+      ),
+      color: bgColor ?? Styles.confirmedBtnColor,
+      child: Container(
+        decoration: const BoxDecoration(
+          color: Styles.transparent,
+        ),
+        padding: const EdgeInsets.all(
+          10,
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(
+              Icons.error_outline,
+              color: Styles.white,
             ),
-            color: bgColor ?? Styles.confirmedBtnColor,
-            child: Container(
-              decoration: const BoxDecoration(
-                color: Styles.transparent,
-              ),
-              padding: const EdgeInsets.all(
-                10,
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Icon(
-                    Icons.error_outline,
-                    color: Styles.white,
-                  ),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  Flexible(
-                    child: Text(
-                      string,
-                      textAlign: textAlign,
-                      style: textStyle ?? Styles.textNormal(14),
-                      maxLines: 10,
-                    ),
-                  ),
-                ],
+            const SizedBox(
+              width: 10,
+            ),
+            Flexible(
+              child: Text(
+                string,
+                textAlign: textAlign,
+                style: textStyle ?? Styles.textNormal(14),
+                maxLines: 10,
               ),
             ),
-          ),
-      align: alignment,
-      duration: Duration(milliseconds: time),
-      onlyOne: true,
-      onClose: onDismiss);
+          ],
+        ),
+      ),
+    ),
+    align: alignment,
+    duration: Duration(milliseconds: time),
+    onlyOne: true,
+    onClose: onDismiss,
+  );
 }
