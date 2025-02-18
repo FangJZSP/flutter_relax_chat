@@ -9,7 +9,7 @@ class MessageState {
       ConversationManager.instance.state.conversations;
 
   List<ConversationUnread> get conversationUnreadList =>
-      ConversationManager.instance.state.conversationList;
+      ConversationManager.instance.state.conversationUnreadList;
 
   MessageState() {
     ///Initialize variables

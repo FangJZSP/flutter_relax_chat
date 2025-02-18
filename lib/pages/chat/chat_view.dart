@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:relax_chat/model/ws/resp/ws_msg_model.dart';
+import 'package:relax_chat/common/size_config.dart';
 import 'package:relax_chat/widgets/base/base_page.dart';
 
 import '../../common/styles.dart';
 
-import '../../widgets/list_view_chat/view/chat_widget.dart';
+import '../../widgets/chat_list/view/chat_widget.dart';
 import 'chat_logic.dart';
 import '../../widgets/chat_input.dart';
 import '../../widgets/msg_cell.dart';
@@ -26,19 +26,20 @@ class ChatPage extends StatelessWidget {
           pageTitle: state.conversation.value.name,
           needLeading: true,
           onTapLeading: logic.back,
-          mainContent: SafeArea(
-            child: _chatWidget(context),
-          ),
+          mainContent: _chatWidget(context),
         ),
       );
     });
   }
 
   Widget _chatWidget(BuildContext context) {
-    return Column(
-      children: [
-        Expanded(child: chatList(context)),
-      ],
+    return Container(
+      color: Styles.greyBgColor,
+      child: Column(
+        children: [
+          Expanded(child: chatList(context)),
+        ],
+      ),
     );
   }
 
@@ -48,45 +49,84 @@ class ChatPage extends StatelessWidget {
         chatController: state.chatController,
         roomId: state.conversation.value.roomId,
         inputTextFocusNode: state.focusNode,
-        pinBuilder: _pinBuilder,
-        outDismiss: logic.onTapBg,
+        // customHeadBuilder: headBuilder,
+        // customPinBuilder: pinBuilder,
+        customerBottomBuilder: bottomBuilder,
+        customeMessageCellBuilder: messageCellBuilder,
+        onTapBg: logic.onTapBg,
         loadingView: const CircularProgressIndicator(),
         showLoading: state.showLoading.value,
         backgroundColor: Colors.white,
-        customerBottomBuilder: _buildBottom,
         onRefresh: state.isLast.value ? null : logic.getMessageList,
         onLoad: null,
-        messageItemBuilder: messageItemBuilder,
-        toBottomTipFloat: toBottomTipFloatWidget(),
-        pageHeadBuilder: (BuildContext context) {},
+        toBottomFloatWidget: toBottomFloatWidget(),
       );
     });
   }
 
-  Widget _pinBuilder(BuildContext ctx) {
-    return const SizedBox();
+  Widget headBuilder(BuildContext ctx) {
+    return Container(
+      height: 10,
+      color: Styles.lightBlue,
+    );
   }
 
-  Widget _buildBottom(BuildContext ctx) {
-    return buildBottomBar();
+  Widget pinBuilder(BuildContext ctx) {
+    return Container(
+      height: 10,
+      color: Styles.normalBlue,
+    );
   }
 
-  Widget? messageItemBuilder(
+  Widget bottomBuilder(BuildContext ctx) {
+    return Obx(() {
+      return Container(
+        padding:
+            EdgeInsets.fromLTRB(10, 0, 10, state.chatInputBottomHeight.value),
+        decoration: BoxDecoration(
+          boxShadow: [
+            BoxShadow(
+              color: Styles.grey.withOpacity(0.2),
+              offset: const Offset(0, -1),
+              blurRadius: 1.0,
+              spreadRadius: 0.0,
+              blurStyle: BlurStyle.outer,
+            ),
+          ],
+          borderRadius: BorderRadius.circular(4.w),
+          color: Styles.navigationBarColor,
+        ),
+        child: Padding(
+          padding: EdgeInsets.fromLTRB(0, 4.w, 0, 6.w),
+          child: Row(
+            children: [
+              Expanded(
+                child: ChatInput(
+                  focusNode: state.focusNode,
+                  editingController: state.chatEditingController,
+                  sendCallback: logic.sendTextMsg,
+                  bgColor: Styles.navigationBarColor,
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    });
+  }
+
+  Widget messageCellBuilder(
       BuildContext context, MessageCellModel model, int index) {
     return Column(
       children: [
-        _cell(model.messageModel),
+        MsgCell(
+          model: model.messageModel,
+        ),
       ],
     );
   }
 
-  Widget _cell(WSMessageModel model) {
-    return MsgCell(
-      model: model,
-    );
-  }
-
-  Widget toBottomTipFloatWidget() {
+  Widget toBottomFloatWidget() {
     return const SizedBox();
     // return Obx(() {
     //   return Visibility(
@@ -104,34 +144,5 @@ class ChatPage extends StatelessWidget {
     //           !state.chatController.bottomNear,
     //       child: Text('新消息'));
     // });
-  }
-
-  Widget buildBottomBar() {
-    return Container(
-      margin: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-      decoration: BoxDecoration(
-        boxShadow: [
-          BoxShadow(
-            color: Styles.grey.withOpacity(0.2),
-            offset: const Offset(0, -1),
-            blurRadius: 1.0,
-            spreadRadius: 0.0,
-            blurStyle: BlurStyle.outer,
-          ),
-        ],
-        borderRadius: const BorderRadius.all(Radius.circular(4)),
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: ChatInput(
-              focusNode: state.focusNode,
-              editingController: state.chatEditingController,
-              sendCallback: logic.sendTextMsg,
-            ),
-          ),
-        ],
-      ),
-    );
   }
 }

@@ -3,11 +3,12 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:relax_chat/common/size_config.dart';
 import 'package:relax_chat/manager/log_manager.dart';
 import 'package:relax_chat/model/conversation_model.dart';
 import 'package:relax_chat/model/ws/resp/ws_msg_model.dart';
 
-import '../../widgets/list_view_chat/controller/chat_controller.dart';
+import '../../widgets/chat_list/controller/chat_controller.dart';
 
 class ChatState {
   late ChatController chatController;
@@ -21,6 +22,10 @@ class ChatState {
   Rx<ConversationModel> conversation = ConversationModel.fromJson({}).obs;
 
   RxList<WSMessageModel> messages = RxList<WSMessageModel>.empty();
+
+  final double bottomMargin = SizeConfig.bottomMargin;
+
+  RxDouble chatInputBottomHeight = 0.0.obs;
 
   String? cursor;
 

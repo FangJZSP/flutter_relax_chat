@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:relax_chat/common/size_config.dart';
 import 'package:relax_chat/helper/time_helper.dart';
 import 'package:relax_chat/helper/toast_helper.dart';
 import 'package:relax_chat/manager/socket/socket_manager.dart';
@@ -61,7 +60,9 @@ class MessagePage extends StatelessWidget {
     return Container(
       margin: EdgeInsets.fromLTRB(16.w, SizeConfig.topMargin, 16.w, 4.w),
       color: Styles.appBarColor.withOpacity(0.5),
+      height: 44.w,
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Obx(() {
             return RoundAvatar(
@@ -73,6 +74,7 @@ class MessagePage extends StatelessWidget {
           Obx(() {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
                   UserManager.instance.state.user.value.name.isNotEmpty
@@ -104,7 +106,7 @@ class MessagePage extends StatelessWidget {
   Widget buildConversationList() {
     return Obx(() => state.conversations.isNotEmpty
         ? ListView.builder(
-            padding: EdgeInsets.fromLTRB(0, 10.w, 0, 0),
+            padding: EdgeInsets.zero,
             itemBuilder: (BuildContext context, int index) {
               return conversationCell(index);
             },

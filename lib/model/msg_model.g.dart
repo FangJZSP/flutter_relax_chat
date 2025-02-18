@@ -24,15 +24,15 @@ MessageModel _$MessageModelFromJson(Map<String, dynamic> json) => MessageModel(
 Map<String, dynamic> _$MessageModelToJson(MessageModel instance) =>
     <String, dynamic>{
       'id': instance.id,
+      'roomId': instance.roomId,
       'senderId': instance.senderId,
       'senderName': instance.senderName,
       'senderAvatar': instance.senderAvatar,
-      'roomId': instance.roomId,
       'msgType': instance.msgType,
-      'status': instance.status,
       'sendTime': instance.sendTime,
       'messageMark': instance.messageMark,
       'reply': instance.reply,
-      'messageId': instance.messageId,
       'body': instance.body,
+      'messageId': instance.messageId,
+      'status': instance.status,
     };

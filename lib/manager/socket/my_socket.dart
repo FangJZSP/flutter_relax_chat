@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:get/get.dart';
 import 'package:relax_chat/model/ws/resp/ws_msg_model.dart';
+import 'package:relax_chat/pages/root/root_logic.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import '../user_manager.dart';
 import '../../network/net_request.dart';
@@ -43,8 +45,8 @@ class MySocket {
     _setConnectStatus(SocketConnectStatus.connecting);
     try {
       _channel = WebSocketChannel.connect(_socketUri);
+      _setConnectStatus(SocketConnectStatus.connected);
       streamSubscription = _channel?.stream.listen((message) {
-        _setConnectStatus(SocketConnectStatus.connected);
         _onReceiveData(message);
       }, onError: (error, trace) {
         _setConnectStatus(SocketConnectStatus.disconnect);
@@ -78,8 +80,11 @@ class MySocket {
         eventBus.fire(WSReceivedMsgEvent(wsModel));
         break;
       case null:
+        break;
       case WSRespTypeEnum.loginUrl:
+        break;
       case WSRespTypeEnum.loginScanSuccess:
+        break;
       case WSRespTypeEnum.loginSuccess:
         wsModel = WSLoginSuccessModel.fromJson(wsBaseModel.res);
         net.updateTokenCallback((wsModel as WSLoginSuccessModel).token);
@@ -87,13 +92,22 @@ class MySocket {
         eventBus.fire(WSLoginSuccessEvent(wsModel));
         break;
       case WSRespTypeEnum.onlineOfflineNotify:
+        break;
       case WSRespTypeEnum.invalidToken:
+        Get.find<RootLogic>().backToLogin();
+        break;
       case WSRespTypeEnum.black:
+        break;
       case WSRespTypeEnum.mark:
+        break;
       case WSRespTypeEnum.recall:
+        break;
       case WSRespTypeEnum.apply:
+        break;
       case WSRespTypeEnum.memberChange:
+        break;
       case WSRespTypeEnum.loginEmail:
+        break;
       default:
         logger.d('ws 未处理接收数据');
     }
@@ -118,7 +132,7 @@ class MySocket {
     } else if (isConnecting) {
       logger.d('ws 连接中...');
     } else if (isDisconnect) {
-      logger.d('ws 连接失败');
+      logger.d('ws 连接异常');
     }
   }
 }

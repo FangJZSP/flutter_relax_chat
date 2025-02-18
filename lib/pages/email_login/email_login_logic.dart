@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:relax_chat/helper/toast_helper.dart';
 import 'package:relax_chat/manager/conversation_manager.dart';
 import 'package:get/get.dart';
+import 'package:relax_chat/manager/contact_manager.dart';
 import 'package:relax_chat/manager/log_manager.dart';
 import 'package:relax_chat/manager/socket/socket_manager.dart';
 import 'package:relax_chat/network/api_manager.dart';
@@ -92,7 +93,7 @@ class EmailLoginLogic extends GetxController {
       name: name,
     );
     cleanAllToast();
-    if (result.result) {
+    if (result.ok) {
       showTipsToast('用户登录成功');
       Get.find<RootLogic>().backToHome();
     } else {
@@ -117,10 +118,11 @@ class EmailLoginLogic extends GetxController {
       password: password,
     );
     cleanAllToast();
-    if (result.result) {
+    if (result.ok) {
       showTipsToast('用户登录成功');
       Get.find<RootLogic>().backToHome();
       ConversationManager.instance.refreshConversationList();
+      ContactManager.instance.refreshFriendList();
     } else {
       showTipsToast('用户或者密码错误');
     }

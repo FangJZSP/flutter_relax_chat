@@ -99,7 +99,7 @@ class Net {
     }
 
     int responseTime = DateTime.now().difference(startTime).inMilliseconds;
-    if (resultData.result) {
+    if (resultData.ok) {
       logger.d('POST 成功 $url ${response?.statusCode}');
     } else {
       logger.d('POST 失败 $url $resultData');
@@ -141,7 +141,7 @@ class Net {
     }
 
     int responseTime = DateTime.now().difference(startTime).inMilliseconds;
-    if (resultData.result) {
+    if (resultData.ok) {
       logger.d('GET 成功 $url ${response?.statusCode}');
     } else {
       logger.d('GET 失败 $url $resultData');

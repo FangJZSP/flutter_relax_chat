@@ -22,7 +22,7 @@ class Result<T> {
   factory Result.fail(int errCode, String? errMsg, {dynamic responseMap}) =>
       Result(null, errCode, errMsg, responseMap);
 
-  bool get result => code == 0;
+  bool get ok => code == 0;
 
   @override
   String toString() {

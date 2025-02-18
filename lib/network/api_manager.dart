@@ -5,6 +5,7 @@ import '../common/common.dart';
 import '../manager/global_manager.dart';
 import '../model/resp/msg_list_resp.dart';
 import '../model/resp/conversation_list_resp.dart';
+import '../model/resp/friend_list_resp.dart';
 import '../model/user_model.dart';
 import 'net_request.dart';
 
@@ -132,6 +133,24 @@ class ApiManager {
         'email': email,
         'code': code,
       },
+    );
+    return result;
+  }
+
+  /// 获取好友列表
+  Future<Result<FriendListResp>> getFriendList({
+    String? cursor,
+    int page = 1,
+    int size = 10,
+  }) async {
+    Result<FriendListResp> result = await net.postRequest(
+      '$hostStr/friend/list',
+      {
+        'page': page,
+        'size': size,
+        if (cursor != null) 'cursor': cursor,
+      },
+      fromJson: FriendListResp.fromJson,
     );
     return result;
   }

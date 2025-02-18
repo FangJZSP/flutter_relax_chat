@@ -10,6 +10,7 @@ import 'package:relax_chat/pages/root/root_logic.dart';
 
 import '../model/ws/req/ws_token_req.dart';
 import 'event_bus_manager.dart';
+import 'contact_manager.dart';
 import 'global_manager.dart';
 import '../model/user_model.dart';
 import '../network/api_manager.dart';
@@ -21,6 +22,7 @@ class UserManager {
     loginSuccessSubscription =
         eventBus.on<WSLoginSuccessEvent>().listen((event) {
       ConversationManager.instance.refreshConversationList();
+      ContactManager.instance.refreshFriendList();
     });
   }
 
@@ -38,7 +40,7 @@ class UserManager {
 
   Future<void> loadUserInfo() async {
     Result<UserModel> result = await api.getUserInfo();
-    if (result.result) {
+    if (result.ok) {
       state.user.value = result.data ?? UserModel.fromJson({});
       Get.find<RootLogic>().backToHome();
     } else {

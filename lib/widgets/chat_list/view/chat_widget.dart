@@ -2,7 +2,8 @@ import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:get/get.dart';
-import 'package:relax_chat/widgets/list_view_chat/view/popup_widget.dart';
+import 'package:relax_chat/common/size_config.dart';
+import 'package:relax_chat/widgets/chat_list/view/popup_widget.dart';
 import 'package:scrollview_observer/scrollview_observer.dart';
 import '../../../common/styles.dart';
 import '../../../model/widget/message_cell_model.dart';
@@ -10,51 +11,54 @@ import '../controller/chat_controller.dart';
 import '../controller/chat_scroll_physics.dart';
 
 class ChatWidget extends StatefulWidget {
-  //页面背景颜色
+  /// 聊天控制器
+  final ChatController chatController;
+
+  /// 页面背景颜色
   final Color? backgroundColor;
 
-  //自定义右下角未读消息提示框，注意不需要有点击事件
-  final Function(BuildContext context, int unReadCount)? unReadCountTipView;
+  final Widget? toBottomFloatWidget;
 
-  final Widget? toBottomTipFloat;
+  /// 消息展示方式
+  final Function(BuildContext context, MessageCellModel model, int index)
+      customeMessageCellBuilder;
 
-  //消息展示方式
-  final Function(BuildContext context, MessageCellModel data, int index)
-      messageItemBuilder;
+  /// 自定义页头
+  final Function(BuildContext context)? customHeadBuilder;
 
-  //自定义页面头
-  final Function(BuildContext context) pageHeadBuilder;
+  /// 自定义置顶
+  final Function(BuildContext context)? customPinBuilder;
 
-  //自定义页面下面替代输入框的布局
+  /// 自定义页尾
   final Function(BuildContext context)? customerBottomBuilder;
 
-  //加载更多数据
-  final Future Function()? onLoad;
-
-  //刷新更多数据
-  final Future Function()? onRefresh;
-
-  //自定义列表的头
+  /// 自定义列表的头
   final Function(BuildContext context)? onHeaderBuilder;
 
-  //消息置顶
-  final Function(BuildContext context)? pinBuilder;
+  /// 自定义右下角未读消息提示框，注意不需要有点击事件
+  final Function(BuildContext context, int unReadCount)? unReadCountTipView;
 
-  //焦点，主要用于隐藏键盘
+  /// 刷新更多数据
+  final Future Function()? onRefresh;
+
+  /// 加载更多数据
+  final Future Function()? onLoad;
+
+  /// 点击背景
+  /// 一般用于输入框焦点失去焦点
+  final Function() onTapBg;
+
+  /// 焦点 主要用于隐藏键盘
   final FocusNode inputTextFocusNode;
 
-  //会话id
+  /// 房间id
   final int roomId;
 
-  final bool? resizeToAvoidBottomInset;
-
-  final Function() outDismiss;
+  final bool resizeToAvoidBottomInset;
 
   final bool showLoading;
 
   final VoidCallback? scrollListener;
-
-  final ChatController chatController;
 
   final Widget? loadingView;
 
@@ -74,19 +78,19 @@ class ChatWidget extends StatefulWidget {
   const ChatWidget(
       {required this.onLoad,
       required this.onRefresh,
-      required this.messageItemBuilder,
+      required this.customeMessageCellBuilder,
       required this.inputTextFocusNode,
-      required this.toBottomTipFloat,
       required this.chatController,
       required this.roomId,
-      required this.pageHeadBuilder,
-      required this.outDismiss,
+      required this.onTapBg,
+      this.customHeadBuilder,
+      this.toBottomFloatWidget,
       super.key,
       this.menuParams,
       this.backgroundColor,
       this.unReadCountTipView,
       this.customerBottomBuilder,
-      this.pinBuilder,
+      this.customPinBuilder,
       this.resizeToAvoidBottomInset = false,
       this.onHeaderBuilder,
       this.showLoading = false,
@@ -112,13 +116,13 @@ class _ChatWidgetState extends State<ChatWidget>
 
   int get roomId => widget.roomId;
 
-  final GlobalKey _headerKey = GlobalKey();
+  final GlobalKey headerKey = GlobalKey();
 
   /// 顶部间距，loading时，把header部分留出来，可以进行退出页面或其他操作
-  double? _topMargin;
+  double? topMargin;
 
   /// 消息列表是否已完成初始化拉取，防止列表为空时，一直显示loading动画
-  bool _showLoading = false;
+  bool showLoading = false;
 
   /// 下拉加载消息时，为了列表不跳到底部，需要给一个较大的cacheExtent
   final ValueNotifier<double> _cacheExtent = ValueNotifier<double>(1000);
@@ -130,8 +134,7 @@ class _ChatWidgetState extends State<ChatWidget>
   @override
   void initState() {
     super.initState();
-    _showLoading = widget.showLoading;
-
+    showLoading = widget.showLoading;
     chatController = widget.chatController;
     chatController.init(update: update, ctx: context);
     chatController.scrollController.addListener(scrollControllerListener);
@@ -139,9 +142,9 @@ class _ChatWidgetState extends State<ChatWidget>
     SchedulerBinding.instance.addPostFrameCallback((_) {
       addUnreadTipView();
       RenderBox? box =
-          _headerKey.currentContext?.findRenderObject() as RenderBox?;
+          headerKey.currentContext?.findRenderObject() as RenderBox?;
       if (box != null) {
-        _topMargin = box.size.height + box.globalToLocal(Offset.zero).dy;
+        topMargin = box.size.height + box.globalToLocal(Offset.zero).dy;
         update();
       }
     });
@@ -170,7 +173,7 @@ class _ChatWidgetState extends State<ChatWidget>
 
   @override
   void didUpdateWidget(ChatWidget oldWidget) {
-    _showLoading = widget.showLoading;
+    showLoading = widget.showLoading;
     super.didUpdateWidget(oldWidget);
   }
 
@@ -182,7 +185,7 @@ class _ChatWidgetState extends State<ChatWidget>
     widget.scrollListener?.call();
   }
 
-  //显示未读消息条数提示
+  /// 显示未读消息条数提示
   void addUnreadTipView() {
     Overlay.of(pageOverlayContext!).insert(OverlayEntry(
       builder: (BuildContext context) => UnconstrainedBox(
@@ -240,29 +243,29 @@ class _ChatWidgetState extends State<ChatWidget>
   }
 
   Widget _buildToBottomView(BuildContext context) {
-    if (widget.unReadCountTipView == null) {
-      return Icon(
-        Icons.arrow_drop_down_circle,
-        size: 40,
-        color: Styles.white,
-        shadows: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.5), // 阴影颜色
-            spreadRadius: 2, // 阴影扩散范围
-            blurRadius: 4, // 阴影模糊范围
-            offset: const Offset(0, 0), // 阴影偏移量
-          ),
-        ],
-      );
-    }
-    return widget.toBottomTipFloat!;
+    return widget.toBottomFloatWidget ??
+        Icon(
+          Icons.arrow_drop_down_circle_outlined,
+          size: 40.w,
+          color: Styles.white,
+          shadows: [
+            BoxShadow(
+              // 阴影颜色
+              color: Colors.black.withOpacity(0.5),
+              // 阴影扩散范围
+              spreadRadius: 2,
+              // 阴影模糊范围
+              blurRadius: 4,
+              // 阴影偏移量
+              offset: const Offset(0, 0),
+            ),
+          ],
+        );
   }
 
   Widget _buildUnreadTipView(BuildContext context, int value) {
-    if (widget.unReadCountTipView == null) {
-      return const Text('消息未读');
-    }
-    return widget.unReadCountTipView?.call(context, value);
+    return widget.unReadCountTipView?.call(context, value) ??
+        const Text('消息未读');
   }
 
   @override
@@ -272,7 +275,7 @@ class _ChatWidgetState extends State<ChatWidget>
       backgroundColor: widget.backgroundColor ?? Colors.white,
       resizeToAvoidBottomInset: widget.resizeToAvoidBottomInset,
       body: GestureDetector(
-        onTap: widget.outDismiss,
+        onTap: widget.onTapBg,
         behavior: HitTestBehavior.opaque,
         child: _buildBody(),
       ),
@@ -285,7 +288,7 @@ class _ChatWidgetState extends State<ChatWidget>
         _buildContent(),
         _buildPageOverlay(),
         Positioned(
-          top: (_topMargin ?? 0) + 40,
+          top: (topMargin ?? 0) + 40,
           right: 0,
           child: Obx(() => Visibility(
                 visible: chatController.lastViewedMessageId.value != null &&
@@ -294,12 +297,12 @@ class _ChatWidgetState extends State<ChatWidget>
               )),
         ),
         Positioned(
-          top: _topMargin ?? 0,
+          top: topMargin ?? 0,
           left: 0,
           right: 0,
           bottom: 0,
           child: Visibility(
-            visible: _showLoading,
+            visible: showLoading,
             child: Container(
               color: widget.backgroundColor ?? Colors.white,
               child: Center(
@@ -328,10 +331,10 @@ class _ChatWidgetState extends State<ChatWidget>
     return Column(
       children: [
         Container(
-          key: _headerKey,
-          child: widget.pageHeadBuilder.call(context),
+          key: headerKey,
+          child: widget.customHeadBuilder?.call(context),
         ),
-        widget.pinBuilder?.call(context) ?? const SizedBox(),
+        widget.customPinBuilder?.call(context) ?? const SizedBox(),
         Flexible(
             child: Stack(
           children: [
@@ -343,9 +346,7 @@ class _ChatWidgetState extends State<ChatWidget>
           link: layerLink,
           child: Container(),
         ),
-        if (null != widget.customerBottomBuilder)
-          widget.customerBottomBuilder!.call(context),
-        //_buildInputWidget()
+        widget.customerBottomBuilder?.call(context) ?? const SizedBox(),
       ],
     );
   }
@@ -353,26 +354,27 @@ class _ChatWidgetState extends State<ChatWidget>
   Widget _buildListView() {
     return LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
-      return Align(
-        alignment: Alignment.topCenter,
-        child: Listener(
-          onPointerMove: (_) => widget.outDismiss(),
-          child: ListViewObserver(
-            controller: chatController.observerController,
-            onObserve: (ListViewObserveModel model) {
-              chatController.updateDisplayingChildIndexList(
-                  model.displayingChildIndexList);
+      return Listener(
+        onPointerMove: (_) {
+          widget.onTapBg();
+        },
+        child: ListViewObserver(
+          controller: chatController.observerController,
+          onObserve: (ListViewObserveModel model) {
+            chatController
+                .updateDisplayingChildIndexList(model.displayingChildIndexList);
+          },
+          sliverListContexts: () {
+            return sliverListContexts;
+          },
+          child: EasyRefresh.builder(
+            childBuilder: (context, physics) {
+              return _buildListViewContent(constraints, physics);
             },
-            sliverListContexts: () => sliverListContexts,
-            child: EasyRefresh.builder(
-              childBuilder: (context, physics) {
-                return _buildListViewContent(constraints, physics);
-              },
-              footer: widget.refreshHeader ?? const MaterialFooter(),
-              controller: chatController.easyRefreshController,
-              onLoad: widget.onLoad == null ? null : _onLoad,
-              onRefresh: widget.onRefresh == null ? null : _onRefresh,
-            ),
+            footer: widget.refreshHeader ?? const MaterialFooter(),
+            controller: chatController.easyRefreshController,
+            onLoad: widget.onLoad == null ? null : _onLoad,
+            onRefresh: widget.onRefresh == null ? null : _onRefresh,
           ),
         ),
       );
@@ -406,19 +408,18 @@ class _ChatWidgetState extends State<ChatWidget>
               }
               sliverListContexts.add(context);
               if (index == chatController.showedMessageList.length &&
-                  null != widget.onHeaderBuilder) {
-                return widget.onHeaderBuilder!.call(context);
+                  widget.onHeaderBuilder != null) {
+                return widget.onHeaderBuilder?.call(context);
               }
               MessageCellModel chatModel =
                   chatController.showedMessageList[index];
               if (widget.menuParams == null) {
-                return widget.messageItemBuilder
+                return widget.customeMessageCellBuilder
                     .call(context, chatModel, index);
               }
-
               return WPopupMenu(
-                child:
-                    widget.messageItemBuilder.call(context, chatModel, index),
+                child: widget.customeMessageCellBuilder
+                    .call(context, chatModel, index),
                 actions: widget.menuParams!.getActions.call(chatModel),
                 onMenuShow: () =>
                     widget.menuParams!.onMenuShow?.call(chatModel),

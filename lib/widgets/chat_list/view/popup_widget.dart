@@ -184,10 +184,8 @@ class WPopupMenuState extends State<WPopupMenu> {
   }
 
   void removeOverlay() {
-    if (entry != null) {
-      entry!.remove();
-      entry = null;
-    }
+    entry?.remove();
+    entry = null;
   }
 }
 

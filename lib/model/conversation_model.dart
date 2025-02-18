@@ -1,4 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:relax_chat/model/resp/friend_list_resp.dart';
 
 part 'conversation_model.g.dart';
 
@@ -42,6 +43,13 @@ class ConversationModel {
       _$ConversationModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$ConversationModelToJson(this);
+
+  factory ConversationModel.conversationWithFriend(FriendModel friend) {
+    ConversationModel model = ConversationModel.fromJson({})
+      ..name = friend.name
+      ..type = 2;
+    return model;
+  }
 }
 
 ConversationModel defaultConversationModel(var value) {

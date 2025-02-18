@@ -11,6 +11,7 @@ import '../network/result.dart';
 import 'event_bus_manager.dart';
 import 'log_manager.dart';
 
+/// 会话
 class ConversationManager {
   ConversationManager._() {
     // 构造器调用时可初始化
@@ -32,7 +33,7 @@ class ConversationManager {
 
   void onReceiveMsg(WSMessageModel wsMsg) {
     logger.d('会话${wsMsg.msg.roomId}收到新消息');
-    state.conversationList
+    state.conversationUnreadList
         .firstWhereOrNull((element) => element.roomId == wsMsg.msg.roomId)
         ?.unreadMsgCount += 1;
     ConversationModel? model = state.conversations
@@ -48,7 +49,7 @@ class ConversationManager {
   void refreshConversationList() async {
     Result<ConversationListResp> result = await api.getConversationList();
     state.conversations.value = result.data?.list ?? [];
-    state.conversationList.addAll(state.conversations
+    state.conversationUnreadList.addAll(state.conversations
         .map((e) => ConversationUnread(e.roomId, 0))
         .toList());
   }
@@ -57,7 +58,7 @@ class ConversationManager {
 class ConversationState {
   RxList<ConversationModel> conversations = RxList<ConversationModel>.empty();
 
-  List<ConversationUnread> conversationList = [];
+  List<ConversationUnread> conversationUnreadList = [];
 
   StreamSubscription? newMsgReceiveBus;
 }

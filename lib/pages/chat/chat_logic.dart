@@ -16,7 +16,7 @@ import '../../model/resp/msg_list_resp.dart';
 import '../../model/ws/resp/ws_msg_model.dart';
 import '../../network/api_manager.dart';
 
-import '../../widgets/list_view_chat/controller/chat_controller.dart';
+import '../../widgets/chat_list/controller/chat_controller.dart';
 import 'chat_state.dart';
 import '../../model/widget/message_cell_model.dart';
 
@@ -31,6 +31,16 @@ class ChatLogic extends GetxController {
       jumpToBottomCallback: () {},
       inputFocusNode: state.focusNode,
     );
+
+    state.chatInputBottomHeight.value = state.bottomMargin;
+
+    state.focusNode.addListener(() {
+      if (state.focusNode.hasFocus) {
+        state.chatInputBottomHeight.value = 0;
+      } else {
+        state.chatInputBottomHeight.value = state.bottomMargin;
+      }
+    });
 
     getMessageList();
 
@@ -56,9 +66,10 @@ class ChatLogic extends GetxController {
     }
     state.showLoading.value = true;
     Result<MessageListResp> result = await api.getMessageList(
-        roomId: state.conversation.value.roomId,
-        cursor: state.cursor,
-        size: 20);
+      roomId: state.conversation.value.roomId,
+      cursor: state.cursor,
+      size: 20,
+    );
 
     /// 保存分页数据
     state.cursor = result.data?.cursor;
@@ -131,7 +142,7 @@ class ChatLogic extends GetxController {
       },
     );
 
-    if (result.result) {
+    if (result.ok) {
       _handleNewMsgList([
         MessageCellModel.fromJson({})
           ..messageModel =
