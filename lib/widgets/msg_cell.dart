@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:relax_chat/model/msg_model.dart';
-import 'package:relax_chat/model/ws/resp/ws_msg_model.dart';
+import 'package:relax_chat/model/widget/message_cell_model.dart';
 
 import '../common/common.dart';
-import '../common/styles.dart';
 import 'image/round_avatar.dart';
 
 class MsgCell extends StatefulWidget {
-  final WSMessageModel model;
+  final MessageCellModel cell;
 
   const MsgCell({
-    required this.model,
+    required this.cell,
     super.key,
   });
 
@@ -19,12 +18,12 @@ class MsgCell extends StatefulWidget {
 }
 
 class _MsgCellState extends State<MsgCell> {
-  late WSMessageModel _model;
+  late MessageCellModel _cell;
 
   @override
   void initState() {
     super.initState();
-    _model = widget.model;
+    _cell = widget.cell;
   }
 
   @override
@@ -35,19 +34,49 @@ class _MsgCellState extends State<MsgCell> {
   @override
   void didUpdateWidget(covariant MsgCell oldWidget) {
     super.didUpdateWidget(oldWidget);
-    _model = widget.model;
+    _cell = widget.cell;
   }
 
   Widget _msgCell() {
-    switch (MessageModelType.fromCode(_model.msg.msgType)) {
+    switch (MessageModelType.fromCode(_cell.messageModel.msg.msgType)) {
       case MessageModelType.text:
-        return _model.senderIsMe ? sendMsgCell() : receiveMsgCell();
+        return _cell.messageModel.senderIsMe ? sendMsgCell() : receiveMsgCell();
       case MessageModelType.system:
         return systemMsgCell();
       case null:
       default:
-        return const Text('消息气泡暂未处理这种类型');
+        return Text(
+          '消息气泡暂未处理这种类型',
+          style: Styles.textNormal(10).copyWith(color: Styles.greyText),
+        );
     }
+  }
+
+  Widget msgStatus() {
+    if (_cell.status == MessageStatus.delivering.code) {
+      return SizedBox(
+        width: 12.w,
+        height: 12.w,
+        child: CircularProgressIndicator(
+          strokeWidth: 1.w,
+        ),
+      );
+    }
+    // if (_model.status == MessageStatus.succeed.code) {
+    //   return Icon(
+    //     Icons.check_circle_outline,
+    //     size: 14.w,
+    //     color: Styles.grey,
+    //   );
+    // }
+    if (_cell.status == MessageStatus.failed.code) {
+      return Icon(
+        Icons.error_outline,
+        size: 14.w,
+        color: Styles.red,
+      );
+    }
+    return Container();
   }
 
   Widget sendMsgCell() {
@@ -62,7 +91,7 @@ class _MsgCellState extends State<MsgCell> {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Text(
-                '${_model.msg.senderName}(${_model.msg.senderId})',
+                '${_cell.messageModel.msg.senderName}(${_cell.messageModel.msg.senderId})',
                 style: Styles.textNormal(10).copyWith(color: Styles.greyText),
               ),
               const SizedBox(
@@ -84,18 +113,18 @@ class _MsgCellState extends State<MsgCell> {
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        if (_model.msg.reply.id != 0)
+                        if (_cell.messageModel.msg.reply.id != 0)
                           Padding(
                             padding: const EdgeInsets.only(bottom: 4.0),
                             child: Text(
-                              '| ${_model.msg.reply.username}: ${_model.msg.reply.body}',
+                              '| ${_cell.messageModel.msg.reply.username}: ${_cell.messageModel.msg.reply.body}',
                               style: Styles.textNormal(14)
                                   .copyWith(color: Styles.grey),
                               overflow: TextOverflow.fade,
                             ),
                           ),
                         Text(
-                          _model.msg.body.content,
+                          _cell.messageModel.msg.body.content,
                           style: Styles.textNormal(14)
                               .copyWith(color: Styles.black),
                           overflow: TextOverflow.fade,
@@ -117,7 +146,7 @@ class _MsgCellState extends State<MsgCell> {
           ),
           RoundAvatar(
             height: 35,
-            url: _model.msg.senderAvatar,
+            url: _cell.messageModel.msg.senderAvatar,
             borderDecoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border: Border.all(
@@ -129,33 +158,6 @@ class _MsgCellState extends State<MsgCell> {
     );
   }
 
-  Widget msgStatus() {
-    if (_model.msg.status == MessageStatus.delivering.code) {
-      return const SizedBox(
-        width: 12,
-        height: 12,
-        child: CircularProgressIndicator(
-          strokeWidth: 1,
-        ),
-      );
-    } else if (_model.msg.status == MessageStatus.succeed.code) {
-      // return Icon(
-      //   Icons.check_circle_outline,
-      //   size: 14,
-      //   color: Styles.grey,
-      // );
-      return Container();
-    } else if (_model.msg.status == MessageStatus.failed.code) {
-      return const Icon(
-        Icons.error,
-        size: 14,
-        color: Styles.red,
-      );
-    } else {
-      return Container();
-    }
-  }
-
   Widget receiveMsgCell() {
     return Container(
       padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
@@ -165,7 +167,7 @@ class _MsgCellState extends State<MsgCell> {
         children: [
           RoundAvatar(
             height: 35,
-            url: _model.msg.senderAvatar,
+            url: _cell.messageModel.msg.senderAvatar,
             borderDecoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border: Border.all(
@@ -179,7 +181,7 @@ class _MsgCellState extends State<MsgCell> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                _model.msg.senderName,
+                _cell.messageModel.msg.senderName,
                 style: Styles.textNormal(10).copyWith(color: Styles.greyText),
               ),
               const SizedBox(
@@ -198,18 +200,18 @@ class _MsgCellState extends State<MsgCell> {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    if (_model.msg.reply.id != 0)
+                    if (_cell.messageModel.msg.reply.id != 0)
                       Padding(
                         padding: const EdgeInsets.only(bottom: 4.0),
                         child: Text(
-                          '| ${_model.msg.reply.username}: ${_model.msg.reply.body}',
+                          '| ${_cell.messageModel.msg.reply.username}: ${_cell.messageModel.msg.reply.body}',
                           style: Styles.textNormal(14)
                               .copyWith(color: Styles.grey),
                           overflow: TextOverflow.fade,
                         ),
                       ),
                     Text(
-                      _model.msg.body.content,
+                      _cell.messageModel.msg.body.content,
                       style:
                           Styles.textNormal(14).copyWith(color: Styles.black),
                       overflow: TextOverflow.fade,
@@ -232,7 +234,7 @@ class _MsgCellState extends State<MsgCell> {
             color: Styles.transparent,
             borderRadius: BorderRadius.all(Radius.circular(4))),
         child: Text(
-          _model.msg.body.toString(),
+          _cell.messageModel.msg.body.toString(),
           style: Styles.textNormal(12).copyWith(color: Styles.greyText),
         ));
   }

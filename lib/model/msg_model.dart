@@ -30,27 +30,6 @@ enum MessageModelType {
   }
 }
 
-enum MessageStatus {
-  none(0),
-  delivering(1),
-  succeed(2),
-  failed(3),
-  ;
-
-  final int code;
-
-  const MessageStatus(this.code);
-
-  static MessageStatus? fromCode(int code) {
-    for (var e in MessageStatus.values) {
-      if (code == e.code) {
-        return e;
-      }
-    }
-    return null;
-  }
-}
-
 @JsonSerializable()
 class MessageModel {
   @JsonKey(defaultValue: 0)
@@ -83,24 +62,14 @@ class MessageModel {
   @JsonKey(fromJson: defaultMessageBodyModel)
   MessageBodyModel body;
 
-  /// 发送消息标识消息id 用于更新
-  @JsonKey(defaultValue: '')
-  String messageId;
-
-  /// 发送消息时消息的状态
-  @JsonKey(defaultValue: 0)
-  int status;
-
   MessageModel(
     this.id,
     this.senderId,
     this.senderName,
     this.senderAvatar,
-    this.messageId,
     this.sendTime,
     this.roomId,
     this.msgType,
-    this.status,
     this.messageMark,
     this.reply,
     this.body,

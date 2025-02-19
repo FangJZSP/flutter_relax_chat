@@ -21,7 +21,7 @@ class ChatWidget extends StatefulWidget {
 
   /// 消息展示方式
   final Function(BuildContext context, MessageCellModel model, int index)
-      customeMessageCellBuilder;
+      customMessageCellBuilder;
 
   /// 自定义页头
   final Function(BuildContext context)? customHeadBuilder;
@@ -78,7 +78,7 @@ class ChatWidget extends StatefulWidget {
   const ChatWidget(
       {required this.onLoad,
       required this.onRefresh,
-      required this.customeMessageCellBuilder,
+      required this.customMessageCellBuilder,
       required this.inputTextFocusNode,
       required this.chatController,
       required this.roomId,
@@ -136,7 +136,7 @@ class _ChatWidgetState extends State<ChatWidget>
     super.initState();
     showLoading = widget.showLoading;
     chatController = widget.chatController;
-    chatController.init(update: update, ctx: context);
+    chatController.init(ctx: context, update: update);
     chatController.scrollController.addListener(scrollControllerListener);
 
     SchedulerBinding.instance.addPostFrameCallback((_) {
@@ -414,11 +414,11 @@ class _ChatWidgetState extends State<ChatWidget>
               MessageCellModel chatModel =
                   chatController.showedMessageList[index];
               if (widget.menuParams == null) {
-                return widget.customeMessageCellBuilder
+                return widget.customMessageCellBuilder
                     .call(context, chatModel, index);
               }
               return WPopupMenu(
-                child: widget.customeMessageCellBuilder
+                child: widget.customMessageCellBuilder
                     .call(context, chatModel, index),
                 actions: widget.menuParams!.getActions.call(chatModel),
                 onMenuShow: () =>

@@ -12,7 +12,9 @@ MessageCellModel _$MessageCellModelFromJson(Map<String, dynamic> json) =>
       msgCellType:
           $enumDecodeNullable(_$MessageCellTypeEnumMap, json['msgCellType']) ??
               MessageCellType.addNew,
+      messageId: json['messageId'] as String? ?? '',
       cachedMsg: json['cachedMsg'] as bool? ?? false,
+      status: (json['status'] as num?)?.toInt() ?? 0,
       chatMarker: (json['chatMarker'] as num?)?.toInt(),
       insertIndex: (json['insertIndex'] as num?)?.toInt(),
     );
@@ -20,9 +22,11 @@ MessageCellModel _$MessageCellModelFromJson(Map<String, dynamic> json) =>
 Map<String, dynamic> _$MessageCellModelToJson(MessageCellModel instance) =>
     <String, dynamic>{
       'messageModel': instance.messageModel,
-      'chatMarker': instance.chatMarker,
       'msgCellType': _$MessageCellTypeEnumMap[instance.msgCellType]!,
+      'messageId': instance.messageId,
       'cachedMsg': instance.cachedMsg,
+      'status': instance.status,
+      'chatMarker': instance.chatMarker,
       'insertIndex': instance.insertIndex,
     };
 

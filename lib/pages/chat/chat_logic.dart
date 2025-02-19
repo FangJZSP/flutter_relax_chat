@@ -26,14 +26,11 @@ class ChatLogic extends GetxController {
   @override
   void onInit() {
     super.onInit();
-
+    state.chatInputBottomHeight.value = state.bottomMargin;
     state.chatController = ChatController(
       jumpToBottomCallback: () {},
       inputFocusNode: state.focusNode,
     );
-
-    state.chatInputBottomHeight.value = state.bottomMargin;
-
     state.focusNode.addListener(() {
       if (state.focusNode.hasFocus) {
         state.chatInputBottomHeight.value = 0;
@@ -41,12 +38,10 @@ class ChatLogic extends GetxController {
         state.chatInputBottomHeight.value = state.bottomMargin;
       }
     });
-
-    getMessageList();
-
     state.wsMsgReceiveBus = eventBus.on<WSReceivedMsgEvent>().listen((event) {
       _onReceiveMsg(event.model);
     });
+    getMessageList();
   }
 
   @override
@@ -58,6 +53,10 @@ class ChatLogic extends GetxController {
 
   void onTapBg() {
     FocusManager.instance.primaryFocus?.unfocus();
+  }
+
+  void onTapBack() {
+    Get.back(result: state.conversation.value.roomId);
   }
 
   Future<void> getMessageList() async {
@@ -79,7 +78,9 @@ class ChatLogic extends GetxController {
     state.messages.addAll(result.data?.list.reversed ?? []);
     List<MessageCellModel> msgCells = state.messages
         .map((element) => MessageCellModel(
-            messageModel: element, msgCellType: MessageCellType.addOld))
+              messageModel: element,
+              msgCellType: MessageCellType.addOld,
+            ))
         .toList();
     _handleNewMsgList(msgCells);
     state.showLoading.value = false;
@@ -109,29 +110,35 @@ class ChatLogic extends GetxController {
 
   Future<void> sendTextMsg(String message) async {
     TextMsgReq textMsgReq = TextMsgReq.fromJson({})..content = message;
-
     UserModel me = UserManager.instance.state.user.value;
 
+    // 构建消息body
     MessageBodyModel messageBodyModel = MessageBodyModel.fromJson({})
       ..content = message;
+
+    // 构建消息model
     MessageModel messageModel = MessageModel.fromJson({})
       ..body = messageBodyModel
       ..msgType = MessageModelType.text.code
-      ..messageId =
-          '${UserManager.instance.state.user.value.uid}${DateTime.now().millisecondsSinceEpoch}${Random().nextInt(10000)}'
-      ..status = MessageStatus.delivering.code
       ..senderAvatar = me.avatar
       ..senderId = me.uid
       ..senderName = me.name;
 
+    // 构建ws消息model
     WSMessageModel wsMessageModel = WSMessageModel(messageModel);
 
-    _handleNewMsgList([
-      MessageCellModel.fromJson({})
-        ..messageModel = wsMessageModel
-        ..msgCellType = MessageCellType.addNew
-    ]);
+    // 构建ui消息model
+    MessageCellModel messageCellModel = MessageCellModel.fromJson({})
+      ..messageModel = wsMessageModel
+      ..messageId =
+          '${UserManager.instance.state.user.value.uid}${DateTime.now().millisecondsSinceEpoch}${Random().nextInt(10000)}'
+      ..msgCellType = MessageCellType.addNew
+      ..status = MessageStatus.delivering.code;
 
+    // 处理ui消息model
+    _handleNewMsgList([messageCellModel]);
+
+    // 发送文本消息
     Result<WSMessageModel> result = await api.sendMsg(
       roomId: state.conversation.value.roomId,
       msgType: MessageModelType.text.code,
@@ -144,23 +151,17 @@ class ChatLogic extends GetxController {
 
     if (result.ok) {
       _handleNewMsgList([
-        MessageCellModel.fromJson({})
-          ..messageModel =
-              WSMessageModel(messageModel..status = MessageStatus.succeed.code)
+        messageCellModel
           ..msgCellType = MessageCellType.update
+          ..status = MessageStatus.succeed.code
       ]);
     } else {
       showTipsToast(result.message ?? '发送消息失败～');
       _handleNewMsgList([
-        MessageCellModel.fromJson({})
-          ..messageModel =
-              WSMessageModel(messageModel..status = MessageStatus.failed.code)
+        messageCellModel
           ..msgCellType = MessageCellType.update
+          ..status = MessageStatus.failed.code
       ]);
     }
-  }
-
-  void back() {
-    Get.back(result: state.conversation.value.roomId);
   }
 }

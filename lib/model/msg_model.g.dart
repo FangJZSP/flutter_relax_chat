@@ -11,11 +11,9 @@ MessageModel _$MessageModelFromJson(Map<String, dynamic> json) => MessageModel(
       (json['senderId'] as num?)?.toInt() ?? 0,
       json['senderName'] as String? ?? '',
       json['senderAvatar'] as String? ?? '',
-      json['messageId'] as String? ?? '',
       (json['sendTime'] as num?)?.toInt() ?? 0,
       (json['roomId'] as num?)?.toInt() ?? 0,
       (json['msgType'] as num?)?.toInt() ?? 0,
-      (json['status'] as num?)?.toInt() ?? 0,
       defaultMessageMarkModel(json['messageMark']),
       defaultMessageReplyModel(json['reply']),
       defaultMessageBodyModel(json['body']),
@@ -33,6 +31,4 @@ Map<String, dynamic> _$MessageModelToJson(MessageModel instance) =>
       'messageMark': instance.messageMark,
       'reply': instance.reply,
       'body': instance.body,
-      'messageId': instance.messageId,
-      'status': instance.status,
     };

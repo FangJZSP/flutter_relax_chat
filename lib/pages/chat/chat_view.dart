@@ -25,7 +25,7 @@ class ChatPage extends StatelessWidget {
         child: BasePage(
           pageTitle: state.conversation.value.name,
           needLeading: true,
-          onTapLeading: logic.back,
+          onTapLeading: logic.onTapBack,
           mainContent: _chatWidget(context),
         ),
       );
@@ -52,7 +52,7 @@ class ChatPage extends StatelessWidget {
         // customHeadBuilder: headBuilder,
         // customPinBuilder: pinBuilder,
         customerBottomBuilder: bottomBuilder,
-        customeMessageCellBuilder: messageCellBuilder,
+        customMessageCellBuilder: messageCellBuilder,
         onTapBg: logic.onTapBg,
         loadingView: const CircularProgressIndicator(),
         showLoading: state.showLoading.value,
@@ -120,7 +120,7 @@ class ChatPage extends StatelessWidget {
     return Column(
       children: [
         MsgCell(
-          model: model.messageModel,
+          cell: model,
         ),
       ],
     );

@@ -1,6 +1,4 @@
 import 'dart:async';
-import 'dart:ui' as ui;
-
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/rendering.dart';
@@ -9,19 +7,19 @@ import 'package:get/get.dart';
 import 'package:relax_chat/model/widget/message_cell_model.dart';
 import 'package:scrollview_observer/scrollview_observer.dart';
 
-import '../../../manager/log_manager.dart';
-
+/// 聊天控制器
+/// UI展示 [T extends MessageCellModel]
 class ChatController<T extends MessageCellModel> {
   ChatController({
-    required this.jumpToBottomCallback,
     required this.inputFocusNode,
-    this.needPreloadImage = false,
-    this.reloadMessage,
-    this.autoShowTime = true,
+    required this.jumpToBottomCallback,
     this.needJumpToBottomWhenSendNewMsg = true,
   }) {
+    // 列表观察
     observerController = ListObserverController(controller: scrollController)
       ..cacheJumpIndexOffset = false;
+
+    // 聊天滚动观察
     chatObserver = ChatScrollObserver(observerController)
       ..fixedPositionOffset = 5
       ..onHandlePositionResultCallback = (result) {
@@ -39,68 +37,67 @@ class ChatController<T extends MessageCellModel> {
       };
   }
 
-  final Function() jumpToBottomCallback;
-
-  final bool autoShowTime;
-
-  final bool needJumpToBottomWhenSendNewMsg;
-
-  final FocusNode inputFocusNode;
-
-  final bool needPreloadImage;
-
-  final Function(String messageId)? reloadMessage;
-
-  int initTime = DateTime.now().millisecondsSinceEpoch;
-
   ScrollController scrollController = ScrollController();
 
   late ListObserverController observerController;
 
   late ChatScrollObserver chatObserver;
 
+  final FocusNode inputFocusNode;
+
+  Function()? updateState;
+
+  final Function() jumpToBottomCallback;
+
+  final bool needJumpToBottomWhenSendNewMsg;
+
+  int initTime = DateTime.now().millisecondsSinceEpoch;
+
   EasyRefreshController easyRefreshController = EasyRefreshController();
-
-  List<MessageCellModel> messageList = [];
-
-  RxInt unreadMsgCount = 0.obs;
-
-  RxBool showJumpToBottom = false.obs;
-
-  bool needIncrementUnreadMsgCount = false;
-
-  bool isComposing = false;
-
-  List imageSaveList = [];
-
-  bool get hasReadAll => unreadMsgCount.value == 0;
-
-  List<int> displayingChildIndexList = [];
-  VoidCallback? updateState;
-
-  RxnInt lastViewedMessageId = RxnInt();
-  RxBool hasReadLastViewedMessage = false.obs;
-  Rxn<MessageCellModel> firstUnreadMessage = Rxn<MessageCellModel>();
 
   BuildContext? context;
 
-  /// 置顶或引用消息，点击时要跳转到对应位置
-  /// 但是该消息可能不在当前 [messageList] 里面
-  /// 需要额外加载对应页码的消息数据，
+  RxInt unreadMsgCount = 0.obs;
+
+  RxnInt lastViewedMessageId = RxnInt();
+
+  RxBool showJumpToBottom = false.obs;
+
+  /// 是否已读最后看到的消息
+  RxBool hasReadLastViewedMessage = false.obs;
+
+  /// 是否需要增加未读消息数量
+  bool needIncrementUnreadMsgCount = false;
+
+  /// 是否输入中
+  RxBool isComposing = false.obs;
+
+  /// 正在展示子组件索引列表
+  List<int> displayingChildIndexList = [];
+
+  /// 第一条未读的消息
+  Rxn<T> firstUnreadMessage = Rxn<T>();
+
+  List<T> messageList = [];
+
+  /// 有置顶或引用消息，点击时要跳转到对应位置时，
+  /// 但是该消息可能不在当前 [messageList] 里面，需要额外加载对应页码的消息数据，
   /// 此时拉取的消息列表存到 [cachedMessageList] 里面
   /// 另外，此时还可以上拉下拉加载消息，当消息没有到达 [messageList] 的位置时，
   /// 拉取的新消息也需要存到 [cachedMessageList] 内，
   /// 直到 [messageList] 和 [cachedMessageList] 有重叠消息，
-  /// 或者刚好 [cachedMessageList] 的第一条消息为 [messageList] 的下一条时
+  /// 或者刚好 [cachedMessageList] 的第一条消息为 [messageList] 的下一条时，
   /// 合并 [cachedMessageList] 到 [messageList]，并清空 [cachedMessageList]
-  List<MessageCellModel> cachedMessageList = [];
+  List<T> cachedMessageList = [];
 
-  List<MessageCellModel> get showedMessageList =>
+  List<T> get showedMessageList =>
       cachedMessageList.isNotEmpty ? cachedMessageList : messageList;
 
   bool get bottomNear =>
       displayingChildIndexList.isNotEmpty &&
       displayingChildIndexList.first <= 3;
+
+  bool get hasReadAll => unreadMsgCount.value <= 0;
 
   void init({required BuildContext ctx, VoidCallback? update}) {
     updateState = update;
@@ -111,39 +108,35 @@ class ChatController<T extends MessageCellModel> {
   void dispose() {
     scrollController.dispose();
     easyRefreshController.dispose();
-    for (var value in imageSaveList) {
-      value.image?.dispose();
-      value.image = null;
-    }
-    imageSaveList = [];
   }
 
-  void updateMessage(dynamic event) {
-    assert(event is MessageCellModel || event is List<MessageCellModel>,
-        '更新消息必须是 MessageCellModel 或者 List<MessageCellModel>');
-    if (event is MessageCellModel) {
-      MessageCellModel bean = event;
-
-      List<MessageCellModel> list = messageList;
-
+  /// 更新处理单个或多个消息
+  void updateMessage(dynamic data) {
+    assert(data is T || data is List<T>, '更新消息必须是 T 或者 List<T>');
+    if (data is T) {
+      /// 处理单个消息
+      T bean = data;
+      List<T> list = [];
       if (bean.cachedMsg) {
         list = cachedMessageList;
+      } else {
+        list = messageList;
       }
-
       handleMessageNeedStandBy(bean, list);
-    } else if (event is List<MessageCellModel>) {
+    } else if (data is List<T>) {
+      /// 处理多个消息
       int standByCount = 0;
       bool firstUpdate = false;
-      for (MessageCellModel bean in event) {
-        List<MessageCellModel> list = messageList;
+      for (T bean in data) {
+        List<T> list = [];
         if (bean.cachedMsg) {
           list = cachedMessageList;
+        } else {
+          list = messageList;
         }
-
         if (list.isEmpty) {
           firstUpdate = true;
         }
-
         bool needStandBy =
             handleMessageNeedStandBy(bean, list, needStandBy: false);
         standByCount += needStandBy ? 1 : 0;
@@ -159,40 +152,17 @@ class ChatController<T extends MessageCellModel> {
     updateState?.call();
   }
 
-  Future<ui.Image?> loadImage(ImageProvider image) async {
-    final Completer<ui.Image?> completer = Completer<ui.Image?>();
-    ImageStream? stream;
-    ImageStreamListener? listener;
-    listener = ImageStreamListener(
-      (ImageInfo info, bool synchronousCall) {
-        completer.complete(info.image);
-        if (stream != null && listener != null) {
-          stream.removeListener(listener);
-        }
-      },
-      onError: (Object exception, StackTrace? stackTrace) {
-        completer.complete(null);
-        logger.d("loadImage onError: $exception");
-        if (stream != null && listener != null) {
-          stream.removeListener(listener);
-        }
-      },
-    );
-
-    stream = image.resolve(const ImageConfiguration());
-    stream.addListener(listener);
-    return completer.future;
-  }
-
+  /// 调整列表位置
   void standby(int standByCount) {
     if (!inputFocusNode.hasFocus) {
       chatObserver.standby(changeCount: standByCount);
     }
   }
 
+  /// 处理消息并决定是否需要调整列表位置
   bool handleMessageNeedStandBy(
-    MessageCellModel bean,
-    List<MessageCellModel> list, {
+    T bean,
+    List<T> list, {
     bool needStandBy = true,
   }) {
     switch (bean.msgCellType) {
@@ -211,7 +181,7 @@ class ChatController<T extends MessageCellModel> {
       /// 标记消息已读
       case MessageCellType.chatMarker:
         {
-          for (MessageCellModel model in list) {
+          for (T model in list) {
             if (model.messageModel.msg.id == bean.messageModel.msg.id) {
               if (bean.chatMarker != null) {
                 model.chatMarker = bean.chatMarker;
@@ -230,10 +200,11 @@ class ChatController<T extends MessageCellModel> {
       /// 更新消息
       case MessageCellType.update:
         {
-          for (MessageCellModel model in list) {
+          for (T model in list) {
+            // 远端拉取的消息有msgId，但messageId为''
+            // 本地发送的消息有messageId(为自己创建的标识)，但msgId为0
             if (model.messageModel.msg.id == bean.messageModel.msg.id &&
-                model.messageModel.msg.messageId ==
-                    bean.messageModel.msg.messageId) {
+                model.messageId == bean.messageId) {
               model.updateMessage(bean.messageModel);
             }
           }
@@ -251,8 +222,8 @@ class ChatController<T extends MessageCellModel> {
           }
           list.insert(0, bean);
           if (bean.messageModel.senderIsMe &&
-              needJumpToBottomWhenSendNewMsg &&
               !bean.cachedMsg &&
+              needJumpToBottomWhenSendNewMsg &&
               scrollController.hasClients) {
             scrollToBottom();
           }
@@ -273,11 +244,11 @@ class ChatController<T extends MessageCellModel> {
   }
 
   void mergeMessages() {
-    for (MessageCellModel msg in cachedMessageList) {
+    for (T cachedMsg in cachedMessageList) {
       if (messageList.indexWhere((element) =>
-              element.messageModel.msg.id == element.messageModel.msg.id) ==
+              element.messageModel.msg.id == cachedMsg.messageModel.msg.id) ==
           -1) {
-        messageList.add(msg);
+        messageList.add(cachedMsg);
       }
     }
     cachedMessageList.clear();
@@ -288,7 +259,8 @@ class ChatController<T extends MessageCellModel> {
     // 增加输入中状态
   }
 
-  void handleRetract(MessageCellModel bean) {
+  /// 处理撤回消息
+  void handleRetract(T bean) {
     messageList.removeWhere(
         (element) => element.messageModel.msg.id == bean.messageModel.msg.id);
   }
@@ -305,7 +277,7 @@ class ChatController<T extends MessageCellModel> {
     }
   }
 
-  Future<int?> scrollToMessage(MessageCellModel? cell) async {
+  Future<int?> scrollToMessage(T? cell) async {
     if (cell == null) {
       return null;
     }
@@ -329,8 +301,8 @@ class ChatController<T extends MessageCellModel> {
   Future<void> scrollToTop() async {
     if (observerController.controller != null) {
       await Future.delayed(const Duration(milliseconds: 50));
-      await observerController.controller!.animateTo(
-          observerController.controller!.position.maxScrollExtent,
+      await observerController.controller?.animateTo(
+          observerController.controller?.position.maxScrollExtent ?? 0,
           duration: const Duration(milliseconds: 200),
           curve: Curves.linear);
     }
@@ -373,7 +345,6 @@ class ChatController<T extends MessageCellModel> {
 
   void updateDisplayingChildIndexList(List<int> list) {
     displayingChildIndexList = list;
-
     int? index = messageIndex(lastViewedMessageId.value);
     if (index != null && displayingChildIndexList.contains(index)) {
       hasReadLastViewedMessage.value = true;
@@ -391,7 +362,7 @@ class ChatController<T extends MessageCellModel> {
 
   void scrollToLastViewedMessage() {
     if (lastViewedMessageId.value != null && !hasReadLastViewedMessage.value) {
-      MessageCellModel? model = showedMessageList.firstWhereOrNull((element) =>
+      T? model = showedMessageList.firstWhereOrNull((element) =>
           element.messageModel.msg.id == lastViewedMessageId.value);
       scrollToMessage(model).then((value) {
         if (value != null) {
@@ -401,7 +372,7 @@ class ChatController<T extends MessageCellModel> {
     }
   }
 
-  void removeMessage({bool Function(MessageCellModel)? where, int? index}) {
+  void removeMessage({bool Function(T)? where, int? index}) {
     if (index != null) {
       showedMessageList.removeAt(index);
     } else if (where != null) {
