@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
+import '../../../common/styles.dart';
 import '../../../model/widget/message_cell_model.dart';
 
 const double _kMenuScreenPadding = 0;
@@ -37,61 +38,80 @@ double get bottomPadding =>
     PlatformDispatcher.instance.views.first.devicePixelRatio;
 
 class PopupMenuParams {
+  // 点击方式
+  final PressType pressType;
+
+  // 弹出菜单背景颜色
+  final Color backgroundColor;
+
+  // 菜单宽度
+  final double menuWidth;
+
+  // 菜单长度
+  final double menuHeight;
+
+  final double? bottomHeight;
+
+  // 单击
+  final Function()? onSingleTap;
+
+  // 菜单展示回调
+  final Function(MessageCellModel)? onMenuShow;
+
+  // 根据消息类型获得功能列表
+  final List<MessageActionType> Function(MessageCellModel) getActions;
+
+  // 根据消息类型构建功能组件
+  final Widget Function(
+    MessageActionType,
+    MessageCellModel,
+    Function()? removePop,
+  ) buildAction;
+
   PopupMenuParams({
     required this.onMenuShow,
-    required this.bottomHeight,
     required this.getActions,
-    required this.onAction,
+    required this.buildAction,
+    required this.bottomHeight,
     this.pressType = PressType.longPress,
-    this.backgroundColor = Colors.black,
+    this.backgroundColor = Styles.black,
     this.menuWidth = 250,
     this.menuHeight = 42,
     this.onSingleTap,
   });
+}
 
-  final PressType pressType; // 点击方式 长按 还是单击
+class PopupMenu extends StatefulWidget {
+  final List<MessageActionType> actions;
+  final Widget child;
+  final PressType pressType;
   final Color backgroundColor;
   final double menuWidth;
   final double menuHeight;
-  final Widget Function(
-      MessageActionType, MessageCellModel, VoidCallback? removePop) onAction;
   final Function()? onSingleTap;
-  final double? bottomHeight;
-  final List<MessageActionType> Function(MessageCellModel) getActions;
-  final Function(MessageCellModel)? onMenuShow;
-}
+  final Function()? onMenuShow;
+  final double? bottomMargin;
+  final Widget Function(MessageActionType, VoidCallback?)? buildAction;
 
-class WPopupMenu extends StatefulWidget {
-  const WPopupMenu({
+  const PopupMenu({
     required this.child,
     required this.actions,
     required this.onMenuShow,
     required this.bottomMargin,
-    super.key,
     this.pressType = PressType.longPress,
     this.backgroundColor = Colors.black,
     this.menuWidth = 250,
     this.menuHeight = 42,
     this.onSingleTap,
     this.buildAction,
+    super.key,
   });
 
-  final List<MessageActionType> actions;
-  final Widget child;
-  final PressType pressType; // 点击方式 长按 还是单击
-  final Color backgroundColor;
-  final double menuWidth;
-  final double menuHeight;
-  final Function()? onSingleTap;
-  final VoidCallback onMenuShow;
-  final double? bottomMargin;
-  final Widget Function(MessageActionType, VoidCallback?)? buildAction;
-
   @override
-  WPopupMenuState createState() => WPopupMenuState();
+  PopupMenuState createState() => PopupMenuState();
 }
 
-class WPopupMenuState extends State<WPopupMenu> {
+class PopupMenuState extends State<PopupMenu> {
   double? width;
   double? height;
   RenderBox? button;
@@ -118,7 +138,7 @@ class WPopupMenuState extends State<WPopupMenu> {
   }
 
   @override
-  void didUpdateWidget(covariant WPopupMenu oldWidget) {
+  void didUpdateWidget(covariant PopupMenu oldWidget) {
     super.didUpdateWidget(oldWidget);
     WidgetsBinding.instance.addPostFrameCallback((call) {
       if (mounted) {
@@ -175,12 +195,11 @@ class WPopupMenuState extends State<WPopupMenu> {
         removeOverlay();
       },
     );
-
     entry = OverlayEntry(builder: (context) {
       return menuWidget;
     });
     Overlay.of(context).insert(entry!);
-    widget.onMenuShow.call();
+    widget.onMenuShow?.call();
   }
 
   void removeOverlay() {
@@ -194,19 +213,19 @@ class _MenuPopWidget extends StatefulWidget {
   final Color backgroundColor;
   final double menuWidth;
   final double menuHeight;
-  final double _height;
-  final double _width;
+  final double height;
+  final double width;
   final RenderBox button;
   final RenderBox overlay;
   final List<MessageActionType> actions;
-  final Function()? removePop;
   final double? bottomMargin;
+  final Function()? removePop;
   final Widget Function(MessageActionType, VoidCallback?)? buildAction;
 
   const _MenuPopWidget(
       this.btnContext,
-      this._height,
-      this._width,
+      this.height,
+      this.width,
       this.backgroundColor,
       this.menuWidth,
       this.menuHeight,
@@ -268,7 +287,7 @@ class _MenuPopWidgetState extends State<_MenuPopWidget> {
                 2 * widget.menuHeight;
 
             if (isInverted &&
-                position.top + widget._height >
+                position.top + widget.height >
                     MediaQuery.of(context).size.height -
                         (widget.bottomMargin ?? 0)) {
               isInverted = false;
@@ -280,22 +299,19 @@ class _MenuPopWidgetState extends State<_MenuPopWidget> {
                   position,
                   widget.menuHeight,
                   Directionality.of(widget.btnContext),
-                  widget._width,
+                  widget.width,
                   popWidth,
-                  widget._height,
+                  widget.height,
                   widget.bottomMargin),
               child: SizedBox(
                 height: widget.menuHeight,
                 width: popWidth,
-                child: Material(
-                  color: Colors.transparent,
-                  child: Container(
-                    color: const Color.fromRGBO(102, 102, 102, 1),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: widgets,
-                    ),
+                child: Container(
+                  color: widget.backgroundColor,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: widgets,
                   ),
                 ),
               ),
@@ -432,7 +448,6 @@ class _PopupMenuRouteLayout extends SingleChildLayoutDelegate {
         y = size.height - childSize.height;
       }
     }
-
     return Offset(x, y);
   }
 

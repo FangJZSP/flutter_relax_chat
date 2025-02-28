@@ -6,6 +6,7 @@ import 'package:relax_chat/widgets/base/base_page.dart';
 import '../../common/styles.dart';
 
 import '../../widgets/chat_list/view/chat_widget.dart';
+import '../../widgets/chat_list/view/popup_widget.dart';
 import 'chat_logic.dart';
 import '../../widgets/chat_input.dart';
 import '../../widgets/msg_cell.dart';
@@ -49,31 +50,72 @@ class ChatPage extends StatelessWidget {
         chatController: state.chatController,
         roomId: state.conversation.value.roomId,
         inputTextFocusNode: state.focusNode,
-        // customHeadBuilder: headBuilder,
-        // customPinBuilder: pinBuilder,
-        customerBottomBuilder: bottomBuilder,
-        customMessageCellBuilder: messageCellBuilder,
         onTapBg: logic.onTapBg,
-        loadingView: const CircularProgressIndicator(),
+        backgroundColor: Styles.white,
         showLoading: state.showLoading.value,
-        backgroundColor: Colors.white,
-        onRefresh: state.isLast.value ? null : logic.getMessageList,
-        onLoad: null,
+        loadingView: const CircularProgressIndicator(),
+        onRefresh: logic.getMessageList,
+        onLoad: state.isLast.value ? null : logic.loadMessageList,
+        customHeadBuilder: headBuilder,
+        customPinBuilder: pinBuilder,
+        customBottomBuilder: bottomBuilder,
+        customMessageCellBuilder: messageCellBuilder,
         toBottomFloatWidget: toBottomFloatWidget(),
+        menuParams: PopupMenuParams(
+          backgroundColor: Styles.transparent,
+          onMenuShow: (messageCellModel) {},
+          getActions: (messageCellModel) {
+            return [
+              MessageActionType.copy,
+              MessageActionType.quote,
+              MessageActionType.pin,
+              MessageActionType.translate,
+            ];
+          },
+          buildAction: (messageActionType, messageCellModel,
+              dynamic Function()? removePop) {
+            if (messageActionType == MessageActionType.copy) {
+              return Icon(
+                Icons.copy_outlined,
+                size: 16.w,
+              );
+            }
+            if (messageActionType == MessageActionType.pin) {
+              return Icon(
+                Icons.upgrade_outlined,
+                size: 16.w,
+              );
+            }
+            if (messageActionType == MessageActionType.quote) {
+              return Icon(
+                Icons.format_quote_outlined,
+                size: 16.w,
+              );
+            }
+            if (messageActionType == MessageActionType.translate) {
+              return Icon(
+                Icons.translate,
+                size: 16.w,
+              );
+            }
+            return Container();
+          },
+          bottomHeight: SizeConfig.bottomMargin,
+        ),
       );
     });
   }
 
   Widget headBuilder(BuildContext ctx) {
     return Container(
-      height: 10,
+      height: 0,
       color: Styles.lightBlue,
     );
   }
 
   Widget pinBuilder(BuildContext ctx) {
     return Container(
-      height: 10,
+      height: 0,
       color: Styles.normalBlue,
     );
   }

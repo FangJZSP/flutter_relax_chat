@@ -35,7 +35,7 @@ class ChatState {
 
   RxInt unreadMessageCount = 0.obs;
 
-  RxBool showLoading = false.obs;
+  RxBool showLoading = true.obs;
 
   ChatState() {
     if (Get.arguments != null && Get.arguments is ChatPageArgs) {

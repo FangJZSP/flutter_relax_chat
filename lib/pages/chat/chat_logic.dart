@@ -63,7 +63,7 @@ class ChatLogic extends GetxController {
     if (state.isLast.value) {
       return;
     }
-    state.showLoading.value = true;
+    // state.showLoading.value = true;
     Result<MessageListResp> result = await api.getMessageList(
       roomId: state.conversation.value.roomId,
       cursor: state.cursor,
@@ -84,6 +84,31 @@ class ChatLogic extends GetxController {
         .toList();
     _handleNewMsgList(msgCells);
     state.showLoading.value = false;
+  }
+
+  Future<void> loadMessageList() async {
+    if (state.isLast.value) {
+      return;
+    }
+    Result<MessageListResp> result = await api.getMessageList(
+      roomId: state.conversation.value.roomId,
+      cursor: state.cursor,
+      size: 20,
+    );
+
+    /// 保存分页数据
+    state.cursor = result.data?.cursor;
+    state.isLast.value = result.data?.isLast ?? false;
+
+    /// 列表反转加入消息列表
+    state.messages.addAll(result.data?.list.reversed ?? []);
+    List<MessageCellModel> msgCells = state.messages
+        .map((element) => MessageCellModel(
+              messageModel: element,
+              msgCellType: MessageCellType.addOld,
+            ))
+        .toList();
+    _handleNewMsgList(msgCells);
   }
 
   void _onReceiveMsg(WSMessageModel msg) {

@@ -8,7 +8,6 @@ import 'package:scrollview_observer/scrollview_observer.dart';
 import '../../../common/styles.dart';
 import '../../../model/widget/message_cell_model.dart';
 import '../controller/chat_controller.dart';
-import '../controller/chat_scroll_physics.dart';
 
 class ChatWidget extends StatefulWidget {
   /// 聊天控制器
@@ -30,7 +29,7 @@ class ChatWidget extends StatefulWidget {
   final Function(BuildContext context)? customPinBuilder;
 
   /// 自定义页尾
-  final Function(BuildContext context)? customerBottomBuilder;
+  final Function(BuildContext context)? customBottomBuilder;
 
   /// 自定义列表的头
   final Function(BuildContext context)? onHeaderBuilder;
@@ -38,11 +37,17 @@ class ChatWidget extends StatefulWidget {
   /// 自定义右下角未读消息提示框，注意不需要有点击事件
   final Function(BuildContext context, int unReadCount)? unReadCountTipView;
 
-  /// 刷新更多数据
+  /// 刷新最新数据
   final Future Function()? onRefresh;
 
   /// 加载更多数据
   final Future Function()? onLoad;
+
+  /// 由于列表是反转的，[refreshHeader] 实际类型是 [Footer]
+  final Footer? refreshHeader;
+
+  /// 由于列表是反转的，[refreshFooter] 实际类型是 [Header]
+  final Header? refreshFooter;
 
   /// 点击背景
   /// 一般用于输入框焦点失去焦点
@@ -70,37 +75,36 @@ class ChatWidget extends StatefulWidget {
 
   final Widget? msgListOverlay;
 
-  /// 由于列表是反转的，[refreshHeader] 实际类型是 [Footer]
-  final Footer? refreshHeader;
-
   final PopupMenuParams? menuParams;
 
-  const ChatWidget(
-      {required this.onLoad,
-      required this.onRefresh,
-      required this.customMessageCellBuilder,
-      required this.inputTextFocusNode,
-      required this.chatController,
-      required this.roomId,
-      required this.onTapBg,
-      this.customHeadBuilder,
-      this.toBottomFloatWidget,
-      super.key,
-      this.menuParams,
-      this.backgroundColor,
-      this.unReadCountTipView,
-      this.customerBottomBuilder,
-      this.customPinBuilder,
-      this.resizeToAvoidBottomInset = false,
-      this.onHeaderBuilder,
-      this.showLoading = false,
-      this.loadingView,
-      this.cacheExtent,
-      this.scrollListener,
-      this.floatTipOffset,
-      this.msgListOverlay,
-      this.lastViewedTipView,
-      this.refreshHeader});
+  const ChatWidget({
+    required this.customMessageCellBuilder,
+    required this.inputTextFocusNode,
+    required this.chatController,
+    required this.roomId,
+    required this.onTapBg,
+    this.onLoad,
+    this.onRefresh,
+    this.refreshHeader,
+    this.refreshFooter,
+    this.customPinBuilder,
+    this.customHeadBuilder,
+    this.customBottomBuilder,
+    this.toBottomFloatWidget,
+    this.menuParams,
+    this.backgroundColor,
+    this.unReadCountTipView,
+    this.resizeToAvoidBottomInset = false,
+    this.onHeaderBuilder,
+    this.showLoading = false,
+    this.loadingView,
+    this.cacheExtent,
+    this.scrollListener,
+    this.floatTipOffset,
+    this.msgListOverlay,
+    this.lastViewedTipView,
+    super.key,
+  });
 
   @override
   State<ChatWidget> createState() => _ChatWidgetState();
@@ -130,6 +134,15 @@ class _ChatWidgetState extends State<ChatWidget>
   double? scrollExtent;
 
   List<BuildContext> sliverListContexts = [];
+
+  /// 如果列表头不为空，则增加一个构建项
+  int get dataCount {
+    int hc = widget.onHeaderBuilder == null ? 0 : 1;
+    return chatController.showedMessageList.length + hc;
+  }
+
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   void initState() {
@@ -250,13 +263,9 @@ class _ChatWidgetState extends State<ChatWidget>
           color: Styles.white,
           shadows: [
             BoxShadow(
-              // 阴影颜色
               color: Colors.black.withOpacity(0.5),
-              // 阴影扩散范围
               spreadRadius: 2,
-              // 阴影模糊范围
               blurRadius: 4,
-              // 阴影偏移量
               offset: const Offset(0, 0),
             ),
           ],
@@ -346,115 +355,111 @@ class _ChatWidgetState extends State<ChatWidget>
           link: layerLink,
           child: Container(),
         ),
-        widget.customerBottomBuilder?.call(context) ?? const SizedBox(),
+        widget.customBottomBuilder?.call(context) ?? const SizedBox(),
       ],
     );
   }
 
   Widget _buildListView() {
     return LayoutBuilder(
-        builder: (BuildContext context, BoxConstraints constraints) {
-      return Listener(
-        onPointerMove: (_) {
-          widget.onTapBg();
-        },
-        child: ListViewObserver(
-          controller: chatController.observerController,
-          onObserve: (ListViewObserveModel model) {
-            chatController
-                .updateDisplayingChildIndexList(model.displayingChildIndexList);
+      builder: (BuildContext context, BoxConstraints constraints) {
+        return Listener(
+          // 监听手势滚动列表
+          onPointerMove: (_) {
+            widget.onTapBg();
           },
-          sliverListContexts: () {
-            return sliverListContexts;
-          },
-          child: EasyRefresh.builder(
-            childBuilder: (context, physics) {
-              return _buildListViewContent(constraints, physics);
+          child: ListViewObserver(
+            controller: chatController.observerController,
+            onObserve: (ListViewObserveModel model) {
+              chatController.updateDisplayingChildIndexList(
+                  model.displayingChildIndexList);
             },
-            footer: widget.refreshHeader ?? const MaterialFooter(),
-            controller: chatController.easyRefreshController,
-            onLoad: widget.onLoad == null ? null : _onLoad,
-            onRefresh: widget.onRefresh == null ? null : _onRefresh,
-          ),
-        ),
-      );
-    });
-  }
-
-  Widget _buildListViewContent(
-      BoxConstraints constraints, ScrollPhysics physics) {
-    bool shrinkWrap = chatController.chatObserver.isShrinkWrap;
-    if (scrollExtent != null && scrollExtent! <= screenHeight) {
-      shrinkWrap = true;
-    }
-    Widget child = ValueListenableBuilder<double?>(
-        valueListenable: _cacheExtent,
-        builder: (context, value, child) {
-          return ListView.builder(
-            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-            physics: physics.applyTo(ChatClampingScrollPhysics(
-                observer: chatController.chatObserver)),
-            padding: const EdgeInsets.only(
-              top: 15,
-              bottom: 15,
+            sliverListContexts: () {
+              return sliverListContexts;
+            },
+            child: EasyRefresh.builder(
+              controller: chatController.easyRefreshController,
+              footer: widget.refreshHeader ?? const MaterialFooter(),
+              header: widget.refreshFooter ?? const MaterialHeader(),
+              onLoad: widget.onLoad == null ? null : _onLoad,
+              onRefresh: widget.onRefresh == null ? null : _onRefresh,
+              childBuilder: (context, physics) {
+                var scrollViewPhysics =
+                    physics.applyTo(ChatObserverClampingScrollPhysics(
+                  observer: chatController.chatObserver,
+                ));
+                return ValueListenableBuilder<double?>(
+                  valueListenable: _cacheExtent,
+                  builder: (context, value, child) {
+                    Widget resultWidget = ListView.builder(
+                      padding: EdgeInsets.only(
+                        top: 15.w,
+                        bottom: 15.w,
+                      ),
+                      keyboardDismissBehavior:
+                          ScrollViewKeyboardDismissBehavior.onDrag,
+                      physics: chatController.chatObserver.isShrinkWrap
+                          ? const NeverScrollableScrollPhysics()
+                          : scrollViewPhysics,
+                      reverse: true,
+                      shrinkWrap: chatController.chatObserver.isShrinkWrap,
+                      controller: chatController.scrollController,
+                      cacheExtent: widget.cacheExtent ?? value,
+                      itemCount: dataCount,
+                      itemBuilder: ((context, index) {
+                        if (index == 0) {
+                          sliverListContexts.clear();
+                        }
+                        sliverListContexts.add(context);
+                        if (widget.onHeaderBuilder != null &&
+                            index == chatController.showedMessageList.length) {
+                          return widget.onHeaderBuilder?.call(context);
+                        }
+                        MessageCellModel cellModel =
+                            chatController.showedMessageList[index];
+                        if (widget.menuParams == null) {
+                          return widget.customMessageCellBuilder
+                              .call(context, cellModel, index);
+                        } else {
+                          return PopupMenu(
+                            backgroundColor: widget.menuParams!.backgroundColor,
+                            menuWidth: widget.menuParams!.menuWidth,
+                            menuHeight: widget.menuParams!.menuHeight,
+                            bottomMargin: widget.menuParams!.bottomHeight,
+                            pressType: widget.menuParams!.pressType,
+                            actions:
+                                widget.menuParams!.getActions.call(cellModel),
+                            buildAction: (type, removePop) => widget.menuParams!
+                                .buildAction(type, cellModel, removePop),
+                            onMenuShow: () {
+                              widget.menuParams!.onMenuShow?.call(cellModel);
+                            },
+                            onSingleTap: widget.menuParams!.onSingleTap,
+                            child: widget.customMessageCellBuilder
+                                .call(context, cellModel, index),
+                          );
+                        }
+                      }),
+                    );
+                    if (chatController.chatObserver.isShrinkWrap) {
+                      resultWidget = SingleChildScrollView(
+                        reverse: true,
+                        physics: scrollViewPhysics,
+                        child: Container(
+                          alignment: Alignment.topCenter,
+                          height: constraints.maxHeight + 0.001,
+                          child: resultWidget,
+                        ),
+                      );
+                    }
+                    return resultWidget;
+                  },
+                );
+              },
             ),
-            shrinkWrap: shrinkWrap,
-            reverse: true,
-            controller: chatController.scrollController,
-            cacheExtent: widget.cacheExtent ?? value,
-            itemBuilder: ((context, index) {
-              if (index == 0) {
-                sliverListContexts.clear();
-              }
-              sliverListContexts.add(context);
-              if (index == chatController.showedMessageList.length &&
-                  widget.onHeaderBuilder != null) {
-                return widget.onHeaderBuilder?.call(context);
-              }
-              MessageCellModel chatModel =
-                  chatController.showedMessageList[index];
-              if (widget.menuParams == null) {
-                return widget.customMessageCellBuilder
-                    .call(context, chatModel, index);
-              }
-              return WPopupMenu(
-                child: widget.customMessageCellBuilder
-                    .call(context, chatModel, index),
-                actions: widget.menuParams!.getActions.call(chatModel),
-                onMenuShow: () =>
-                    widget.menuParams!.onMenuShow?.call(chatModel),
-                onSingleTap: widget.menuParams!.onSingleTap,
-                bottomMargin: widget.menuParams!.bottomHeight,
-                pressType: widget.menuParams!.pressType,
-                backgroundColor: widget.menuParams!.backgroundColor,
-                menuWidth: widget.menuParams!.menuWidth,
-                menuHeight: widget.menuParams!.menuHeight,
-                buildAction: (type, removePop) =>
-                    widget.menuParams!.onAction(type, chatModel, removePop),
-              );
-            }),
-            itemCount: dataCount,
-          );
-        });
-    if (shrinkWrap) {
-      child = SingleChildScrollView(
-        reverse: true,
-        physics: physics,
-        child: Container(
-          alignment: Alignment.topCenter,
-          height: constraints.maxHeight + 0.001,
-          child: child,
-        ),
-      );
-    }
-    return child;
+          ),
+        );
+      },
+    );
   }
-
-  int get dataCount {
-    int h = null == widget.onHeaderBuilder ? 0 : 1;
-    return chatController.showedMessageList.length + h;
-  }
-
-  @override
-  bool get wantKeepAlive => true;
 }
