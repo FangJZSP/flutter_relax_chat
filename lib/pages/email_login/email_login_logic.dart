@@ -95,7 +95,6 @@ class EmailLoginLogic extends GetxController {
     cleanAllToast();
     if (result.ok) {
       showTipsToast('用户登录成功');
-      Get.find<RootLogic>().backToHome();
     } else {
       showTipsToast('用户或者密码错误');
     }
@@ -120,9 +119,6 @@ class EmailLoginLogic extends GetxController {
     cleanAllToast();
     if (result.ok) {
       showTipsToast('用户登录成功');
-      Get.find<RootLogic>().backToHome();
-      ConversationManager.instance.refreshConversationList();
-      ContactManager.instance.refreshFriendList();
     } else {
       showTipsToast('用户或者密码错误');
     }

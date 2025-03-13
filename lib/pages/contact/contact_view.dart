@@ -211,7 +211,6 @@ class ContactPage extends StatelessWidget {
         logic.goChat(friend);
       },
       child: Container(
-        height: 42.w,
         color: Styles.transparent,
         child: Row(
           children: [
@@ -222,6 +221,7 @@ class ContactPage extends StatelessWidget {
             SizedBox(width: 8.w),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
                   friend.name,

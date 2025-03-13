@@ -88,7 +88,7 @@ class MySocket {
       case WSRespTypeEnum.loginSuccess:
         wsModel = WSLoginSuccessModel.fromJson(wsBaseModel.res);
         net.updateTokenCallback((wsModel as WSLoginSuccessModel).token);
-        UserManager.instance.loadUserInfo();
+        UserManager.instance.loadUser();
         eventBus.fire(WSLoginSuccessEvent(wsModel));
         break;
       case WSRespTypeEnum.onlineOfflineNotify:
