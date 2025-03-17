@@ -26,18 +26,10 @@ class ChatLogic extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    state.chatInputBottomHeight.value = state.bottomMargin;
     state.chatController = ChatController(
       jumpToBottomCallback: () {},
       inputFocusNode: state.focusNode,
     );
-    state.focusNode.addListener(() {
-      if (state.focusNode.hasFocus) {
-        state.chatInputBottomHeight.value = 0;
-      } else {
-        state.chatInputBottomHeight.value = state.bottomMargin;
-      }
-    });
     state.wsMsgReceiveBus = eventBus.on<WSReceivedMsgEvent>().listen((event) {
       _onReceiveMsg(event.model);
     });

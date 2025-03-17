@@ -1,11 +1,9 @@
-import 'dart:ui';
-
+import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 
+import '../../../common/size_config.dart';
 import '../../../common/styles.dart';
 import '../../../model/widget/message_cell_model.dart';
-
-const double _kMenuScreenPadding = 0;
 
 enum PressType {
   // 长按
@@ -19,30 +17,16 @@ enum MessageActionType {
   quote,
   pin,
   translate,
+  retract,
+  delete,
 }
-
-double get screenWidth =>
-    PlatformDispatcher.instance.views.first.physicalSize.width /
-    PlatformDispatcher.instance.views.first.devicePixelRatio;
-
-double get screenHeight =>
-    PlatformDispatcher.instance.views.first.physicalSize.height /
-    PlatformDispatcher.instance.views.first.devicePixelRatio;
-
-double get statusBarHeight =>
-    PlatformDispatcher.instance.views.first.padding.top /
-    PlatformDispatcher.instance.views.first.devicePixelRatio;
-
-double get bottomPadding =>
-    PlatformDispatcher.instance.views.first.padding.bottom /
-    PlatformDispatcher.instance.views.first.devicePixelRatio;
 
 class PopupMenuParams {
   // 点击方式
   final PressType pressType;
 
   // 弹出菜单背景颜色
-  final Color backgroundColor;
+  final Color menuBgColor;
 
   // 菜单宽度
   final double menuWidth;
@@ -50,10 +34,8 @@ class PopupMenuParams {
   // 菜单长度
   final double menuHeight;
 
+  // 安全区域底部高度
   final double? bottomHeight;
-
-  // 单击
-  final Function()? onSingleTap;
 
   // 菜单展示回调
   final Function(MessageCellModel)? onMenuShow;
@@ -74,10 +56,9 @@ class PopupMenuParams {
     required this.buildAction,
     required this.bottomHeight,
     this.pressType = PressType.longPress,
-    this.backgroundColor = Styles.black,
+    this.menuBgColor = Styles.black,
     this.menuWidth = 250,
     this.menuHeight = 42,
-    this.onSingleTap,
   });
 }
 
@@ -85,10 +66,9 @@ class PopupMenu extends StatefulWidget {
   final List<MessageActionType> actions;
   final Widget child;
   final PressType pressType;
-  final Color backgroundColor;
+  final Color menuBgColor;
   final double menuWidth;
   final double menuHeight;
-  final Function()? onSingleTap;
   final Function()? onMenuShow;
   final double? bottomMargin;
   final Widget Function(MessageActionType, VoidCallback?)? buildAction;
@@ -99,10 +79,9 @@ class PopupMenu extends StatefulWidget {
     required this.onMenuShow,
     required this.bottomMargin,
     this.pressType = PressType.longPress,
-    this.backgroundColor = Colors.black,
+    this.menuBgColor = Colors.black,
     this.menuWidth = 250,
     this.menuHeight = 42,
-    this.onSingleTap,
     this.buildAction,
     super.key,
   });
@@ -112,9 +91,7 @@ class PopupMenu extends StatefulWidget {
 }
 
 class PopupMenuState extends State<PopupMenu> {
-  double? width;
-  double? height;
-  RenderBox? button;
+  RenderBox? currentBox;
   RenderBox? overlay;
   OverlayEntry? entry;
 
@@ -123,9 +100,7 @@ class PopupMenuState extends State<PopupMenu> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((call) {
       if (mounted) {
-        width = context.size?.width;
-        height = context.size?.height;
-        button = context.findRenderObject() as RenderBox;
+        currentBox = context.findRenderObject() as RenderBox;
         overlay = Overlay.of(context).context.findRenderObject() as RenderBox;
       }
     });
@@ -142,9 +117,7 @@ class PopupMenuState extends State<PopupMenu> {
     super.didUpdateWidget(oldWidget);
     WidgetsBinding.instance.addPostFrameCallback((call) {
       if (mounted) {
-        width = context.size?.width;
-        height = context.size?.height;
-        button = context.findRenderObject() as RenderBox;
+        currentBox = context.findRenderObject() as RenderBox;
         overlay = Overlay.of(context).context.findRenderObject() as RenderBox;
       }
     });
@@ -152,48 +125,38 @@ class PopupMenuState extends State<PopupMenu> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () {
-        removeOverlay();
-        return Future.value(true);
+    return GestureDetector(
+      behavior: HitTestBehavior.translucent,
+      child: widget.child,
+      onTap: () {
+        if (widget.pressType == PressType.singleClick) {
+          showPopupMenu();
+        }
       },
-      child: GestureDetector(
-        behavior: HitTestBehavior.translucent,
-        child: widget.child,
-        onTap: () {
-          if (widget.pressType == PressType.singleClick) {
-            onTap();
-          }
-          widget.onSingleTap?.call();
-        },
-        onLongPress: () {
-          if (widget.pressType == PressType.longPress) {
-            onTap();
-          }
-        },
-      ),
+      onLongPress: () {
+        if (widget.pressType == PressType.longPress) {
+          showPopupMenu();
+        }
+      },
     );
   }
 
-  void onTap() {
+  void showPopupMenu() {
     if (widget.actions.isEmpty) {
       return;
     }
-    Widget menuWidget = _MenuPopWidget(
-      context,
-      height!,
-      width!,
-      widget.backgroundColor,
-      widget.menuWidth,
-      widget.menuHeight,
-      button!,
-      overlay!,
-      widget.actions,
-      widget.bottomMargin,
-      widget.buildAction,
-      removePop: () {
-        removeOverlay();
-      },
+    Widget menuWidget = Material(
+      color: Styles.transparent,
+      child: _MenuPopWidget(
+        widget.menuBgColor,
+        currentBox!,
+        overlay!,
+        widget.actions,
+        widget.buildAction,
+        removePop: () {
+          removeOverlay();
+        },
+      ),
     );
     entry = OverlayEntry(builder: (context) {
       return menuWidget;
@@ -209,31 +172,15 @@ class PopupMenuState extends State<PopupMenu> {
 }
 
 class _MenuPopWidget extends StatefulWidget {
-  final BuildContext btnContext;
   final Color backgroundColor;
-  final double menuWidth;
-  final double menuHeight;
-  final double height;
-  final double width;
-  final RenderBox button;
+  final RenderBox currentBox;
   final RenderBox overlay;
   final List<MessageActionType> actions;
-  final double? bottomMargin;
   final Function()? removePop;
   final Widget Function(MessageActionType, VoidCallback?)? buildAction;
 
-  const _MenuPopWidget(
-      this.btnContext,
-      this.height,
-      this.width,
-      this.backgroundColor,
-      this.menuWidth,
-      this.menuHeight,
-      this.button,
-      this.overlay,
-      this.actions,
-      this.bottomMargin,
-      this.buildAction,
+  const _MenuPopWidget(this.backgroundColor, this.currentBox, this.overlay,
+      this.actions, this.buildAction,
       {this.removePop});
 
   @override
@@ -241,27 +188,21 @@ class _MenuPopWidget extends StatefulWidget {
 }
 
 class _MenuPopWidgetState extends State<_MenuPopWidget> {
-  late RelativeRect position;
+  late Offset offset;
+  late Size size;
 
   List<Widget> widgets = [];
-
-  double popWidth = 0;
 
   @override
   void initState() {
     super.initState();
-    position = RelativeRect.fromRect(
-      Rect.fromPoints(
-        widget.button.localToGlobal(Offset.zero, ancestor: widget.overlay),
-        widget.button.localToGlobal(Offset.zero, ancestor: widget.overlay),
-      ),
-      Offset.zero & widget.overlay.size,
-    );
+    offset =
+        widget.currentBox.localToGlobal(Offset.zero, ancestor: widget.overlay);
+    size = widget.currentBox.size;
 
     for (var element in widget.actions) {
       widgets.add(widget.buildAction?.call(element, widget.removePop) ??
           const SizedBox());
-      popWidth += 70;
     }
   }
 
@@ -270,189 +211,30 @@ class _MenuPopWidgetState extends State<_MenuPopWidget> {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: widget.removePop,
-      child: MediaQuery.removePadding(
-        context: context,
-        removeTop: true,
-        removeBottom: true,
-        removeLeft: true,
-        removeRight: true,
-        child: Builder(
-          builder: (BuildContext context) {
-            bool isInverted = (position.top +
-                    (MediaQuery.of(context).size.height -
-                            position.top -
-                            position.bottom) /
-                        2.0 -
-                    widget.menuHeight) <=
-                2 * widget.menuHeight;
-
-            if (isInverted &&
-                position.top + widget.height >
-                    MediaQuery.of(context).size.height -
-                        (widget.bottomMargin ?? 0)) {
-              isInverted = false;
-            }
-
-            return CustomSingleChildLayout(
-              // 这里计算偏移量
-              delegate: _PopupMenuRouteLayout(
-                  position,
-                  widget.menuHeight,
-                  Directionality.of(widget.btnContext),
-                  widget.width,
-                  popWidth,
-                  widget.height,
-                  widget.bottomMargin),
-              child: SizedBox(
-                height: widget.menuHeight,
-                width: popWidth,
-                child: Container(
-                  color: widget.backgroundColor,
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: widgets,
-                  ),
-                ),
-              ),
-            );
-          },
+      child: Stack(alignment: Alignment.topCenter, children: [
+        Container(
+          width: SizeConfig.screenWidth,
+          height: SizeConfig.screenWidth,
+          color: Styles.transparent,
         ),
-      ),
+        Positioned(
+          bottom: SizeConfig.screenHeight - offset.dy - 10.w,
+          child: FadeIn(
+            duration: const Duration(milliseconds: 200),
+            child: Container(
+              padding: EdgeInsets.all(8.w),
+              decoration: BoxDecoration(
+                  color: widget.backgroundColor,
+                  borderRadius: BorderRadius.circular(4.w)),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [...widgets],
+              ),
+            ),
+          ),
+        ),
+      ]),
     );
-  }
-}
-
-// Positioning of the menu on the screen.
-class _PopupMenuRouteLayout extends SingleChildLayoutDelegate {
-  _PopupMenuRouteLayout(
-      this.position,
-      this.selectedItemOffset,
-      this.textDirection,
-      this.width,
-      this.menuWidth,
-      this.height,
-      this.bottomMargin);
-
-  // Rectangle of underlying button, relative to the overlay's dimensions.
-  final RelativeRect position;
-
-  // The distance from the top of the menu to the middle of selected item.
-  //
-  // This will be null if there's no item to position in this way.
-  final double? selectedItemOffset;
-
-  // Whether to prefer going to the left or to the right.
-  final TextDirection textDirection;
-
-  final double width;
-  final double height;
-  final double menuWidth;
-
-  final double? bottomMargin;
-
-  // We put the child wherever position specifies, so long as it will fit within
-  // the specified parent size padded (inset) by 8. If necessary, we adjust the
-  // child's position so that it fits.
-
-  @override
-  BoxConstraints getConstraintsForChild(BoxConstraints constraints) {
-    // The menu can be at most the size of the overlay minus 8.0 pixels in each
-    // direction.
-    Offset offset =
-        const Offset(_kMenuScreenPadding * 2.0, _kMenuScreenPadding * 2.0);
-    return BoxConstraints.loose(Size(constraints.biggest.width - offset.dx,
-        constraints.biggest.height - offset.dy));
-  }
-
-  @override
-  Offset getPositionForChild(Size size, Size childSize) {
-    // size: The size of the overlay.
-    // childSize: The size of the menu, when fully open, as determined by
-    // getConstraintsForChild.
-
-    // Find the ideal vertical position.
-    double y;
-    if (selectedItemOffset == null) {
-      y = position.top;
-    } else {
-      y = position.top +
-          (size.height - position.top - position.bottom) / 2.0 -
-          selectedItemOffset!;
-    }
-
-    // Find the ideal horizontal position.
-    double x;
-
-    // 如果menu 的宽度 小于 child 的宽度，则直接把menu 放在 child 中间
-    if (childSize.width < width) {
-      x = position.left + (width - childSize.width) / 2;
-    } else {
-      // 如果靠右
-      if (position.left > size.width - (position.left + width)) {
-        if (size.width - (position.left + width) >
-            childSize.width / 2 + _kMenuScreenPadding) {
-          x = position.left - (childSize.width - width) / 2;
-        } else {
-          x = position.left + width - childSize.width;
-        }
-      } else if (position.left < size.width - (position.left + width)) {
-        if (position.left > childSize.width / 2 + _kMenuScreenPadding) {
-          x = position.left - (childSize.width - width) / 2;
-        } else {
-          x = position.left;
-        }
-      } else {
-        x = position.right - width / 2 - childSize.width / 2;
-      }
-    }
-
-    bool isInverted = (position.top +
-            (size.height - position.top - position.bottom) / 2.0 -
-            childSize.height) <=
-        2 * childSize.height;
-
-    if (isInverted &&
-        position.top + height > size.height - (bottomMargin ?? 0)) {
-      isInverted = false;
-    }
-
-    if (position.top > statusBarHeight + 44 &&
-        (height + position.top) > size.height) {
-      isInverted = false;
-    }
-
-    if (y < _kMenuScreenPadding + statusBarHeight + 44) {
-      if (position.top + height >
-          size.height - (bottomMargin ?? 0) - _kMenuScreenPadding) {
-        y = (position.top + position.bottom) / 2 - childSize.height;
-      } else {
-        y = position.top + height;
-      }
-    } else if (y + childSize.height >
-        size.height - (bottomMargin ?? 0) - _kMenuScreenPadding) {
-      if (position.top + childSize.height > 0) {
-        y = _kMenuScreenPadding + statusBarHeight + 44;
-      } else {
-        y = size.height - (bottomMargin ?? 0) - childSize.height;
-      }
-    } else if (y < childSize.height * 2) {
-      y = position.top + height;
-      if (y < _kMenuScreenPadding + statusBarHeight + 44) {
-        y = _kMenuScreenPadding + statusBarHeight + 44;
-      } else if (position.top + childSize.height >
-              _kMenuScreenPadding + statusBarHeight + 44 &&
-          !isInverted) {
-        y = position.top - childSize.height;
-      } else if (y + childSize.height > size.height - _kMenuScreenPadding) {
-        y = size.height - childSize.height;
-      }
-    }
-    return Offset(x, y);
-  }
-
-  @override
-  bool shouldRelayout(_PopupMenuRouteLayout oldDelegate) {
-    return position != oldDelegate.position;
   }
 }

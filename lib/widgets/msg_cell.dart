@@ -81,7 +81,7 @@ class _MsgCellState extends State<MsgCell> {
 
   Widget sendMsgCell() {
     return Container(
-      padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+      padding: EdgeInsets.fromLTRB(10.w, 10.w, 10.w, 0),
       color: Colors.transparent,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -92,17 +92,15 @@ class _MsgCellState extends State<MsgCell> {
             children: [
               Text(
                 '${_cell.messageModel.msg.senderName}(${_cell.messageModel.msg.senderId})',
-                style: Styles.textNormal(10).copyWith(color: Styles.greyText),
+                style: Styles.textNormal(10.w).copyWith(color: Styles.greyText),
               ),
-              const SizedBox(
-                height: 4,
-              ),
+              SizedBox(height: 4.w),
               Stack(
                 clipBehavior: Clip.none,
                 children: [
                   Container(
-                    constraints: const BoxConstraints(
-                      maxWidth: 264,
+                    constraints: BoxConstraints(
+                      maxWidth: 264.w,
                     ),
                     decoration: const BoxDecoration(
                       borderRadius: BorderRadius.all(Radius.circular(4)),
@@ -113,7 +111,7 @@ class _MsgCellState extends State<MsgCell> {
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        if (_cell.messageModel.msg.reply.id != 0)
+                        if (_cell.messageModel.msg.reply.id > 0)
                           Padding(
                             padding: const EdgeInsets.only(bottom: 4.0),
                             child: Text(
@@ -126,8 +124,7 @@ class _MsgCellState extends State<MsgCell> {
                         Text(
                           _cell.messageModel.msg.body.content,
                           style: Styles.textNormal(14)
-                              .copyWith(color: Styles.black),
-                          overflow: TextOverflow.fade,
+                              .copyWith(color: Styles.blackText),
                         ),
                       ],
                     ),
@@ -141,11 +138,9 @@ class _MsgCellState extends State<MsgCell> {
               ),
             ],
           ),
-          const SizedBox(
-            width: 8,
-          ),
+          SizedBox(width: 8.w),
           RoundAvatar(
-            height: 35,
+            height: 35.w,
             url: _cell.messageModel.msg.senderAvatar,
             borderDecoration: BoxDecoration(
                 shape: BoxShape.circle,
@@ -160,13 +155,13 @@ class _MsgCellState extends State<MsgCell> {
 
   Widget receiveMsgCell() {
     return Container(
-      padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+      padding: EdgeInsets.fromLTRB(10.w, 10.w, 10.w, 0),
       color: Colors.transparent,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           RoundAvatar(
-            height: 35,
+            height: 35.w,
             url: _cell.messageModel.msg.senderAvatar,
             borderDecoration: BoxDecoration(
                 shape: BoxShape.circle,
@@ -174,47 +169,46 @@ class _MsgCellState extends State<MsgCell> {
                   color: Styles.grey.withOpacity(.1),
                 )),
           ),
-          const SizedBox(
-            width: 8,
+          SizedBox(
+            width: 8.w,
           ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 _cell.messageModel.msg.senderName,
-                style: Styles.textNormal(10).copyWith(color: Styles.greyText),
+                style: Styles.textNormal(10.w).copyWith(color: Styles.greyText),
               ),
               const SizedBox(
                 height: 4,
               ),
               Container(
-                constraints: const BoxConstraints(
-                  maxWidth: 264,
+                constraints: BoxConstraints(
+                  maxWidth: 264.w,
                 ),
                 decoration: const BoxDecoration(
                   borderRadius: BorderRadius.all(Radius.circular(4)),
                   color: Styles.receiveBubbleColor,
                 ),
-                padding: const EdgeInsets.all(10),
+                padding: EdgeInsets.all(10.w),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    if (_cell.messageModel.msg.reply.id != 0)
+                    if (_cell.messageModel.msg.reply.id > 0)
                       Padding(
                         padding: const EdgeInsets.only(bottom: 4.0),
                         child: Text(
                           '| ${_cell.messageModel.msg.reply.username}: ${_cell.messageModel.msg.reply.body}',
-                          style: Styles.textNormal(14)
+                          style: Styles.textNormal(14.w)
                               .copyWith(color: Styles.grey),
                           overflow: TextOverflow.fade,
                         ),
                       ),
                     Text(
                       _cell.messageModel.msg.body.content,
-                      style:
-                          Styles.textNormal(14).copyWith(color: Styles.black),
-                      overflow: TextOverflow.fade,
+                      style: Styles.textNormal(14.w)
+                          .copyWith(color: Styles.blackText),
                     ),
                   ],
                 ),

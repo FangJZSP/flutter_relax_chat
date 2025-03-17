@@ -23,8 +23,6 @@ class ChatState {
 
   RxList<WSMessageModel> messages = RxList<WSMessageModel>.empty();
 
-  final double bottomMargin = SizeConfig.bottomMargin;
-
   RxDouble chatInputBottomHeight = 0.0.obs;
 
   String? cursor;
