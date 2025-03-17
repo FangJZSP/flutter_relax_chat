@@ -17,8 +17,8 @@ class WSLoginSuccessEvent {
   WSLoginSuccessEvent(this.model);
 }
 
-class UpdateRoomListEvent {
-  UpdateRoomListEvent();
+class UpdateConversationListEvent {
+  UpdateConversationListEvent();
 }
 
 class BackToRouteEvent {

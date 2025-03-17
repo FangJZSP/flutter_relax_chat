@@ -3,7 +3,7 @@ import '../../user_manager.dart';
 import '../base/base_box.dart';
 import '../base/base_dao.dart';
 
-class UserBoxDao extends BaseDao {
+class UserBoxDao implements BaseDao {
   static UserBoxDao get instance => _instance ??= UserBoxDao._();
   static UserBoxDao? _instance;
 

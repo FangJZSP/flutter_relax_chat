@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:get/get.dart';
 
 import '../../../model/cache_file_model.dart';
@@ -5,7 +7,7 @@ import '../base/base_box.dart';
 import '../base/base_dao.dart';
 
 /// 缓存文件管理
-class CacheFileBoxDao extends BaseDao {
+class CacheFileBoxDao implements BaseDao {
   static CacheFileBoxDao get instance => _instance ??= CacheFileBoxDao._();
   static CacheFileBoxDao? _instance;
 

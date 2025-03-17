@@ -7,7 +7,9 @@ import '../../log_manager.dart';
 
 class BaseBox<T> {
   final String boxName;
+
   final T Function(Map<String, dynamic> json)? fromJson;
+
   final Map<String, dynamic> Function(T model)? toJson;
 
   BaseBox(this.boxName, this.fromJson, this.toJson);

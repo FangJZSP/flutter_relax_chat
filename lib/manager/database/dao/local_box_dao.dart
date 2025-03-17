@@ -1,7 +1,7 @@
 import '../base/base_box.dart';
 import '../base/base_dao.dart';
 
-class LocalBoxDao extends BaseDao {
+class LocalBoxDao implements BaseDao {
   static LocalBoxDao get instance => _instance ??= LocalBoxDao._();
   static LocalBoxDao? _instance;
 

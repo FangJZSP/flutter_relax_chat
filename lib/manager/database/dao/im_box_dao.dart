@@ -8,7 +8,7 @@ import '../../log_manager.dart';
 import '../base/base_box.dart';
 import '../base/base_dao.dart';
 
-class ImBoxDao extends BaseDao {
+class ImBoxDao implements BaseDao {
   static ImBoxDao get instance => _instance ??= ImBoxDao._();
   static ImBoxDao? _instance;
 
@@ -18,7 +18,7 @@ class ImBoxDao extends BaseDao {
   BaseBox<WSMessageModel>? messageBox;
 
   /// 会话盒子
-  BaseBox<ConversationModel>? roomBox;
+  BaseBox<ConversationModel>? conversationBox;
 
   /// 未读消息总数
   final RxInt unreadMessageCount = 0.obs;
@@ -30,7 +30,7 @@ class ImBoxDao extends BaseDao {
   final RxList<ConversationModel> unreadRoomList = RxList.empty();
 
   /// 会话列表
-  final List<ConversationModel> _rooms = [];
+  final List<ConversationModel> _conversations = [];
 
   /// 己方发出的消息，需要展示接收状态和已读状态，但服务器数据有一段时间的延迟，
   /// 可能有些消息对方已读了，但服务器会返回该消息未送达。为了更准确的显示消息状态，
@@ -39,14 +39,14 @@ class ImBoxDao extends BaseDao {
   final Map<String, WSMessageModel> _succeedSentMsg = {};
 
   /// 当前用户uid
-  int _myUid = 0;
+  int myUid = 0;
 
   /// 本地缓存读取会话列表
   /// 远端更新时，及时刷新本地会话列表
-  List<ConversationModel> get rooms {
+  List<ConversationModel> get conversations {
     List<ConversationModel> list = [];
-    for (var element in _rooms) {
-      var cacheModel = roomBox?.get(element.roomId.toString());
+    for (var element in _conversations) {
+      var cacheModel = conversationBox?.get(element.roomId.toString());
       if (cacheModel != null) {
         list.add(cacheModel);
       }
@@ -55,48 +55,49 @@ class ImBoxDao extends BaseDao {
   }
 
   /// 处理远端拉取到的会话列表
-  Future<void> handleRemoteRooms() async {
+  Future<void> handleRemoteConversations() async {
     logger.d('处理');
   }
 
   Future<void> deleteConversation(ConversationModel room) async {
-    _rooms.removeWhere((element) => element.roomId == room.roomId);
-    await roomBox?.delete(room.roomId.toString());
+    _conversations.removeWhere((element) => element.roomId == room.roomId);
+    await conversationBox?.delete(room.roomId.toString());
     _updateUnreadMessageCount();
     _updateUnreadRoomCount();
-    eventBus.fire(UpdateRoomListEvent());
+    eventBus.fire(UpdateConversationListEvent());
   }
 
   /// 保存会话 并根据最后一条消息更新会话顺序
   Future saveConversation(ConversationModel room) async {
-    await roomBox?.set(room.roomId.toString(), room);
-    _rooms.add(room);
+    await conversationBox?.set(room.roomId.toString(), room);
+    _conversations.add(room);
     // todo 根据会话的最后一条消息的时间更新会话顺序
     _updateUnreadMessageCount();
     _updateUnreadRoomCount();
-    eventBus.fire(UpdateRoomListEvent());
+    eventBus.fire(UpdateConversationListEvent());
   }
 
-  void setRoomRead(int roomId) {
+  void setConversationRead(int roomId) {
     List<WSMessageModel>? receivedMessages = messageBox?.getList(
         where: (e) => e.msg.roomId == roomId && !e.senderIsMe);
     receivedMessages?.forEach((element) {
       messageBox?.delete(element.msg.roomId.toString());
     });
-    var room = getRoom(roomId);
+    var room = getConversation(roomId);
     if (room != null) {
       // room.didRead = true;
       // room.lastMessage?.chatMarker = ChatMarkerType.displayed.code;
-      roomBox?.set(roomId.toString(), room);
+      conversationBox?.set(roomId.toString(), room);
       _updateUnreadMessageCount();
       _updateUnreadRoomCount();
-      eventBus.fire(UpdateRoomListEvent());
+      eventBus.fire(UpdateConversationListEvent());
     }
   }
 
-  ConversationModel? getRoom(int roomId) {
-    var cacheConversation = _rooms.firstWhereOrNull((e) => e.roomId == roomId);
-    return cacheConversation ?? roomBox?.get(roomId.toString());
+  ConversationModel? getConversation(int roomId) {
+    var cacheConversation =
+        _conversations.firstWhereOrNull((e) => e.roomId == roomId);
+    return cacheConversation ?? conversationBox?.get(roomId.toString());
   }
 
   WSMessageModel? getMessage(String messageId) {
@@ -118,7 +119,7 @@ class ImBoxDao extends BaseDao {
     int unreadCount = 0;
     // ws 未连接时
     var cacheMessages =
-        messageBox?.getList(where: (e) => e.msg.senderId != _myUid);
+        messageBox?.getList(where: (e) => e.msg.senderId != myUid);
     cacheMessages?.forEach((element) {
       // 设置消息已读
     });
@@ -129,7 +130,7 @@ class ImBoxDao extends BaseDao {
 
   @override
   Future<void> init() async {
-    _myUid = UserManager.instance.state.user.value.uid;
+    myUid = UserManager.instance.state.user.value.uid;
     messageBox = BaseBox<WSMessageModel>(
       '${UserManager.instance.state.user.value.uid}_messageBox',
       WSMessageModel.fromJson,
@@ -137,23 +138,23 @@ class ImBoxDao extends BaseDao {
     );
     await messageBox?.initBox();
 
-    roomBox = BaseBox<ConversationModel>(
+    conversationBox = BaseBox<ConversationModel>(
       '${UserManager.instance.state.user.value.uid}_roomBox',
       ConversationModel.fromJson,
       (model) => model.toJson(),
     );
-    await roomBox?.initBox();
+    await conversationBox?.initBox();
     _updateUnreadMessageCount();
     _updateUnreadRoomCount();
   }
 
   @override
   Future<void> close() async {
-    _myUid = 0;
+    myUid = 0;
     unreadMessageCount.value = 0;
-    _rooms.clear();
+    _conversations.clear();
     _succeedSentMsg.clear();
     await messageBox?.closeBox();
-    await roomBox?.closeBox();
+    await conversationBox?.closeBox();
   }
 }
