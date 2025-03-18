@@ -113,7 +113,7 @@ class ChatPage extends StatelessWidget {
     return Container(
       margin: EdgeInsets.fromLTRB(16.w, 0, 16.w, 4.w),
       color: Styles.appBarColor.withOpacity(0.5),
-      height: 44.w,
+      height: SizeConfig.navBarHeight,
       child: Row(
         children: [
           IconButton(

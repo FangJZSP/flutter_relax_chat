@@ -28,4 +28,12 @@ class HomeLogic extends GetxController {
       } else if (tabIndex == HomeSubPage.contactPage.tab) {}
     }
   }
+
+  void openDrawer() {
+    state.scaleFoldKey.currentState?.openDrawer();
+  }
+
+  void closeDrawer() {
+    state.scaleFoldKey.currentState?.closeDrawer();
+  }
 }

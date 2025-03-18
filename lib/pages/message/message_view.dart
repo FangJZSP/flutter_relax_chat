@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -38,65 +39,72 @@ class MessagePage extends StatelessWidget {
             },
           ),
         ),
-        GestureDetector(
-          onTap: () {
-            Clipboard.setData(ClipboardData(text: net.token));
-            showTipsToast('token复制成功：${net.token}');
-          },
-          child: Text(
-            '当前用户token: ${net.token}',
-            style: Styles.textLight(10).copyWith(color: Styles.normalBlue),
-          ),
-        ),
-        Text(
-          '当前连接ws url: ${GlobalManager.instance.state.isDev ? Info.websocketDevUrl : Info.websocketProdUrl}',
-          style: Styles.textLight(10).copyWith(color: Styles.normalBlue),
-        ),
       ],
     );
   }
 
   Widget appBar() {
     return Container(
-      margin: EdgeInsets.fromLTRB(16.w, SizeConfig.topMargin, 16.w, 4.w),
-      color: Styles.appBarColor.withOpacity(0.5),
-      height: 44.w,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
+      margin: EdgeInsets.fromLTRB(0, SizeConfig.topMargin, 0, 0),
+      height: SizeConfig.navBarHeight,
+      decoration: BoxDecoration(
+        color: Styles.appBarColor.withOpacity(0.5),
+      ),
+      child: Column(
         children: [
-          Obx(() {
-            return RoundAvatar(
-              height: 28.w,
-              url: UserManager.instance.state.user.value.avatar,
-            );
-          }),
-          SizedBox(width: 8.w),
-          Obx(() {
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  UserManager.instance.state.user.value.name.isNotEmpty
-                      ? UserManager.instance.state.user.value.name
-                      : '无',
-                  style:
-                      Styles.textNormal(14.w).copyWith(color: Styles.blackText),
-                ),
-                Obx(() {
-                  return Text(
-                    SocketManager.instance.didConnect.value ? '在线>' : '离线>',
-                    style: Styles.textNormal(8.w)
-                        .copyWith(color: Styles.blackText),
-                  );
-                }),
-              ],
-            );
-          }),
-          const Spacer(),
-          Icon(
-            Icons.add_sharp,
-            size: 24.w,
+          Expanded(
+            child: Padding(
+              padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Obx(() {
+                    return GestureDetector(
+                      onTap: logic.openDrawer,
+                      child: RoundAvatar(
+                        height: 28.w,
+                        url: UserManager.instance.state.user.value.avatar,
+                      ),
+                    );
+                  }),
+                  SizedBox(width: 8.w),
+                  Obx(() {
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          UserManager.instance.state.user.value.name.isNotEmpty
+                              ? UserManager.instance.state.user.value.name
+                              : '无',
+                          style: Styles.textNormal(14.w)
+                              .copyWith(color: Styles.blackText),
+                        ),
+                        Obx(() {
+                          return Text(
+                            SocketManager.instance.didConnect.value
+                                ? '在线>'
+                                : '离线>',
+                            style: Styles.textNormal(8.w)
+                                .copyWith(color: Styles.blackText),
+                          );
+                        }),
+                      ],
+                    );
+                  }),
+                  const Spacer(),
+                  Icon(
+                    Icons.add_sharp,
+                    size: 24.w,
+                  ),
+                ],
+              ),
+            ),
+          ),
+          Divider(
+            color: Styles.grey.withOpacity(0.1),
+            height: 1,
+            thickness: 1,
           ),
         ],
       ),

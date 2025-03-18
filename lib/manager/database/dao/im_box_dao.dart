@@ -63,7 +63,7 @@ class ImBoxDao implements BaseDao {
     _conversations.removeWhere((element) => element.roomId == room.roomId);
     await conversationBox?.delete(room.roomId.toString());
     _updateUnreadMessageCount();
-    _updateUnreadRoomCount();
+    _updateUnreadConversationCount();
     eventBus.fire(UpdateConversationListEvent());
   }
 
@@ -73,7 +73,7 @@ class ImBoxDao implements BaseDao {
     _conversations.add(room);
     // todo 根据会话的最后一条消息的时间更新会话顺序
     _updateUnreadMessageCount();
-    _updateUnreadRoomCount();
+    _updateUnreadConversationCount();
     eventBus.fire(UpdateConversationListEvent());
   }
 
@@ -89,7 +89,7 @@ class ImBoxDao implements BaseDao {
       // room.lastMessage?.chatMarker = ChatMarkerType.displayed.code;
       conversationBox?.set(roomId.toString(), room);
       _updateUnreadMessageCount();
-      _updateUnreadRoomCount();
+      _updateUnreadConversationCount();
       eventBus.fire(UpdateConversationListEvent());
     }
   }
@@ -126,7 +126,7 @@ class ImBoxDao implements BaseDao {
     unreadMessageCount.value = unreadCount;
   }
 
-  Future<void> _updateUnreadRoomCount() async {}
+  Future<void> _updateUnreadConversationCount() async {}
 
   @override
   Future<void> init() async {
@@ -139,13 +139,13 @@ class ImBoxDao implements BaseDao {
     await messageBox?.initBox();
 
     conversationBox = BaseBox<ConversationModel>(
-      '${UserManager.instance.state.user.value.uid}_roomBox',
+      '${UserManager.instance.state.user.value.uid}_conversationBox',
       ConversationModel.fromJson,
       (model) => model.toJson(),
     );
     await conversationBox?.initBox();
     _updateUnreadMessageCount();
-    _updateUnreadRoomCount();
+    _updateUnreadConversationCount();
   }
 
   @override

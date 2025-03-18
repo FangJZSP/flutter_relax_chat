@@ -87,7 +87,7 @@ class _ChatInputState extends State<ChatInput> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 44.w,
+      height: SizeConfig.navBarHeight,
       decoration: BoxDecoration(
         color: widget.bgColor ?? Styles.white,
         borderRadius: BorderRadius.circular(4.w),

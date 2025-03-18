@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:easy_refresh/easy_refresh.dart';
@@ -35,26 +36,41 @@ class ContactPage extends StatelessWidget {
 
   Widget appBar() {
     return Container(
-      margin: EdgeInsets.fromLTRB(16.w, SizeConfig.topMargin, 16.w, 4.w),
-      height: 44.w,
+      margin: EdgeInsets.fromLTRB(0, SizeConfig.topMargin, 0, 0),
+      height: SizeConfig.navBarHeight,
       color: Styles.appBarColor.withOpacity(0.5),
-      child: Row(
+      child: Column(
         children: [
-          Obx(() {
-            return RoundAvatar(
-              height: 28.w,
-              url: UserManager.instance.state.user.value.avatar,
-            );
-          }),
-          SizedBox(width: 8.w),
-          Text(
-            '联系人',
-            style: Styles.textNormal(18.w).copyWith(color: Styles.blackText),
+          Expanded(
+            child: Padding(
+              padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 4.w),
+              child: Row(
+                children: [
+                  Obx(() {
+                    return RoundAvatar(
+                      height: 28.w,
+                      url: UserManager.instance.state.user.value.avatar,
+                    );
+                  }),
+                  SizedBox(width: 8.w),
+                  Text(
+                    '联系人',
+                    style: Styles.textNormal(18.w)
+                        .copyWith(color: Styles.blackText),
+                  ),
+                  const Spacer(),
+                  Icon(
+                    Icons.person_add_alt,
+                    size: 24.w,
+                  ),
+                ],
+              ),
+            ),
           ),
-          const Spacer(),
-          Icon(
-            Icons.person_add_alt,
-            size: 24.w,
+          Divider(
+            color: Styles.grey.withOpacity(0.1),
+            height: 1,
+            thickness: 1,
           ),
         ],
       ),

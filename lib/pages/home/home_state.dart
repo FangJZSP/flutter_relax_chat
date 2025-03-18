@@ -5,7 +5,6 @@ import 'package:get/get.dart';
 import 'package:relax_chat/pages/message/message_view.dart';
 import '../../common/common.dart';
 import '../contact/contact_view.dart';
-import '../me/me_view.dart';
 
 enum HomeSubPage {
   messagePage(1),
@@ -22,6 +21,8 @@ class HomeState {
   RxInt lastTabIndex = 0.obs;
 
   StreamSubscription? backToRouteEventBus;
+
+  GlobalKey<ScaffoldState> scaleFoldKey = GlobalKey();
 
   List<Widget> pages = <Widget>[
     MessagePage(),

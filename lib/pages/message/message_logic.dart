@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:relax_chat/model/conversation_model.dart';
 import 'package:relax_chat/pages/chat/chat_state.dart';
+import 'package:relax_chat/pages/home/home_logic.dart';
 import '../../route/routes.dart';
 import 'message_state.dart';
 
@@ -31,5 +32,9 @@ class MessageLogic extends GetxController {
         .firstWhereOrNull((element) => element.roomId == roomId)
         ?.unreadMsgCount = 0;
     update();
+  }
+
+  void openDrawer() {
+    Get.find<HomeLogic>().openDrawer();
   }
 }
