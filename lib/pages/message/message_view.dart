@@ -1,17 +1,12 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:relax_chat/helper/time_helper.dart';
-import 'package:relax_chat/helper/toast_helper.dart';
 import 'package:relax_chat/manager/socket/socket_manager.dart';
 import 'package:relax_chat/manager/user_manager.dart';
 import 'package:relax_chat/model/conversation_model.dart';
+import 'package:relax_chat/widgets/base/base_app_bar.dart';
 import 'package:relax_chat/widgets/image/round_avatar.dart';
-
 import '../../common/common.dart';
-import '../../manager/global_manager.dart';
-import '../../network/net_request.dart';
 import 'message_logic.dart';
 import 'package:badges/badges.dart' as badges;
 
@@ -44,69 +39,51 @@ class MessagePage extends StatelessWidget {
   }
 
   Widget appBar() {
-    return Container(
-      margin: EdgeInsets.fromLTRB(0, SizeConfig.topMargin, 0, 0),
-      height: SizeConfig.navBarHeight,
-      decoration: BoxDecoration(
-        color: Styles.appBarColor.withOpacity(0.5),
-      ),
-      child: Column(
-        children: [
-          Expanded(
-            child: Padding(
-              padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 0),
-              child: Row(
+    return BaseAppBar(
+      child: Padding(
+        padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Obx(() {
+              return GestureDetector(
+                onTap: logic.openDrawer,
+                child: RoundAvatar(
+                  height: 28.w,
+                  url: UserManager.instance.state.user.value.avatar,
+                ),
+              );
+            }),
+            SizedBox(width: 8.w),
+            Obx(() {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Obx(() {
-                    return GestureDetector(
-                      onTap: logic.openDrawer,
-                      child: RoundAvatar(
-                        height: 28.w,
-                        url: UserManager.instance.state.user.value.avatar,
-                      ),
-                    );
-                  }),
-                  SizedBox(width: 8.w),
-                  Obx(() {
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          UserManager.instance.state.user.value.name.isNotEmpty
-                              ? UserManager.instance.state.user.value.name
-                              : '无',
-                          style: Styles.textNormal(14.w)
-                              .copyWith(color: Styles.blackText),
-                        ),
-                        Obx(() {
-                          return Text(
-                            SocketManager.instance.didConnect.value
-                                ? '在线>'
-                                : '离线>',
-                            style: Styles.textNormal(8.w)
-                                .copyWith(color: Styles.blackText),
-                          );
-                        }),
-                      ],
-                    );
-                  }),
-                  const Spacer(),
-                  Icon(
-                    Icons.add_sharp,
-                    size: 24.w,
+                  Text(
+                    UserManager.instance.state.user.value.name.isNotEmpty
+                        ? UserManager.instance.state.user.value.name
+                        : '无',
+                    style: Styles.textNormal(14.w)
+                        .copyWith(color: Styles.blackText),
                   ),
+                  Obx(() {
+                    return Text(
+                      SocketManager.instance.didConnect.value ? '在线>' : '离线>',
+                      style: Styles.textNormal(8.w)
+                          .copyWith(color: Styles.blackText),
+                    );
+                  }),
                 ],
-              ),
+              );
+            }),
+            const Spacer(),
+            Icon(
+              Icons.add_sharp,
+              size: 24.w,
             ),
-          ),
-          Divider(
-            color: Styles.grey.withOpacity(0.1),
-            height: 1,
-            thickness: 1,
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

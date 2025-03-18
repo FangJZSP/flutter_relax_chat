@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:relax_chat/common/size_config.dart';
+import 'package:relax_chat/widgets/base/base_app_bar.dart';
 
 import '../../common/styles.dart';
 
@@ -110,10 +111,8 @@ class ChatPage extends StatelessWidget {
   }
 
   Widget headBuilder(BuildContext ctx) {
-    return Container(
-      margin: EdgeInsets.fromLTRB(16.w, 0, 16.w, 4.w),
-      color: Styles.appBarColor.withOpacity(0.5),
-      height: SizeConfig.navBarHeight,
+    return BaseAppBar(
+      needTopMargin: false,
       child: Row(
         children: [
           IconButton(
