@@ -1,4 +1,5 @@
 import 'package:bot_toast/bot_toast.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:relax_chat/manager/global_manager.dart';
 
@@ -15,17 +16,13 @@ void showLoadingToast({double? opacity}) {
   if (!GlobalManager.instance.state.allowFirstFrame) {
     return;
   }
-  var alpha = 0.1;
-  if (opacity != null) {
-    alpha = opacity;
-  }
   cleanAllToast();
   BotToast.showCustomLoading(
     toastBuilder: (CancelFunc cancelFunc) => Container(
-      color: Styles.lightBlue.withOpacity(alpha),
+      color: Styles.lightBlue.withOpacity(opacity ?? 0.1),
       alignment: Alignment.center,
-      child: const CircularProgressIndicator(
-        strokeWidth: 2,
+      child: CircularProgressIndicator(
+        strokeWidth: 2.w,
       ),
     ),
     duration: const Duration(days: 1),
@@ -34,10 +31,10 @@ void showLoadingToast({double? opacity}) {
 
 void showTipsToast(
   String string, {
-  double? durationTime,
+  int? durationTime,
   Alignment? alignment = Alignment.center,
   Color? bgColor,
-  VoidCallback? onDismiss,
+  VoidCallback? onClose,
   String iconName = '',
   TextStyle? textStyle,
   double? opacity,
@@ -47,41 +44,36 @@ void showTipsToast(
   if (!GlobalManager.instance.state.allowFirstFrame) {
     return;
   }
-  int time = 1500;
-  if (durationTime != null) {
-    time = int.parse((durationTime * 1000).toStringAsFixed(0));
-  }
   cleanAllToast();
   BotToast.showCustomNotification(
+    align: alignment,
+    duration: Duration(milliseconds: durationTime ?? 1500),
+    onlyOne: true,
+    onClose: onClose,
     toastBuilder: (CancelFunc cancelFunc) => Card(
       margin: const EdgeInsets.fromLTRB(20, 0, 20, 0),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(borderRadius ?? 8),
       ),
-      color: bgColor ?? Styles.confirmedBtnColor,
+      color: bgColor ?? Styles.deepBlue,
       child: Container(
-        decoration: const BoxDecoration(
-          color: Styles.transparent,
-        ),
-        padding: const EdgeInsets.all(
-          10,
-        ),
+        padding: EdgeInsets.all(10.w),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: [
             const Icon(
-              Icons.error_outline,
+              Icons.tips_and_updates_outlined,
               color: Styles.white,
             ),
             const SizedBox(
               width: 10,
             ),
-            Flexible(
+            Expanded(
               child: Text(
                 string,
                 textAlign: textAlign,
-                style: textStyle ?? Styles.textNormal(14),
+                style: textStyle ?? Styles.textNormal(14.w),
                 maxLines: 10,
               ),
             ),
@@ -89,9 +81,5 @@ void showTipsToast(
         ),
       ),
     ),
-    align: alignment,
-    duration: Duration(milliseconds: time),
-    onlyOne: true,
-    onClose: onDismiss,
   );
 }

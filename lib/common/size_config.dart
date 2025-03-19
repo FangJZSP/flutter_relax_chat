@@ -17,7 +17,11 @@ class SizeConfig {
 
   static double get bottomMargin => view.padding.bottom / view.devicePixelRatio;
 
+  /// 导航栏高度
   static double get navBarHeight => 48.w;
+
+  /// 内容边距
+  static double get bodyPadding => 16.w;
 
   static bool get isPad => SizeConfig.screenWidth > 700;
 

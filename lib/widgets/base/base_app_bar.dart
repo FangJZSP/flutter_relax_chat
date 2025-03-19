@@ -12,7 +12,7 @@ class BaseAppBar extends StatelessWidget {
     return Container(
       margin: EdgeInsets.only(top: needTopMargin ? SizeConfig.topMargin : 0),
       height: SizeConfig.navBarHeight,
-      color: Styles.appBarColor.withOpacity(0.5),
+      color: Styles.appBarColor,
       child: Column(
         children: [
           Expanded(

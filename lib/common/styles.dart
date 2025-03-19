@@ -32,9 +32,9 @@ class Styles {
   static const Color confirmedBtnColor = Color.fromRGBO(20, 60, 154, 1);
 
   /// 字体
-  static const Color greyText = Colors.grey;
   static const Color blackText = Colors.black;
   static const Color whiteText = Colors.white;
+  static const Color greyText = Colors.grey;
 
   static TextStyle textLight(double size) {
     return TextStyle(fontSize: size, color: white, fontWeight: FontWeight.w300);

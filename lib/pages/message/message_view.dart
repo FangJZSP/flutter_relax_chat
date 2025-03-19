@@ -63,7 +63,7 @@ class MessagePage extends StatelessWidget {
                   Text(
                     UserManager.instance.state.user.value.name.isNotEmpty
                         ? UserManager.instance.state.user.value.name
-                        : '无',
+                        : 'Loading...',
                     style: Styles.textNormal(14.w)
                         .copyWith(color: Styles.blackText),
                   ),
