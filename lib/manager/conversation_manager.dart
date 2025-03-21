@@ -31,8 +31,19 @@ class ConversationManager {
     state.newMsgReceiveBus?.cancel();
   }
 
+  void enterConversation(ConversationModel conversation) {
+    state.inConversation = conversation;
+  }
+
+  void exitConversation() {
+    state.inConversation = null;
+  }
+
   void onReceiveMsg(WSMessageModel wsMsg) {
     logger.d('会话${wsMsg.msg.roomId}收到新消息');
+    if (state.inConversation?.roomId == wsMsg.msg.roomId) {
+      return;
+    }
     state.conversationUnreadList
         .firstWhereOrNull((element) => element.roomId == wsMsg.msg.roomId)
         ?.unreadMsgCount += 1;
@@ -61,6 +72,8 @@ class ConversationState {
   List<ConversationUnread> conversationUnreadList = [];
 
   StreamSubscription? newMsgReceiveBus;
+
+  ConversationModel? inConversation;
 }
 
 class ConversationUnread {

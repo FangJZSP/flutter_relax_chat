@@ -148,16 +148,21 @@ class MessagePage extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        conversation.text,
-                        style: Styles.textNormal(12.w)
-                            .copyWith(color: Styles.greyText),
+                      Expanded(
+                        child: Text(
+                          conversation.text,
+                          style: Styles.textNormal(12.w)
+                              .copyWith(color: Styles.greyText),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       ),
+                      SizedBox(width: 4.w),
                       // 消息未读数
                       Visibility(
                         visible: roomUnreadMsg > 0,
                         child: Padding(
-                          padding: const EdgeInsets.only(right: 10.0),
+                          padding: EdgeInsets.only(right: 10.w, bottom: 8.w),
                           child: badges.Badge(
                             badgeContent: Text(
                               roomUnreadMsg > 99

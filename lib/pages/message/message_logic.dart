@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:relax_chat/manager/conversation_manager.dart';
 import 'package:relax_chat/model/conversation_model.dart';
 import 'package:relax_chat/pages/chat/chat_state.dart';
 import 'package:relax_chat/pages/home/home_logic.dart';
@@ -18,11 +19,12 @@ class MessageLogic extends GetxController {
 
   void goChat(ConversationModel conversation) {
     clearConversationUnread(conversation.roomId);
+    ConversationManager.instance.enterConversation(conversation);
     Get.toNamed(Routes.chat,
             arguments: ChatPageArgs(conversation: conversation))
         ?.then((value) {
       if (value == conversation.roomId) {
-        clearConversationUnread(conversation.roomId);
+        ConversationManager.instance.exitConversation();
       }
     });
   }

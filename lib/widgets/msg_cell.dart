@@ -91,8 +91,8 @@ class _MsgCellState extends State<MsgCell> {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Text(
-                '${_cell.messageModel.msg.senderName}(${_cell.messageModel.msg.senderId})',
-                style: Styles.textNormal(10.w).copyWith(color: Styles.greyText),
+                _cell.messageModel.msg.senderName,
+                style: Styles.textNormal(12.w).copyWith(color: Styles.greyText),
               ),
               SizedBox(height: 4.w),
               Stack(
@@ -177,7 +177,7 @@ class _MsgCellState extends State<MsgCell> {
             children: [
               Text(
                 _cell.messageModel.msg.senderName,
-                style: Styles.textNormal(10.w).copyWith(color: Styles.greyText),
+                style: Styles.textNormal(12.w).copyWith(color: Styles.greyText),
               ),
               const SizedBox(
                 height: 4,
