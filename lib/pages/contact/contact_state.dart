@@ -10,6 +10,7 @@ import '../../manager/contact_manager.dart';
 
 class ContactState {
   RxList<FriendModel> get friends => ContactManager.instance.state.friends;
+
   RxList<RoomModel> get groupRooms => ContactManager.instance.state.groupRooms;
 
   RxList<ContactData> contacts = RxList<ContactData>.empty();
@@ -22,7 +23,7 @@ class ContactState {
     axis: Axis.horizontal,
   );
 
-  PageController pageController = PageController();
+  PageController pageController = PageController(keepPage: true);
 
   ContactState();
 }

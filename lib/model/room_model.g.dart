@@ -11,6 +11,7 @@ RoomModel _$RoomModelFromJson(Map<String, dynamic> json) => RoomModel(
       (json['type'] as num?)?.toInt() ?? 1,
       json['name'] as String? ?? '',
       json['avatar'] as String? ?? '',
+      (json['role'] as num?)?.toInt() ?? 0,
       (json['createTime'] as num?)?.toInt() ?? 0,
     );
 
@@ -19,5 +20,6 @@ Map<String, dynamic> _$RoomModelToJson(RoomModel instance) => <String, dynamic>{
       'type': instance.type,
       'name': instance.name,
       'avatar': instance.avatar,
+      'role': instance.role,
       'createTime': instance.createTime,
     };

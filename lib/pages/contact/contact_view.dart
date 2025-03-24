@@ -94,28 +94,25 @@ class ContactPage extends StatelessWidget {
   }
 
   Widget _typeBar() {
-    return Visibility(
-      visible: state.contacts.isNotEmpty,
-      child: Container(
-        height: 30.w,
-        margin: EdgeInsets.only(bottom: 10.w),
-        child: ListView.separated(
-          scrollDirection: Axis.horizontal,
-          itemCount: state.contacts.length,
-          controller: state.scrollController,
-          itemBuilder: (BuildContext context, int index) {
-            return AutoScrollTag(
-                key: ValueKey(index),
-                controller: state.scrollController,
-                index: index,
-                child: _typeCell(index));
-          },
-          separatorBuilder: (BuildContext context, int index) {
-            return SizedBox(
-              width: 12.w,
-            );
-          },
-        ),
+    return Container(
+      height: 30.w,
+      margin: EdgeInsets.only(bottom: 10.w),
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        itemCount: state.contacts.length,
+        controller: state.scrollController,
+        itemBuilder: (BuildContext context, int index) {
+          return AutoScrollTag(
+              key: ValueKey(index),
+              controller: state.scrollController,
+              index: index,
+              child: _typeCell(index));
+        },
+        separatorBuilder: (BuildContext context, int index) {
+          return SizedBox(
+            width: 12.w,
+          );
+        },
       ),
     );
   }
@@ -174,32 +171,33 @@ class ContactPage extends StatelessWidget {
 
   Widget _buildPageView() {
     return PageView.builder(
-      itemBuilder: (context, index) {
-        ContactData data = state.contacts[index];
-        return EasyRefresh.builder(
-            controller: data.refreshController,
-            onRefresh: () {
-              if (data.contactType.desc == ContactType.friend.desc) {
-                logic.refreshFriendList();
-              }
-              if (data.contactType.desc == ContactType.groupChat.desc) {
-                logic.refreshGroupRoomList();
-              }
-            },
-            childBuilder: (context, physics) {
-              return Obx(
-                () => typeListView(data, physics),
-              );
-            });
-      },
       controller: state.pageController,
       itemCount: state.contacts.length,
       scrollDirection: Axis.horizontal,
       onPageChanged: logic.onScrollToPage,
+      itemBuilder: (context, index) {
+        ContactData data = state.contacts[index];
+        return EasyRefresh.builder(
+          controller: data.refreshController,
+          onRefresh: () {
+            if (data.contactType.desc == ContactType.friend.desc) {
+              logic.refreshFriendList();
+            }
+            if (data.contactType.desc == ContactType.groupChat.desc) {
+              logic.refreshGroupRoomList();
+            }
+          },
+          childBuilder: (context, physics) {
+            return Obx(() {
+              return typeListView(data, physics);
+            });
+          },
+        );
+      },
     );
   }
 
-  // 好友列表
+  // 联系人列表
   Widget typeListView(ContactData data, ScrollPhysics physics) {
     return ListView.builder(
       physics: physics,
@@ -269,17 +267,9 @@ class ContactPage extends StatelessWidget {
               url: room.avatar,
             ),
             SizedBox(width: 8.w),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  room.name,
-                  style:
-                      Styles.textNormal(16.w).copyWith(color: Styles.blackText),
-                ),
-                SizedBox(height: 4.w),
-              ],
+            Text(
+              room.name,
+              style: Styles.textNormal(16.w).copyWith(color: Styles.blackText),
             ),
           ],
         ),

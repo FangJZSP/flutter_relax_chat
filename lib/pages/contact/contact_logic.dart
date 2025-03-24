@@ -72,14 +72,7 @@ class ContactLogic extends GetxController {
   }
 
   void onSelectType(int index) {
-    if (state.selectedType.value == index) {
-      return;
-    }
     state.selectedType.value = index;
-    state.pageController
-        .animateToPage(state.selectedType.value,
-            duration: const Duration(milliseconds: 250),
-            curve: Curves.easeInOut)
-        .then((value) {});
+    state.pageController.jumpToPage(state.selectedType.value);
   }
 }

@@ -22,32 +22,32 @@ class ContactManager {
 
   /// 刷新好友列表
   Future<void> refreshFriendList() async {
-    if (state.isLoading.value) {
+    if (state.isFriendLoading.value) {
       return;
     }
-    state.isLoading.value = true;
+    state.isFriendLoading.value = true;
     final result = await api.getFriendList();
 
     if (result.ok) {
       state.friends.clear();
       state.friends.addAll(result.data?.list ?? []);
     }
-    state.isLoading.value = false;
+    state.isFriendLoading.value = false;
   }
 
   /// 刷新群聊列表
   Future<void> refreshGroupRoomList() async {
-    if (state.isLoading.value) {
+    if (state.isGroupLoading.value) {
       return;
     }
-    state.isLoading.value = true;
+    state.isGroupLoading.value = true;
     final result = await api.getGroupRoomsList();
 
     if (result.ok) {
-      state.friends.clear();
-      state.friends.addAll(result.data?.list ?? []);
+      state.groupRooms.clear();
+      state.groupRooms.addAll(result.data?.list ?? []);
     }
-    state.isLoading.value = false;
+    state.isGroupLoading.value = false;
   }
 }
 
@@ -59,7 +59,9 @@ class ContactManagerState {
   final RxList<RoomModel> groupRooms = <RoomModel>[].obs;
 
   // 是否正在加载
-  final RxBool isLoading = false.obs;
+  final RxBool isFriendLoading = false.obs;
+
+  final RxBool isGroupLoading = false.obs;
 
   ContactManagerState();
 }

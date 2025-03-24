@@ -13,6 +13,17 @@ enum RoomType {
   const RoomType(this.type);
 }
 
+enum GroupRoomRole {
+  owner(1),
+  admin(2),
+  member(3),
+  ;
+
+  final int type;
+
+  const GroupRoomRole(this.type);
+}
+
 @JsonSerializable()
 class RoomModel {
   @JsonKey(defaultValue: 0)
@@ -23,6 +34,8 @@ class RoomModel {
   String name;
   @JsonKey(defaultValue: '')
   String avatar;
+  @JsonKey(defaultValue: 3)
+  int role;
   @JsonKey(defaultValue: 0)
   int createTime;
 
@@ -31,6 +44,7 @@ class RoomModel {
     this.type,
     this.name,
     this.avatar,
+    this.role,
     this.createTime,
   );
 

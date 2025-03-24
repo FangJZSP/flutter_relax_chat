@@ -3,6 +3,7 @@ import 'package:relax_chat/network/result.dart';
 
 import '../common/common.dart';
 import '../manager/global_manager.dart';
+import '../model/resp/group_room_list_resp.dart';
 import '../model/resp/msg_list_resp.dart';
 import '../model/resp/conversation_list_resp.dart';
 import '../model/resp/friend_list_resp.dart';
@@ -148,11 +149,11 @@ class ApiManager {
   }
 
   /// 获取群了列表
-  Future<Result<FriendListResp>> getGroupRoomsList() async {
-    Result<FriendListResp> result = await net.postRequest(
+  Future<Result<GroupRoomListResp>> getGroupRoomsList() async {
+    Result<GroupRoomListResp> result = await net.postRequest(
       '$hostStr/room/group/list',
       null,
-      fromJson: FriendListResp.fromJson,
+      fromJson: GroupRoomListResp.fromJson,
     );
     return result;
   }
