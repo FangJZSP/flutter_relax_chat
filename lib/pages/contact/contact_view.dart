@@ -5,6 +5,7 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 import '../../common/common.dart';
 import '../../manager/user_manager.dart';
 import '../../model/resp/friend_list_resp.dart';
+import '../../model/room_model.dart';
 import '../../widgets/base/base_app_bar.dart';
 import '../../widgets/image/round_avatar.dart';
 import 'contact_logic.dart';
@@ -198,6 +199,7 @@ class ContactPage extends StatelessWidget {
   // 好友列表
   Widget typeListView(ContactData data, ScrollPhysics physics) {
     return ListView.builder(
+      physics: physics,
       padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 0),
       itemCount: state.friends.length,
       itemBuilder: (context, index) {
@@ -209,7 +211,7 @@ class ContactPage extends StatelessWidget {
   Widget friendCell(FriendModel friend) {
     return GestureDetector(
       onTap: () {
-        logic.goChat(friend);
+        logic.goProfile(friend);
       },
       child: Container(
         color: Styles.transparent,
@@ -235,6 +237,38 @@ class ContactPage extends StatelessWidget {
                   style:
                       Styles.textNormal(10.w).copyWith(color: Styles.greyText),
                 ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget groupCell(RoomModel room) {
+    return GestureDetector(
+      onTap: () {
+        logic.goChat(room);
+      },
+      child: Container(
+        color: Styles.transparent,
+        child: Row(
+          children: [
+            RoundAvatar(
+              height: 42.w,
+              url: room.avatar,
+            ),
+            SizedBox(width: 8.w),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  room.name,
+                  style:
+                      Styles.textNormal(16.w).copyWith(color: Styles.blackText),
+                ),
+                SizedBox(height: 4.w),
               ],
             ),
           ],

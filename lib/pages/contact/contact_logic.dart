@@ -1,11 +1,12 @@
 import 'package:flutter/animation.dart';
 import 'package:get/get.dart';
 import 'package:relax_chat/model/resp/friend_list_resp.dart';
+import 'package:relax_chat/model/room_model.dart';
 import 'package:relax_chat/model/widget/contact_type_model.dart';
 import '../../manager/contact_manager.dart';
-import '../../model/conversation_model.dart';
 import '../../route/routes.dart';
 import '../chat/chat_state.dart';
+import '../profile/profile_state.dart';
 import 'contact_state.dart';
 
 class ContactLogic extends GetxController {
@@ -26,8 +27,8 @@ class ContactLogic extends GetxController {
     ));
     state.contacts.add(ContactData(
       contactType: ContactTypeModel.fromJson({})
-        ..name = ContactType.friend.desc
-        ..id = ContactType.friend.code,
+        ..name = ContactType.groupChat.desc
+        ..id = ContactType.groupChat.code,
       friendList: state.friends,
     ));
   }
@@ -37,12 +38,17 @@ class ContactLogic extends GetxController {
     await ContactManager.instance.refreshFriendList(isRefresh: isRefresh);
   }
 
-  void goChat(FriendModel friend) {
+  void goProfile(FriendModel friend) {
+    Get.toNamed(
+      Routes.profile,
+      arguments: ProfilePageArgs(user: friend.wrapAsUser),
+    );
+  }
+
+  void goChat(RoomModel room) {
     Get.toNamed(
       Routes.chat,
-      arguments: ChatPageArgs(
-        conversation: ConversationModel.conversationWithFriend(friend),
-      ),
+      arguments: ChatPageArgs(conversation: room.wrapAsConversation),
     );
   }
 

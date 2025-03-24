@@ -4,7 +4,6 @@ part 'contact_type_model.g.dart';
 
 enum ContactType {
   friend(0, '好友'),
-  group(1, '分组'),
   groupChat(2, '群聊'),
   ;
 

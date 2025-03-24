@@ -13,15 +13,12 @@ class UserModel {
   String avatar;
   @JsonKey(defaultValue: 0)
   int sex;
-  @JsonKey(defaultValue: 0)
-  int modifyNameChance;
 
   UserModel(
     this.uid,
     this.name,
     this.avatar,
     this.sex,
-    this.modifyNameChance,
   );
 
   factory UserModel.fromJson(Map<String, dynamic> json) =>

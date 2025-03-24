@@ -12,7 +12,7 @@ class MessageLogic extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    state.conversations.listen((p0) {
+    state.conversations.listen((v) {
       update();
     });
   }

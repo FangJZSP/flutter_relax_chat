@@ -1,4 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:relax_chat/model/user_model.dart';
 
 part 'friend_list_resp.g.dart';
 
@@ -42,4 +43,9 @@ class FriendModel {
       _$FriendModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$FriendModelToJson(this);
+
+  UserModel get wrapAsUser => UserModel.fromJson({})
+    ..uid = friendId
+    ..name = name
+    ..avatar = avatar;
 }

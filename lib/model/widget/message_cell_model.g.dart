@@ -8,15 +8,14 @@ part of 'message_cell_model.dart';
 
 MessageCellModel _$MessageCellModelFromJson(Map<String, dynamic> json) =>
     MessageCellModel(
-      messageModel: defaultWSMessageModel(json['messageModel']),
-      msgCellType:
-          $enumDecodeNullable(_$MessageCellTypeEnumMap, json['msgCellType']) ??
-              MessageCellType.addNew,
-      messageId: json['messageId'] as String? ?? '',
-      cachedMsg: json['cachedMsg'] as bool? ?? false,
-      status: (json['status'] as num?)?.toInt() ?? 0,
-      chatMarker: (json['chatMarker'] as num?)?.toInt(),
-      insertIndex: (json['insertIndex'] as num?)?.toInt(),
+      defaultWSMessageModel(json['messageModel']),
+      $enumDecodeNullable(_$MessageCellTypeEnumMap, json['msgCellType']) ??
+          MessageCellType.addNew,
+      json['messageId'] as String? ?? '',
+      json['cachedMsg'] as bool? ?? false,
+      (json['status'] as num?)?.toInt() ?? 0,
+      (json['chatMarker'] as num?)?.toInt(),
+      (json['insertIndex'] as num?)?.toInt(),
     );
 
 Map<String, dynamic> _$MessageCellModelToJson(MessageCellModel instance) =>

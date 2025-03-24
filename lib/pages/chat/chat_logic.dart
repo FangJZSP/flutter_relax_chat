@@ -69,10 +69,11 @@ class ChatLogic extends GetxController {
     /// 列表反转加入消息列表
     state.messages.addAll(result.data?.list.reversed ?? []);
     List<MessageCellModel> msgCells = state.messages
-        .map((element) => MessageCellModel(
-              messageModel: element,
-              msgCellType: MessageCellType.addOld,
-            ))
+        .map(
+          (element) => MessageCellModel.fromJson({})
+            ..messageModel = element
+            ..msgCellType = MessageCellType.addOld,
+        )
         .toList();
     _handleNewMsgList(msgCells);
     state.showLoading.value = false;
@@ -95,10 +96,11 @@ class ChatLogic extends GetxController {
     /// 列表反转加入消息列表
     state.messages.addAll(result.data?.list.reversed ?? []);
     List<MessageCellModel> msgCells = state.messages
-        .map((element) => MessageCellModel(
-              messageModel: element,
-              msgCellType: MessageCellType.addOld,
-            ))
+        .map(
+          (element) => MessageCellModel.fromJson({})
+            ..messageModel = element
+            ..msgCellType = MessageCellType.addOld,
+        )
         .toList();
     _handleNewMsgList(msgCells);
   }

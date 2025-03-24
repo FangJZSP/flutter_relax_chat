@@ -57,15 +57,15 @@ class MessageCellModel {
 
   int? insertIndex;
 
-  MessageCellModel({
-    required this.messageModel,
-    required this.msgCellType,
-    this.messageId = '',
-    this.cachedMsg = false,
-    this.status = 0,
+  MessageCellModel(
+    this.messageModel,
+    this.msgCellType,
+    this.messageId,
+    this.cachedMsg,
+    this.status,
     this.chatMarker,
     this.insertIndex,
-  });
+  );
 
   factory MessageCellModel.fromJson(Map<String, dynamic> json) =>
       _$MessageCellModelFromJson(json);

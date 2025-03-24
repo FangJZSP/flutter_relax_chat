@@ -13,20 +13,23 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Styles.white,
-      body: Stack(
-        children: [
-          Positioned.fill(
-            child: mainContent(),
-          ),
-          Positioned(
-            bottom: SizeConfig.bottomMargin + 20,
-            right: 0,
-            left: 0,
-            child: loginOption(),
-          ),
-        ],
+    return PopScope(
+      canPop: false,
+      child: Scaffold(
+        backgroundColor: Styles.white,
+        body: Stack(
+          children: [
+            Positioned.fill(
+              child: mainContent(),
+            ),
+            Positioned(
+              bottom: SizeConfig.bottomMargin + 20,
+              right: 0,
+              left: 0,
+              child: loginOption(),
+            ),
+          ],
+        ),
       ),
     );
   }
