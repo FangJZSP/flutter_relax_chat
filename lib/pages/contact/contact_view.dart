@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:easy_refresh/easy_refresh.dart';
+import 'package:relax_chat/model/widget/contact_type_model.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 import '../../common/common.dart';
 import '../../manager/user_manager.dart';
@@ -146,7 +147,7 @@ class ContactPage extends StatelessWidget {
             child: Column(
               children: [
                 Text(
-                  model.contactType.name,
+                  model.contactType.desc,
                   maxLines: 1,
                   overflow: TextOverflow.visible,
                   style: Styles.textNormal(14.w).copyWith(
@@ -178,10 +179,12 @@ class ContactPage extends StatelessWidget {
         return EasyRefresh.builder(
             controller: data.refreshController,
             onRefresh: () {
-              logic.refreshFriendList();
-            },
-            onLoad: () {
-              logic.refreshFriendList(isRefresh: false);
+              if (data.contactType.desc == ContactType.friend.desc) {
+                logic.refreshFriendList();
+              }
+              if (data.contactType.desc == ContactType.groupChat.desc) {
+                logic.refreshGroupRoomList();
+              }
             },
             childBuilder: (context, physics) {
               return Obx(
@@ -201,9 +204,16 @@ class ContactPage extends StatelessWidget {
     return ListView.builder(
       physics: physics,
       padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 0),
-      itemCount: state.friends.length,
+      itemCount: data.dataList.length,
       itemBuilder: (context, index) {
-        return friendCell(state.friends[index]);
+        var item = data.dataList[index];
+        if (item is FriendModel) {
+          return friendCell(item);
+        }
+        if (item is RoomModel) {
+          return groupCell(item);
+        }
+        return const SizedBox();
       },
     );
   }

@@ -1,6 +1,7 @@
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:relax_chat/model/room_model.dart';
 import 'package:relax_chat/model/widget/contact_type_model.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 import '../../common/common.dart';
@@ -9,6 +10,7 @@ import '../../manager/contact_manager.dart';
 
 class ContactState {
   RxList<FriendModel> get friends => ContactManager.instance.state.friends;
+  RxList<RoomModel> get groupRooms => ContactManager.instance.state.groupRooms;
 
   RxList<ContactData> contacts = RxList<ContactData>.empty();
 
@@ -25,19 +27,18 @@ class ContactState {
   ContactState();
 }
 
-class ContactData {
+class ContactData<T> {
   ContactTypeModel contactType;
-  RxList<FriendModel> friendList;
+  RxList<T> dataList;
 
   int currentPage = 1;
   RxBool firstTimeLoad = true.obs;
   EasyRefreshController refreshController = EasyRefreshController(
     controlFinishRefresh: true,
-    controlFinishLoad: true,
   );
 
   ContactData({
     required this.contactType,
-    required this.friendList,
+    required this.dataList,
   });
 }

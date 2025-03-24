@@ -23,6 +23,7 @@ class UserManager {
         eventBus.on<WSLoginSuccessEvent>().listen((event) {
       ConversationManager.instance.refreshConversationList();
       ContactManager.instance.refreshFriendList();
+      ContactManager.instance.refreshGroupRoomList();
     });
   }
 

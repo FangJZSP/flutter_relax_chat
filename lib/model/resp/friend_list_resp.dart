@@ -7,12 +7,9 @@ part 'friend_list_resp.g.dart';
 class FriendListResp {
   @JsonKey(defaultValue: [])
   final List<FriendModel> list;
-  @JsonKey(defaultValue: '')
-  final String cursor;
 
   FriendListResp(
     this.list,
-    this.cursor,
   );
 
   factory FriendListResp.fromJson(Map<String, dynamic> json) =>

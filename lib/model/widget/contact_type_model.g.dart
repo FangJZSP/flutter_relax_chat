@@ -8,12 +8,12 @@ part of 'contact_type_model.dart';
 
 ContactTypeModel _$ContactTypeModelFromJson(Map<String, dynamic> json) =>
     ContactTypeModel(
-      json['name'] as String? ?? '',
+      json['desc'] as String? ?? '',
       (json['id'] as num?)?.toInt() ?? 0,
     );
 
 Map<String, dynamic> _$ContactTypeModelToJson(ContactTypeModel instance) =>
     <String, dynamic>{
-      'name': instance.name,
+      'desc': instance.desc,
       'id': instance.id,
     };

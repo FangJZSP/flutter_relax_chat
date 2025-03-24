@@ -16,13 +16,13 @@ enum ContactType {
 @JsonSerializable()
 class ContactTypeModel {
   @JsonKey(defaultValue: '')
-  String name;
+  String desc;
 
   @JsonKey(defaultValue: 0)
   int id;
 
   ContactTypeModel(
-    this.name,
+    this.desc,
     this.id,
   );
 

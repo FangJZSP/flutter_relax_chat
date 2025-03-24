@@ -138,18 +138,20 @@ class ApiManager {
   }
 
   /// 获取好友列表
-  Future<Result<FriendListResp>> getFriendList({
-    String? cursor,
-    int page = 1,
-    int size = 10,
-  }) async {
+  Future<Result<FriendListResp>> getFriendList() async {
     Result<FriendListResp> result = await net.postRequest(
       '$hostStr/friend/list',
-      {
-        'page': page,
-        'size': size,
-        if (cursor != null) 'cursor': cursor,
-      },
+      null,
+      fromJson: FriendListResp.fromJson,
+    );
+    return result;
+  }
+
+  /// 获取群了列表
+  Future<Result<FriendListResp>> getGroupRoomsList() async {
+    Result<FriendListResp> result = await net.postRequest(
+      '$hostStr/room/group/list',
+      null,
       fromJson: FriendListResp.fromJson,
     );
     return result;

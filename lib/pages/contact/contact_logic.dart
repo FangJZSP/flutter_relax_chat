@@ -19,23 +19,38 @@ class ContactLogic extends GetxController {
   }
 
   void initTypeData() {
-    state.contacts.add(ContactData(
+    state.contacts.add(ContactData<FriendModel>(
       contactType: ContactTypeModel.fromJson({})
-        ..name = ContactType.friend.desc
+        ..desc = ContactType.friend.desc
         ..id = ContactType.friend.code,
-      friendList: state.friends,
+      dataList: state.friends,
     ));
-    state.contacts.add(ContactData(
+    state.contacts.add(ContactData<RoomModel>(
       contactType: ContactTypeModel.fromJson({})
-        ..name = ContactType.groupChat.desc
+        ..desc = ContactType.groupChat.desc
         ..id = ContactType.groupChat.code,
-      friendList: state.friends,
+      dataList: state.groupRooms,
     ));
   }
 
-  /// 加载好友列表
-  Future<void> refreshFriendList({bool isRefresh = true}) async {
-    await ContactManager.instance.refreshFriendList(isRefresh: isRefresh);
+  /// 刷新好友列表
+  Future<void> refreshFriendList() async {
+    await ContactManager.instance.refreshFriendList();
+    state.contacts
+        .firstWhereOrNull(
+            (element) => element.contactType.desc == ContactType.friend.desc)
+        ?.refreshController
+        .finishRefresh();
+  }
+
+  /// 刷新群聊列表
+  Future<void> refreshGroupRoomList() async {
+    await ContactManager.instance.refreshGroupRoomList();
+    state.contacts
+        .firstWhereOrNull(
+            (element) => element.contactType.desc == ContactType.groupChat.desc)
+        ?.refreshController
+        .finishRefresh();
   }
 
   void goProfile(FriendModel friend) {

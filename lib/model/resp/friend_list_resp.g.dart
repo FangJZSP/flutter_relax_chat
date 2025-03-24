@@ -12,13 +12,11 @@ FriendListResp _$FriendListRespFromJson(Map<String, dynamic> json) =>
               ?.map((e) => FriendModel.fromJson(e as Map<String, dynamic>))
               .toList() ??
           [],
-      json['cursor'] as String? ?? '',
     );
 
 Map<String, dynamic> _$FriendListRespToJson(FriendListResp instance) =>
     <String, dynamic>{
       'list': instance.list,
-      'cursor': instance.cursor,
     };
 
 FriendModel _$FriendModelFromJson(Map<String, dynamic> json) => FriendModel(
