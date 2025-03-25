@@ -13,7 +13,7 @@ class ContactState {
 
   RxList<RoomModel> get groupRooms => ContactManager.instance.state.groupRooms;
 
-  RxList<ContactData> contacts = RxList<ContactData>.empty();
+  List<ContactData> contacts = [];
 
   RxInt selectedType = 0.obs;
 

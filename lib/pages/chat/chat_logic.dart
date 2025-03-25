@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:relax_chat/model/user_model.dart';
 import 'package:relax_chat/network/result.dart';
 
+import '../../manager/conversation_manager.dart';
 import '../../manager/user_manager.dart';
 import '../../manager/event_bus_manager.dart';
 import '../../manager/log_manager.dart';
@@ -26,6 +27,7 @@ class ChatLogic extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    ConversationManager.instance.enterConversation(state.conversation.value);
     state.chatController = ChatController(
       jumpToBottomCallback: () {},
       inputFocusNode: state.focusNode,
@@ -38,6 +40,7 @@ class ChatLogic extends GetxController {
 
   @override
   void onClose() {
+    ConversationManager.instance.exitConversation();
     state.chatController.dispose();
     state.wsMsgReceiveBus?.cancel();
     super.onClose();

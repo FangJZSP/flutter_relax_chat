@@ -6,7 +6,6 @@ import 'package:relax_chat/widgets/base/base_app_bar.dart';
 import '../../common/styles.dart';
 
 import '../../manager/socket/socket_manager.dart';
-import '../../manager/user_manager.dart';
 import '../../widgets/chat_list/view/chat_widget.dart';
 import '../../widgets/chat_list/view/popup_widget.dart';
 import 'chat_logic.dart';
@@ -129,8 +128,8 @@ class ChatPage extends StatelessWidget {
               children: [
                 Text(
                   state.conversation.value.name.isNotEmpty
-                      ? UserManager.instance.state.user.value.name
-                      : '无',
+                      ? state.conversation.value.name
+                      : 'Loading',
                   style:
                       Styles.textNormal(14.w).copyWith(color: Styles.blackText),
                 ),

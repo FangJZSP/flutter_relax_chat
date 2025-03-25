@@ -1,4 +1,3 @@
-import 'package:flutter/animation.dart';
 import 'package:get/get.dart';
 import 'package:relax_chat/model/resp/friend_list_resp.dart';
 import 'package:relax_chat/model/room_model.dart';
@@ -69,6 +68,7 @@ class ContactLogic extends GetxController {
 
   void onScrollToPage(int page) {
     state.selectedType.value = page;
+    state.pageController.jumpToPage(state.selectedType.value);
   }
 
   void onSelectType(int index) {

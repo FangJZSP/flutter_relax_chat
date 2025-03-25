@@ -19,14 +19,8 @@ class MessageLogic extends GetxController {
 
   void goChat(ConversationModel conversation) {
     clearConversationUnread(conversation.roomId);
-    ConversationManager.instance.enterConversation(conversation);
     Get.toNamed(Routes.chat,
-            arguments: ChatPageArgs(conversation: conversation))
-        ?.then((value) {
-      if (value == conversation.roomId) {
-        ConversationManager.instance.exitConversation();
-      }
-    });
+        arguments: ChatPageArgs(conversation: conversation));
   }
 
   void clearConversationUnread(int roomId) {
