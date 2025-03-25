@@ -138,7 +138,7 @@ class HomePage extends StatelessWidget {
                           ),
                           Text(
                             'go relaxing',
-                            style: Styles.textNormal(8.w)
+                            style: Styles.textNormal(10.w)
                                 .copyWith(color: Styles.greyText),
                           ),
                         ],
@@ -162,7 +162,7 @@ class HomePage extends StatelessWidget {
                       GlobalManager.instance.state.isDev
                           ? Info.websocketDevUrl
                           : Info.websocketProdUrl,
-                      style: Styles.textNormal(8.w)
+                      style: Styles.textNormal(10.w)
                           .copyWith(color: Styles.normalBlue),
                     ),
                   ),
@@ -175,7 +175,7 @@ class HomePage extends StatelessWidget {
                     ),
                     subtitle: Text(
                       net.token,
-                      style: Styles.textNormal(8.w)
+                      style: Styles.textNormal(10.w)
                           .copyWith(color: Styles.normalBlue),
                     ),
                     onTap: () {

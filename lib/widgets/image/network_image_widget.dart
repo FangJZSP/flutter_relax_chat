@@ -5,16 +5,17 @@ class MyNetworkImage extends StatelessWidget {
   final String imgUrl;
   final double? width;
   final double? height;
+  final BoxFit? fit;
 
   const MyNetworkImage(
-      {required this.imgUrl, this.width, this.height, super.key});
+      {required this.imgUrl, this.width, this.height, this.fit, super.key});
 
   @override
   Widget build(BuildContext context) {
     return CachedNetworkImage(
       width: width ?? 20,
       height: height ?? 20,
-      fit: BoxFit.fill,
+      fit: fit ?? BoxFit.fill,
       placeholder: (context, url) => const CircularProgressIndicator(),
       errorWidget: (context, url, dynamic err) {
         return const Icon(Icons.error_outline);
