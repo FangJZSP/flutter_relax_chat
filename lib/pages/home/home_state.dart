@@ -24,7 +24,7 @@ class HomeState {
 
   GlobalKey<ScaffoldState> scaleFoldKey = GlobalKey();
 
-  List<Widget> pages = <Widget>[
+  final List<Widget> pages = <Widget>[
     MessagePage(),
     ContactPage(),
   ];

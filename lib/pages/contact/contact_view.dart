@@ -1,11 +1,11 @@
+import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:easy_refresh/easy_refresh.dart';
-import 'package:relax_chat/model/widget/contact_type_model.dart';
 import '../../common/common.dart';
 import '../../manager/user_manager.dart';
 import '../../model/resp/friend_list_resp.dart';
 import '../../model/room_model.dart';
+import '../../model/widget/contact_type_model.dart';
 import '../../widgets/base/base_app_bar.dart';
 import '../../widgets/image/round_avatar.dart';
 import 'contact_logic.dart';

@@ -22,10 +22,8 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        return Future.value(false);
-      },
+    return PopScope(
+      canPop: false,
       child: Stack(
         children: [
           Positioned.fill(
@@ -195,25 +193,12 @@ class HomePage extends StatelessWidget {
   }
 
   Widget body() {
-    return Obx(() {
-      return PageTransitionSwitcher(
-        reverse: state.tabIndex.value < state.lastTabIndex.value,
-        duration: const Duration(milliseconds: 250),
-        transitionBuilder: (
-          Widget child,
-          Animation<double> animation,
-          Animation<double> secondaryAnimation,
-        ) {
-          return SharedAxisTransition(
-            animation: animation,
-            secondaryAnimation: secondaryAnimation,
-            fillColor: Styles.transparent,
-            transitionType: SharedAxisTransitionType.horizontal,
-            child: child,
-          );
-        },
-        child: state.pages[state.tabIndex.value],
-      );
-    });
+    return Obx(
+      () => IndexedStack(
+        index: state.tabIndex.value,
+        key: key,
+        children: state.pages,
+      ),
+    );
   }
 }
