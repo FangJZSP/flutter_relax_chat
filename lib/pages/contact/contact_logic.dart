@@ -66,13 +66,12 @@ class ContactLogic extends GetxController {
     );
   }
 
-  void onScrollToPage(int page) {
+  void onPageChanged(int page) {
     state.selectedType.value = page;
-    state.pageController.jumpToPage(state.selectedType.value);
   }
 
   void onSelectType(int index) {
     state.selectedType.value = index;
-    state.pageController.jumpToPage(state.selectedType.value);
+    state.pageController.jumpToPage(index);
   }
 }

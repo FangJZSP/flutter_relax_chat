@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:relax_chat/model/widget/contact_type_model.dart';
-import 'package:scroll_to_index/scroll_to_index.dart';
 import '../../common/common.dart';
 import '../../manager/user_manager.dart';
 import '../../model/resp/friend_list_resp.dart';
@@ -100,13 +99,9 @@ class ContactPage extends StatelessWidget {
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         itemCount: state.contacts.length,
-        controller: state.scrollController,
+        padding: EdgeInsets.fromLTRB(20.w, 0, 20.w, 0),
         itemBuilder: (BuildContext context, int index) {
-          return AutoScrollTag(
-              key: ValueKey(index),
-              controller: state.scrollController,
-              index: index,
-              child: _typeCell(index));
+          return _typeCell(index);
         },
         separatorBuilder: (BuildContext context, int index) {
           return SizedBox(
@@ -118,18 +113,6 @@ class ContactPage extends StatelessWidget {
   }
 
   Widget _typeCell(int index) {
-    double marginStartWidth = 0;
-    double marginEndWidth = 0;
-    if (index == 0) {
-      //开头
-      marginStartWidth = 20.pt;
-    } else if (index == state.contacts.length - 1) {
-      //末尾
-      marginEndWidth = 20.pt;
-    }
-    if (index >= state.contacts.length) {
-      return Container();
-    }
     ContactData model = state.contacts[index];
     return Obx(() {
       return GestureDetector(
@@ -137,8 +120,6 @@ class ContactPage extends StatelessWidget {
           logic.onSelectType(index);
         },
         child: Container(
-            margin:
-                EdgeInsets.only(left: marginStartWidth, right: marginEndWidth),
             alignment: Alignment.center,
             color: Styles.transparent,
             child: Column(
@@ -174,7 +155,7 @@ class ContactPage extends StatelessWidget {
       controller: state.pageController,
       itemCount: state.contacts.length,
       scrollDirection: Axis.horizontal,
-      onPageChanged: logic.onScrollToPage,
+      onPageChanged: logic.onPageChanged,
       itemBuilder: (context, index) {
         ContactData data = state.contacts[index];
         return EasyRefresh.builder(

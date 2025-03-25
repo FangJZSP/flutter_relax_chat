@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:relax_chat/model/room_model.dart';
 import 'package:relax_chat/model/widget/contact_type_model.dart';
-import 'package:scroll_to_index/scroll_to_index.dart';
-import '../../common/common.dart';
 import '../../model/resp/friend_list_resp.dart';
 import '../../manager/contact_manager.dart';
 
@@ -16,12 +14,6 @@ class ContactState {
   List<ContactData> contacts = [];
 
   RxInt selectedType = 0.obs;
-
-  AutoScrollController scrollController = AutoScrollController(
-    viewportBoundaryGetter: () =>
-        Rect.fromLTRB(20, 0, 0, SizeConfig.bottomMargin),
-    axis: Axis.horizontal,
-  );
 
   PageController pageController = PageController(keepPage: true);
 
