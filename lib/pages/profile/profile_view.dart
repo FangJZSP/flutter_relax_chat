@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:hive/hive.dart';
 import 'package:relax_chat/widgets/image/network_image_widget.dart';
 
 import '../../common/size_config.dart';
@@ -17,7 +18,6 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   final logic = Get.put(ProfileLogic());
-
   final state = Get.find<ProfileLogic>().state;
 
   @override
@@ -33,15 +33,39 @@ class _ProfilePageState extends State<ProfilePage> {
               SliverAppBar(
                 clipBehavior: Clip.none,
                 titleSpacing: 0,
-                title: null,
-                leading: null,
-                centerTitle: true,
+                title: Obx(() {
+                  return Text(
+                    '用户信息',
+                    style: Styles.textBold(16.w).copyWith(
+                        color: Styles.blackText
+                            .withOpacity(state.scrollColorOpacity.value)),
+                  );
+                }),
+                leading: Obx(() {
+                  return IconButton(
+                    onPressed: logic.back,
+                    icon: Icon(
+                      Icons.arrow_back_ios,
+                      color: state.scrollColorOpacity.value > 0.3
+                          ? Styles.black
+                              .withOpacity(state.scrollColorOpacity.value)
+                          : Styles.white,
+                      size: 16.w,
+                    ),
+                  );
+                }),
                 stretch: true,
                 pinned: true,
                 expandedHeight: state.expandedHeight,
-                backgroundColor: Styles.coverBlue,
+                backgroundColor: Styles.white,
                 flexibleSpace: LayoutBuilder(
                   builder: (BuildContext context, BoxConstraints constraints) {
+                    // 计算折叠比例，用于动态调整UI
+                    double collapsePct =
+                        (constraints.maxHeight - kToolbarHeight) /
+                            (state.expandedHeight - kToolbarHeight);
+                    collapsePct = collapsePct.clamp(0.0, 1.0);
+
                     return FlexibleSpaceBar(
                       collapseMode: CollapseMode.pin,
                       stretchModes: const [
@@ -49,6 +73,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       ],
                       background: Stack(
                         children: [
+                          // 背景图片
                           Positioned.fill(
                             child: MyNetworkImage(
                               imgUrl:
@@ -56,16 +81,31 @@ class _ProfilePageState extends State<ProfilePage> {
                               fit: BoxFit.cover,
                             ),
                           ),
-                          Container(
-                            padding: EdgeInsets.fromLTRB(
-                              SizeConfig.bodyPadding,
-                              SizeConfig.topMargin + kToolbarHeight,
-                              SizeConfig.bodyPadding,
-                              SizeConfig.bodyPadding,
+                          Positioned.fill(
+                            child: Container(
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                  colors: [
+                                    Colors.transparent,
+                                    Colors.black.withOpacity(0.5),
+                                  ],
+                                ),
+                              ),
                             ),
-                            child: const Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [],
+                          ),
+                          Positioned(
+                            bottom: 10.w,
+                            left: SizeConfig.bodyPadding,
+                            right: SizeConfig.bodyPadding,
+                            child: Opacity(
+                              opacity: collapsePct,
+                              child: Text(
+                                'Relax',
+                                style: Styles.textBold(24.w)
+                                    .copyWith(color: Styles.whiteText),
+                              ),
                             ),
                           ),
                         ],
@@ -159,13 +199,14 @@ class _ProfilePageState extends State<ProfilePage> {
               )
             ],
           ),
-          Positioned(
-            child: Container(
-              height: 54 + SizeConfig.topMargin,
-              color:
-                  Styles.coverBlue.withOpacity(state.scrollColorOpacity.value),
-            ),
-          ),
+          // Positioned(
+          //   child: Obx(() {
+          //     return Container(
+          //       height: kToolbarHeight + SizeConfig.topMargin,
+          //       color: Styles.white.withOpacity(state.scrollColorOpacity.value),
+          //     );
+          //   }),
+          // ),
         ],
       ),
     );

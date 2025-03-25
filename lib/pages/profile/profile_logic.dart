@@ -1,4 +1,6 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:relax_chat/common/common.dart';
 
 import 'profile_state.dart';
 
@@ -12,8 +14,9 @@ class ProfileLogic extends GetxController {
   }
 
   void listerScroll() {
-    state.offset = state.scrollController.offset;
-    double val = state.offset / state.avatarHeight;
+    double offset = state.scrollController.offset;
+    double compare = state.expandedHeight - kToolbarHeight;
+    double val = offset / compare;
     if (val > 1) {
       state.scrollColorOpacity.value = 1;
     } else if (val < 0) {
@@ -21,5 +24,9 @@ class ProfileLogic extends GetxController {
     } else {
       state.scrollColorOpacity.value = val;
     }
+  }
+
+  void back() {
+    Get.back();
   }
 }

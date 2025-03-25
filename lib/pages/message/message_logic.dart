@@ -1,5 +1,4 @@
 import 'package:get/get.dart';
-import 'package:relax_chat/manager/conversation_manager.dart';
 import 'package:relax_chat/model/conversation_model.dart';
 import 'package:relax_chat/pages/chat/chat_state.dart';
 import 'package:relax_chat/pages/home/home_logic.dart';

@@ -11,9 +11,8 @@ class ProfileState {
   final scrollPhysics =
       const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics());
 
-  double offset = 0;
-
-  double expandedHeight = 30.w;
+  // 修改这里，增加展开高度
+  double expandedHeight = 120.w;
 
   double avatarHeight = 80.w;
 

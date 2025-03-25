@@ -2,14 +2,10 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:relax_chat/helper/toast_helper.dart';
-import 'package:relax_chat/manager/conversation_manager.dart';
 import 'package:get/get.dart';
-import 'package:relax_chat/manager/contact_manager.dart';
 import 'package:relax_chat/manager/log_manager.dart';
 import 'package:relax_chat/manager/socket/socket_manager.dart';
 import 'package:relax_chat/network/api_manager.dart';
-import 'package:relax_chat/pages/root/root_logic.dart';
-
 import '../../../model/ws/req/ws_email_req.dart';
 import '../../../network/result.dart';
 import 'email_login_state.dart';
