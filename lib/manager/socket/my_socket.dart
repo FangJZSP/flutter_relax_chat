@@ -1,9 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
-
-import 'package:get/get.dart';
 import 'package:relax_chat/model/ws/resp/ws_msg_model.dart';
-import 'package:relax_chat/pages/root/root_logic.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import '../user_manager.dart';
 import '../../network/net_request.dart';

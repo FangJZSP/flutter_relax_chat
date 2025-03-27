@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:relax_chat/common/size_config.dart';
 import 'package:relax_chat/manager/log_manager.dart';
 import 'package:relax_chat/model/conversation_model.dart';
 import 'package:relax_chat/model/ws/resp/ws_msg_model.dart';

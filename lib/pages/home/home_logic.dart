@@ -1,6 +1,5 @@
 import 'package:get/get.dart';
 import 'package:relax_chat/manager/user_manager.dart';
-import 'package:relax_chat/pages/root/root_logic.dart';
 
 import '../../manager/dialog_task_manager.dart';
 import '../../manager/event_bus_manager.dart';
