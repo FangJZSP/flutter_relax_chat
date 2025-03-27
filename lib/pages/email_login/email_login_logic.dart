@@ -5,6 +5,7 @@ import 'package:relax_chat/helper/toast_helper.dart';
 import 'package:get/get.dart';
 import 'package:relax_chat/manager/log_manager.dart';
 import 'package:relax_chat/manager/socket/socket_manager.dart';
+import 'package:relax_chat/manager/user_manager.dart';
 import 'package:relax_chat/network/api_manager.dart';
 import '../../../model/ws/req/ws_email_req.dart';
 import '../../../network/result.dart';

@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:relax_chat/manager/database/base/keys.dart';
 import 'package:relax_chat/manager/database/dao/local_box_dao.dart';
 import 'package:relax_chat/network/result.dart';
 
@@ -16,7 +17,7 @@ class Net {
       return;
     }
     token = data;
-    LocalBoxDao.instance.set('token', data);
+    LocalBoxDao.instance.set(userTokenKey, data);
   }
 
   /// 获取自定义请求头
