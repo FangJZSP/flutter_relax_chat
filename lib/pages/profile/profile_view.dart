@@ -70,8 +70,7 @@ class ProfilePage extends StatelessWidget {
                           // 背景图片
                           Positioned.fill(
                             child: MyNetworkImage(
-                              imgUrl:
-                                  UserManager.instance.state.user.value.avatar,
+                              imgUrl: state.user.value.avatar,
                               fit: BoxFit.cover,
                             ),
                           ),
@@ -129,8 +128,7 @@ class ProfilePage extends StatelessWidget {
                             children: [
                               RoundAvatar(
                                 height: state.avatarHeight,
-                                url: UserManager
-                                    .instance.state.user.value.avatar,
+                                url: state.user.value.avatar,
                                 borderDecoration: BoxDecoration(
                                   border: Border.all(color: Styles.white),
                                   shape: BoxShape.circle,
@@ -144,7 +142,7 @@ class ProfilePage extends StatelessWidget {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    UserManager.instance.state.user.value.name,
+                                    state.user.value.name,
                                     style: Styles.textBold(18.w)
                                         .copyWith(color: Styles.blackText),
                                   ),
@@ -152,7 +150,7 @@ class ProfilePage extends StatelessWidget {
                                     height: 8,
                                   ),
                                   Text(
-                                    'uid: ${UserManager.instance.state.user.value.uid}',
+                                    'uid: ${state.user.value.uid}',
                                     style: Styles.textNormal(12.w)
                                         .copyWith(color: Styles.greyText),
                                   ),
@@ -164,16 +162,14 @@ class ProfilePage extends StatelessWidget {
                           Row(
                             children: [
                               Icon(
-                                UserManager.instance.state.user.value.sex == 1
+                                state.user.value.sex == 1
                                     ? Icons.male
                                     : Icons.female,
                                 color: Styles.lightBlue,
                                 size: 14.w,
                               ),
                               Text(
-                                UserManager.instance.state.user.value.sex == 1
-                                    ? '男'
-                                    : '女',
+                                state.user.value.sex == 1 ? '男' : '女',
                                 style: Styles.textNormal(10.w)
                                     .copyWith(color: Styles.greyText),
                               ),

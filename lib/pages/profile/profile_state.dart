@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:relax_chat/common/common.dart';
+import '../../manager/log_manager.dart';
 import '../../model/user_model.dart';
 
 class ProfileState {
@@ -19,7 +20,12 @@ class ProfileState {
   RxDouble scrollColorOpacity = 0.0.obs;
 
   ProfileState() {
-    ///Initialize variables
+    if (Get.arguments != null && Get.arguments is ProfilePageArgs) {
+      ProfilePageArgs args = Get.arguments;
+      user.value = args.user;
+    } else {
+      logger.d('进入个人资料错误');
+    }
   }
 }
 

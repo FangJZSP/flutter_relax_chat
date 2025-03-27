@@ -24,10 +24,10 @@ class RelaxChatApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Styles.normalBlue),
         useMaterial3: true,
       ),
-      defaultTransition: Transition.rightToLeft,
       // 默认从右到左的转场动画
-      transitionDuration: const Duration(milliseconds: 300),
+      defaultTransition: Transition.rightToLeft,
       // 动画持续时间
+      transitionDuration: const Duration(milliseconds: 250),
       initialRoute: Routes.root,
       getPages: Routes.getPages,
     );
