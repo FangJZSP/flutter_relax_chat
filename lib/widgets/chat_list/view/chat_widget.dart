@@ -95,7 +95,7 @@ class ChatWidget extends StatefulWidget {
     this.popupMenuParams,
     this.backgroundColor,
     this.unReadCountTipView,
-    this.resizeToAvoidBottomInset = false,
+    this.resizeToAvoidBottomInset = true,
     this.onHeaderBuilder,
     this.showLoading = false,
     this.loadingView,

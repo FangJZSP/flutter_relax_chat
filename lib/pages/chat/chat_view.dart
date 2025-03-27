@@ -37,6 +37,7 @@ class ChatPage extends StatelessWidget {
         customBottomBuilder: bottomBuilder,
         customMessageCellBuilder: messageCellBuilder,
         toBottomFloatWidget: toBottomFloatWidget(),
+        resizeToAvoidBottomInset: true,
         popupMenuParams: PopupMenuParams(
           menuBgColor: const Color.fromRGBO(80, 85, 87, 1),
           onMenuShow: (messageCellModel) {},
