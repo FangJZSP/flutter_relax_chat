@@ -41,19 +41,21 @@ class ConversationManager {
 
   void onReceiveMsg(WSMessageModel wsMsg) {
     logger.d('会话${wsMsg.msg.roomId}收到新消息');
-    if (state.inConversation?.roomId == wsMsg.msg.roomId) {
-      return;
+
+    /// 不在房间里则更新未读消息，在房间里则不更新
+    if (state.inConversation?.roomId != wsMsg.msg.roomId) {
+      state.conversationUnreadList
+          .firstWhereOrNull((element) => element.roomId == wsMsg.msg.roomId)
+          ?.unreadMsgCount += 1;
     }
-    state.conversationUnreadList
-        .firstWhereOrNull((element) => element.roomId == wsMsg.msg.roomId)
-        ?.unreadMsgCount += 1;
     ConversationModel? model = state.conversations
         .firstWhereOrNull((element) => element.roomId == wsMsg.msg.roomId);
     if (wsMsg.msg.msgType == MessageModelType.text.code) {
       model?.text = wsMsg.msg.body.content;
     }
     model?.activeTime = wsMsg.msg.sendTime;
-    // 调用refresh通知监听者刷新
+
+    /// 调用refresh通知监听者刷新
     state.conversations.refresh();
   }
 
