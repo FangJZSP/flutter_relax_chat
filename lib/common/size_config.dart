@@ -4,18 +4,29 @@ import 'package:flutter/material.dart';
 
 class SizeConfig {
   static late Orientation orientation;
-  static FlutterView view =
-      WidgetsBinding.instance.platformDispatcher.views.first;
+
+  // static FlutterView view =
+  //     WidgetsBinding.instance.platformDispatcher.views.first;
+  // static double get screenWidth =>
+  //     view.physicalSize.width / view.devicePixelRatio;
+  //
+  // static double get screenHeight =>
+  //     view.physicalSize.height / view.devicePixelRatio;
+  //
+  // static double get topMargin => view.padding.top / view.devicePixelRatio;
+  //
+  // static double get bottomMargin => view.padding.bottom / view.devicePixelRatio;
 
   static double get screenWidth =>
-      view.physicalSize.width / view.devicePixelRatio;
+      window.physicalSize.width / window.devicePixelRatio;
 
   static double get screenHeight =>
-      view.physicalSize.height / view.devicePixelRatio;
+      window.physicalSize.height / window.devicePixelRatio;
 
-  static double get topMargin => view.padding.top / view.devicePixelRatio;
+  static double get topMargin => window.padding.top / window.devicePixelRatio;
 
-  static double get bottomMargin => view.padding.bottom / view.devicePixelRatio;
+  static double get bottomMargin =>
+      window.padding.bottom / window.devicePixelRatio;
 
   /// 导航栏高度
   static double get navBarHeight => 48.w;

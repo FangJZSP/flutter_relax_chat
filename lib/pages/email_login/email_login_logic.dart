@@ -8,6 +8,7 @@ import 'package:relax_chat/manager/socket/socket_manager.dart';
 import 'package:relax_chat/network/api_manager.dart';
 import '../../../model/ws/req/ws_email_req.dart';
 import '../../../network/result.dart';
+import '../root/root_logic.dart';
 import 'email_login_state.dart';
 
 class EmailLoginLogic extends GetxController {
@@ -115,6 +116,7 @@ class EmailLoginLogic extends GetxController {
     cleanAllToast();
     if (result.ok) {
       showTipsToast('用户登录成功');
+      Get.find<RootLogic>().backToHome();
     } else {
       showTipsToast('用户或者密码错误');
     }

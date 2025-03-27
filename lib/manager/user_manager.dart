@@ -8,6 +8,8 @@ import 'package:relax_chat/manager/socket/socket_manager.dart';
 import 'package:relax_chat/pages/root/root_logic.dart';
 
 import '../model/ws/req/ws_token_req.dart';
+import '../pages/home/home_logic.dart';
+import '../route/routes.dart';
 import 'database/dao/local_box_dao.dart';
 import 'event_bus_manager.dart';
 import 'contact_manager.dart';
@@ -36,7 +38,7 @@ class UserManager {
   StreamSubscription? loginSuccessSubscription;
 
   Future<void> init() async {
-    initUser();
+    await initUser();
   }
 
   /// 初始化用户
@@ -47,10 +49,7 @@ class UserManager {
       WSTokenReq wsReq = WSTokenReq(3, TokenData(net.token));
       SocketManager.instance.send(jsonEncode(wsReq.toJson()));
     } else {
-      GlobalManager.instance.doFirstFrameCallback(() {
-        showTipsToast('登录状态已失效～');
-        Get.find<RootLogic>().backToLogin();
-      });
+      GlobalManager.instance.state.firstRoute = Routes.login;
     }
   }
 
@@ -59,18 +58,15 @@ class UserManager {
     Result<UserModel> result = await api.getUserInfo();
     if (result.ok) {
       state.user.value = result.data ?? UserModel.fromJson({});
-      Get.find<RootLogic>().backToHome();
-    } else {
-      Get.find<RootLogic>().backToLogin();
     }
   }
 
-  /// 刷新用户
-  Future<void> refreshUser() async {
-    Result<UserModel> result = await api.getUserInfo();
-    if (result.ok) {
-      state.user.value = result.data ?? UserModel.fromJson({});
-    }
+  Future<void> logOut() async {
+    showTipsToast('你已登出～');
+    LocalBoxDao.instance.set('token', '');
+    /// 手动删除HomeLogic
+    Get.delete<HomeLogic>();
+    Get.find<RootLogic>().backToLogin();
   }
 }
 

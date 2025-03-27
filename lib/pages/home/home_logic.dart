@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:relax_chat/manager/user_manager.dart';
 import 'package:relax_chat/pages/root/root_logic.dart';
 
 import '../../manager/dialog_task_manager.dart';
@@ -39,6 +40,6 @@ class HomeLogic extends GetxController {
   }
 
   void logout() {
-    Get.find<RootLogic>().backToLogin();
+    UserManager.instance.logOut();
   }
 }

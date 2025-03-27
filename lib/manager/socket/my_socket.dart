@@ -94,7 +94,7 @@ class MySocket {
       case WSRespTypeEnum.onlineOfflineNotify:
         break;
       case WSRespTypeEnum.invalidToken:
-        Get.find<RootLogic>().backToLogin();
+        UserManager.instance.logOut();
         break;
       case WSRespTypeEnum.black:
         break;

@@ -28,8 +28,6 @@ class RootLogic extends GetxController {
   }
 
   void backToLogin() {
-    /// 手动删除HomeLogic
-    Get.delete<HomeLogic>();
     Get.offNamedUntil(
       Routes.login,
       (route) => route.settings.name == Routes.root,
