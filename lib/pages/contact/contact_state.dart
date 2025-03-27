@@ -7,6 +7,8 @@ import '../../model/resp/friend_list_resp.dart';
 import '../../manager/contact_manager.dart';
 
 class ContactState {
+  late BuildContext context;
+
   RxList<FriendModel> get friends => ContactManager.instance.state.friends;
 
   RxList<RoomModel> get groupRooms => ContactManager.instance.state.groupRooms;

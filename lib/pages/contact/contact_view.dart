@@ -1,3 +1,4 @@
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -7,6 +8,7 @@ import '../../model/resp/friend_list_resp.dart';
 import '../../model/room_model.dart';
 import '../../model/widget/contact_type_model.dart';
 import '../../widgets/base/base_app_bar.dart';
+import '../../widgets/drop_menu_item.dart';
 import '../../widgets/image/round_avatar.dart';
 import 'contact_logic.dart';
 import 'contact_state.dart';
@@ -19,6 +21,7 @@ class ContactPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    state.context = context;
     return Container(color: Styles.bgColor, child: mainContent());
   }
 
@@ -53,9 +56,14 @@ class ContactPage extends StatelessWidget {
               style: Styles.textNormal(18.w).copyWith(color: Styles.blackText),
             ),
             const Spacer(),
-            Icon(
-              Icons.person_add_alt,
-              size: 24.w,
+            IconButton(
+              onPressed: () {
+                logic.goAdd();
+              },
+              icon: Icon(
+                Icons.person_add_alt,
+                size: 24.w,
+              ),
             ),
           ],
         ),

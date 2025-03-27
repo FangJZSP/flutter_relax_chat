@@ -74,4 +74,8 @@ class ContactLogic extends GetxController {
     state.selectedType.value = index;
     state.pageController.jumpToPage(index);
   }
+
+  void goAdd() {
+    Get.toNamed(Routes.add);
+  }
 }

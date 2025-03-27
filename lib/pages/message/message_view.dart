@@ -1,3 +1,4 @@
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:relax_chat/helper/time_helper.dart';
@@ -7,6 +8,7 @@ import 'package:relax_chat/model/conversation_model.dart';
 import 'package:relax_chat/widgets/base/base_app_bar.dart';
 import 'package:relax_chat/widgets/image/round_avatar.dart';
 import '../../common/common.dart';
+import '../../widgets/drop_menu_item.dart';
 import 'message_logic.dart';
 import 'package:badges/badges.dart' as badges;
 
@@ -18,6 +20,7 @@ class MessagePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    state.context = context;
     return Container(color: Styles.bgColor, child: mainContent());
   }
 
@@ -78,9 +81,34 @@ class MessagePage extends StatelessWidget {
               );
             }),
             const Spacer(),
-            Icon(
-              Icons.add_sharp,
-              size: 24.w,
+            DropdownButtonHideUnderline(
+              child: DropdownButton2(
+                customButton: Icon(
+                  Icons.add_sharp,
+                  size: 24.w,
+                ),
+                items: [
+                  ...DropMenuItems.messagePageItems.map(
+                    (item) => DropdownMenuItem<DropMenuItem>(
+                      value: item,
+                      child: DropMenuItems.buildItem(item),
+                    ),
+                  ),
+                ],
+                onChanged: (value) {
+                  DropMenuItems.onChanged(state.context, value!);
+                },
+                dropdownStyleData: DropdownStyleData(
+                  width: 160.w,
+                  padding: EdgeInsets.zero,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(4.w),
+                    color: Styles.bgColor,
+                  ),
+                  offset: const Offset(0, -20),
+                ),
+                menuItemStyleData: const MenuItemStyleData(),
+              ),
             ),
           ],
         ),

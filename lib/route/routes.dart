@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:relax_chat/pages/chat/chat_view.dart';
+import '../pages/add/add_view.dart';
 import '../pages/contact/contact_view.dart';
 import '../pages/email_login/email_login_view.dart';
 import '../pages/home/home_view.dart';
@@ -17,6 +18,7 @@ class Routes {
   static const contact = '/contact';
   static const chat = '/chat';
   static const profile = '/profile';
+  static const add = '/add';
 
   static List<GetPage> getPages = [
     GetPage(name: root, page: () => RootPage()),
@@ -31,5 +33,6 @@ class Routes {
     GetPage(name: chat, page: () => ChatPage()),
     // 信息
     GetPage(name: profile, page: () => ProfilePage()),
+    GetPage(name: add, page: () => AddPage()),
   ];
 }

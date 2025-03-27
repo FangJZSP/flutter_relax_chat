@@ -8,14 +8,9 @@ import '../../manager/user_manager.dart';
 import '../../widgets/image/round_avatar.dart';
 import 'profile_logic.dart';
 
-class ProfilePage extends StatefulWidget {
-  const ProfilePage({super.key});
+class ProfilePage extends StatelessWidget {
+  ProfilePage({super.key});
 
-  @override
-  State<ProfilePage> createState() => _ProfilePageState();
-}
-
-class _ProfilePageState extends State<ProfilePage> {
   final logic = Get.put(ProfileLogic());
   final state = Get.find<ProfileLogic>().state;
 
