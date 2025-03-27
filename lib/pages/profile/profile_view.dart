@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:hive/hive.dart';
 import 'package:relax_chat/widgets/image/network_image_widget.dart';
 
 import '../../common/size_config.dart';
@@ -199,14 +198,6 @@ class _ProfilePageState extends State<ProfilePage> {
               )
             ],
           ),
-          // Positioned(
-          //   child: Obx(() {
-          //     return Container(
-          //       height: kToolbarHeight + SizeConfig.topMargin,
-          //       color: Styles.white.withOpacity(state.scrollColorOpacity.value),
-          //     );
-          //   }),
-          // ),
         ],
       ),
     );
