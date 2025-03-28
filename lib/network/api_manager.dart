@@ -218,4 +218,19 @@ class ApiManager {
     );
     return result;
   }
+
+  /// 审批好友申请
+  Future<Result> approveFriend({
+    required String friendId,
+    required bool isApprove,
+  }) async {
+    Result result = await net.postRequest(
+      '$hostStr/friend/approve',
+      {
+        'friendId': friendId,
+        'isApprove': isApprove,
+      },
+    );
+    return result;
+  }
 }

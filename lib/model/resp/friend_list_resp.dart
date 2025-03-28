@@ -3,6 +3,25 @@ import 'package:relax_chat/model/user_model.dart';
 
 part 'friend_list_resp.g.dart';
 
+enum FriendApplyStatus {
+  unreadPending(1, '未读待审批'),
+  readPending(2, '已读待审批'),
+  accepted(3, '已同意'),
+  rejected(4, '已拒绝');
+
+  final int code;
+  final String desc;
+
+  const FriendApplyStatus(this.code, this.desc);
+
+  static FriendApplyStatus? fromCode(int code) {
+    return FriendApplyStatus.values.firstWhere(
+      (element) => element.code == code,
+      orElse: () => FriendApplyStatus.unreadPending,
+    );
+  }
+}
+
 @JsonSerializable()
 class FriendListResp {
   @JsonKey(defaultValue: [])
@@ -41,6 +60,9 @@ class FriendModel {
     this.message,
     this.status,
   );
+
+  FriendApplyStatus get applyStatus =>
+      FriendApplyStatus.fromCode(status) ?? FriendApplyStatus.unreadPending;
 
   factory FriendModel.fromJson(Map<String, dynamic> json) =>
       _$FriendModelFromJson(json);

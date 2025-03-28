@@ -67,7 +67,7 @@ class NewFriendPage extends StatelessWidget {
                   children: [
                     Text(
                       '好友通知',
-                      style: Styles.textBold(12.w),
+                      style: Styles.textBold(14.w),
                     ),
                   ],
                 ),
@@ -88,7 +88,7 @@ class NewFriendPage extends StatelessWidget {
       childBuilder: (context, physics) {
         return Obx(() {
           return ListView.builder(
-            padding: EdgeInsets.zero,
+            padding: EdgeInsets.only(top: 8.w),
             physics: physics,
             itemCount: state.applyList.length,
             itemBuilder: (context, index) {
@@ -101,22 +101,85 @@ class NewFriendPage extends StatelessWidget {
   }
 
   Widget newFriendCell(FriendModel friend) {
-    return Row(
-      children: [
-        RoundAvatar(
-          height: 48.w,
-          url: friend.avatar,
-        ),
-        Expanded(
+    return Padding(
+      padding: EdgeInsets.fromLTRB(0, 8.w, 0, 8.w),
+      child: Row(
+        children: [
+          RoundAvatar(
+            height: 48.w,
+            url: friend.avatar,
+          ),
+          SizedBox(width: 12.w),
+          Expanded(
             child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              friend.name,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  friend.name,
+                  style: Styles.textBold(16.w),
+                ),
+                SizedBox(height: 4.w),
+                Text(
+                  friend.message,
+                  style:
+                      Styles.textNormal(12.w).copyWith(color: Styles.greyText),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
             ),
-          ],
-        )),
-      ],
+          ),
+          if (friend.applyStatus == FriendApplyStatus.accepted)
+            Text(
+              '已同意',
+              style: Styles.textNormal(14.w).copyWith(color: Styles.greyText),
+            )
+          else if (friend.applyStatus == FriendApplyStatus.rejected)
+            Text(
+              '已拒绝',
+              style: Styles.textNormal(14.w).copyWith(color: Styles.greyText),
+            )
+          else
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                GestureDetector(
+                  onTap: () => logic.approve(friend.friendId.toString(), true),
+                  child: Container(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.w),
+                    decoration: BoxDecoration(
+                      color: Styles.normalBlue,
+                      borderRadius: BorderRadius.circular(4.w),
+                    ),
+                    child: Text(
+                      '同意',
+                      style:
+                          Styles.textNormal(14.w).copyWith(color: Styles.white),
+                    ),
+                  ),
+                ),
+                SizedBox(width: 8.w),
+                GestureDetector(
+                  onTap: () => logic.approve(friend.friendId.toString(), false),
+                  child: Container(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.w),
+                    decoration: BoxDecoration(
+                      color: Styles.greyBgColor,
+                      borderRadius: BorderRadius.circular(4.w),
+                    ),
+                    child: Text(
+                      '拒绝',
+                      style: Styles.textNormal(14.w)
+                          .copyWith(color: Styles.greyText),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+        ],
+      ),
     );
   }
 }

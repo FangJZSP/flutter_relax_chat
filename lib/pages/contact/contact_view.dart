@@ -245,7 +245,7 @@ class ContactPage extends StatelessWidget {
 
   // 联系人列表
   Widget typeListView(ContactData data, ScrollPhysics physics) {
-    return ListView.builder(
+    return ListView.separated(
       physics: physics,
       padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 0),
       itemCount: data.dataList.length,
@@ -258,6 +258,9 @@ class ContactPage extends StatelessWidget {
           return groupCell(item);
         }
         return const SizedBox();
+      },
+      separatorBuilder: (BuildContext context, int index) {
+        return SizedBox(height: 16.w);
       },
     );
   }

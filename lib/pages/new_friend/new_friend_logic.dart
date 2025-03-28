@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:get/get.dart';
+import 'package:relax_chat/helper/toast_helper.dart';
+import 'package:relax_chat/manager/contact_manager.dart';
 import '../../network/api_manager.dart';
 import '../../route/routes.dart';
 import 'new_friend_state.dart';
@@ -16,6 +18,12 @@ class NewFriendLogic extends GetxController {
   void onInit() {
     super.onInit();
     refreshNewFriendList();
+  }
+
+  @override
+  void onClose() {
+    state.refreshController.dispose();
+    super.onClose();
   }
 
   Future<void> refreshNewFriendList({bool isRefresh = true}) async {
@@ -66,9 +74,17 @@ class NewFriendLogic extends GetxController {
     state.isLoading.value = false;
   }
 
-  @override
-  void onClose() {
-    state.refreshController.dispose();
-    super.onClose();
+  Future<void> approve(String friendId, bool isApprove) async {
+    showLoadingToast();
+    final result = await api.approveFriend(
+      friendId: friendId,
+      isApprove: isApprove,
+    );
+
+    if (result.ok) {
+      refreshNewFriendList(isRefresh: true);
+      ContactManager.instance.refreshFriendList();
+    }
+    cleanAllToast();
   }
 }
