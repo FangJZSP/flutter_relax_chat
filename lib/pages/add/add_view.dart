@@ -169,7 +169,7 @@ class AddPage extends StatelessWidget {
 
   Widget groupCell(RoomModel room) {
     return Padding(
-      padding: EdgeInsets.all(8.0.w),
+      padding: EdgeInsets.all(16.0.w),
       child: Row(
         children: [
           RoundAvatar(
@@ -235,7 +235,7 @@ class AddPage extends StatelessWidget {
 
   Widget personCell(UserModel user) {
     return Padding(
-      padding: EdgeInsets.all(8.0.w),
+      padding: EdgeInsets.all(16.0.w),
       child: Row(
         children: [
           RoundAvatar(
@@ -318,7 +318,7 @@ class AddPage extends StatelessWidget {
 
   Widget groupListView() {
     return Container(
-      margin: EdgeInsets.fromLTRB(8.w, 8.w, 8.w, 0),
+      margin: EdgeInsets.fromLTRB(0, 8.w, 0, 0),
       decoration: BoxDecoration(
         color: Styles.white,
         borderRadius: BorderRadius.circular(8.w),
@@ -351,7 +351,7 @@ class AddPage extends StatelessWidget {
 
   Widget personListView() {
     return Container(
-      margin: EdgeInsets.fromLTRB(8.w, 8.w, 8.w, 0),
+      margin: EdgeInsets.fromLTRB(0, 8.w, 0, 0),
       decoration: BoxDecoration(
         color: Styles.white,
         borderRadius: BorderRadius.circular(8.w),
