@@ -4,6 +4,7 @@ import 'package:relax_chat/helper/toast_helper.dart';
 import 'package:relax_chat/network/api_manager.dart';
 
 import '../../model/resp/group_room_list_resp.dart';
+import '../../model/resp/user_list_resp.dart';
 import '../../network/result.dart';
 import 'add_state.dart';
 
@@ -45,7 +46,14 @@ class AddLogic extends GetxController {
       if (result.ok) {
         state.findGroups.addAll(result.data?.list ?? []);
       }
-    } else {}
+    } else {
+      state.findPeople.clear();
+      Result<UserListResp> result =
+          await api.friendSearch(name: state.inputStr.value);
+      if (result.ok) {
+        state.findPeople.addAll(result.data?.list ?? []);
+      }
+    }
     cleanAllToast();
   }
 

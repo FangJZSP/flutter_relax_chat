@@ -7,6 +7,7 @@ import '../model/resp/group_room_list_resp.dart';
 import '../model/resp/msg_list_resp.dart';
 import '../model/resp/conversation_list_resp.dart';
 import '../model/resp/friend_list_resp.dart';
+import '../model/resp/user_list_resp.dart';
 import '../model/user_model.dart';
 import 'net_request.dart';
 
@@ -164,6 +165,16 @@ class ApiManager {
       '$hostStr/group/search',
       {'name': name},
       fromJson: GroupRoomListResp.fromJson,
+    );
+    return result;
+  }
+
+  /// 获取群了列表
+  Future<Result<UserListResp>> friendSearch({required String name}) async {
+    Result<UserListResp> result = await net.postRequest(
+      '$hostStr/friend/search',
+      {'name': name},
+      fromJson: UserListResp.fromJson,
     );
     return result;
   }

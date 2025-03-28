@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:relax_chat/model/room_model.dart';
 import 'package:relax_chat/pages/add/add_state.dart';
@@ -8,6 +6,7 @@ import 'package:relax_chat/widgets/base/base_app_bar.dart';
 import 'package:relax_chat/widgets/image/round_avatar.dart';
 
 import '../../common/common.dart';
+import '../../model/user_model.dart';
 import '../../widgets/custom_text_field.dart';
 import 'add_logic.dart';
 
@@ -22,6 +21,7 @@ class AddPage extends StatelessWidget {
     return GestureDetector(
       onTap: logic.onTapBg,
       child: Scaffold(
+        backgroundColor: Styles.white,
         body: Column(
           children: [
             BaseAppBar(
@@ -42,11 +42,15 @@ class AddPage extends StatelessWidget {
               ),
             ),
             findInputBar(),
-            Expanded(child: Obx(() {
-              return state.findType.value == FindType.group
-                  ? groupListView()
-                  : personListView();
-            })),
+            Expanded(
+                child: Container(
+              color: Styles.greyBgColor,
+              child: Obx(() {
+                return state.findType.value == FindType.group
+                    ? groupListView()
+                    : personListView();
+              }),
+            )),
           ],
         ),
       ),
@@ -165,7 +169,7 @@ class AddPage extends StatelessWidget {
 
   Widget groupCell(RoomModel room) {
     return Padding(
-      padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 0),
+      padding: EdgeInsets.all(8.0.w),
       child: Row(
         children: [
           RoundAvatar(
@@ -219,6 +223,62 @@ class AddPage extends StatelessWidget {
     );
   }
 
+  Widget personCell(UserModel user) {
+    return Padding(
+      padding: EdgeInsets.all(8.0.w),
+      child: Row(
+        children: [
+          RoundAvatar(
+            height: 48.w,
+            url: user.avatar,
+          ),
+          SizedBox(width: 8.w),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(user.name),
+                SizedBox(height: 4.w),
+                Row(
+                  children: [
+                    tag(
+                      Icon(
+                        user.sex == 0 ? Icons.male : Icons.female,
+                        size: 14.w,
+                        color: Styles.grey,
+                      ),
+                      Text(
+                        user.sex == 0 ? '男' : '女',
+                        style: Styles.textLight(10.w).copyWith(
+                          color: Styles.grey,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          GestureDetector(
+            onTap: user.isFriend ? null : logic.addFind,
+            child: Container(
+              padding: EdgeInsets.fromLTRB(16.w, 8.w, 16.w, 8.w),
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(4.w),
+                  border: Border.all(color: Styles.black)),
+              child: Text(
+                user.isFriend ? '已添加' : '加好友',
+                style: Styles.textNormal(12.w).copyWith(
+                  color: Styles.blackText,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget tag(Icon icon, Widget child) {
     return Container(
       decoration: BoxDecoration(
@@ -236,19 +296,40 @@ class AddPage extends StatelessWidget {
   }
 
   Widget groupListView() {
-    return Obx(() {
-      return ListView(
-        padding: EdgeInsets.zero,
-        children: [
-          ...state.findGroups.value.map((e) => groupCell(e)),
-        ],
-      );
-    });
+    return Container(
+      margin: EdgeInsets.fromLTRB(8.w, 8.w, 8.w, 0),
+      decoration: BoxDecoration(
+        color: Styles.white,
+        borderRadius: BorderRadius.circular(4.w),
+      ),
+      child: Obx(() {
+        return ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            ...state.findGroups.value.map((e) => groupCell(e)),
+          ],
+        );
+      }),
+    );
   }
 
   Widget personListView() {
-    return ListView(
-      children: [],
+    return Container(
+      margin: EdgeInsets.fromLTRB(8.w, 8.w, 8.w, 0),
+      decoration: BoxDecoration(
+        color: Styles.white,
+        borderRadius: BorderRadius.circular(4.w),
+      ),
+      child: ListView.separated(
+        padding: EdgeInsets.zero,
+        itemCount: state.findPeople.length,
+        itemBuilder: (BuildContext context, int index) {
+          return personCell(state.findPeople[index]);
+        },
+        separatorBuilder: (BuildContext context, int index) {
+          return const Divider();
+        },
+      ),
     );
   }
 }

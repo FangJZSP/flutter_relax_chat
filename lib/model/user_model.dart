@@ -11,14 +11,23 @@ class UserModel {
   String name;
   @JsonKey(defaultValue: '')
   String avatar;
+  @JsonKey(defaultValue: '')
+  String email;
   @JsonKey(defaultValue: 0)
   int sex;
+  @JsonKey(defaultValue: 0)
+  int createTime;
+  @JsonKey(defaultValue: false)
+  bool isFriend;
 
   UserModel(
     this.uid,
     this.name,
+    this.email,
     this.avatar,
     this.sex,
+    this.createTime,
+    this.isFriend,
   );
 
   factory UserModel.fromJson(Map<String, dynamic> json) =>

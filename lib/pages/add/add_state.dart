@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:get/get_rx/get_rx.dart';
 import 'package:relax_chat/model/room_model.dart';
+import 'package:relax_chat/model/user_model.dart';
 
 enum FindType {
   person,
@@ -19,6 +20,7 @@ class AddState {
   FocusNode focusNode = FocusNode();
 
   RxList<RoomModel> findGroups = RxList<RoomModel>.empty();
+  RxList<UserModel> findPeople = RxList<UserModel>.empty();
 
   AddState() {
     ///Initialize variables
