@@ -4,6 +4,7 @@ import 'package:relax_chat/network/result.dart';
 import '../common/common.dart';
 import '../manager/global_manager.dart';
 import '../model/resp/apply_resp.dart';
+import '../model/resp/friend_apply_list_resp.dart';
 import '../model/resp/group_room_list_resp.dart';
 import '../model/resp/msg_list_resp.dart';
 import '../model/resp/conversation_list_resp.dart';
@@ -198,6 +199,22 @@ class ApiManager {
       '$hostStr/group/apply',
       {'roomId': roomId, 'message': message},
       fromJson: ApplyResp.fromJson,
+    );
+    return result;
+  }
+
+  /// 获取好友申请列表
+  Future<Result<FriendApplyListResp>> getFriendApplyList({
+    int page = 1,
+    int size = 20,
+  }) async {
+    Result<FriendApplyListResp> result = await net.postRequest(
+      '$hostStr/friend/apply/list',
+      {
+        'page': page,
+        'size': size,
+      },
+      fromJson: FriendApplyListResp.fromJson,
     );
     return result;
   }

@@ -24,6 +24,8 @@ FriendModel _$FriendModelFromJson(Map<String, dynamic> json) => FriendModel(
       json['name'] as String? ?? '',
       json['avatar'] as String? ?? '',
       (json['createTime'] as num?)?.toInt() ?? 0,
+      json['message'] as String? ?? '',
+      (json['status'] as num?)?.toInt() ?? 0,
     );
 
 Map<String, dynamic> _$FriendModelToJson(FriendModel instance) =>
@@ -32,4 +34,6 @@ Map<String, dynamic> _$FriendModelToJson(FriendModel instance) =>
       'name': instance.name,
       'avatar': instance.avatar,
       'createTime': instance.createTime,
+      'message': instance.message,
+      'status': instance.status,
     };

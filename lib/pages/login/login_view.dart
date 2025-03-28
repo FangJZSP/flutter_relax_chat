@@ -67,7 +67,8 @@ class LoginPage extends StatelessWidget {
                 ),
                 Text(
                   '登录',
-                  style: Styles.textNormal(14),
+                  style:
+                      Styles.textNormal(14.w).copyWith(color: Styles.whiteText),
                 )
               ],
             ),

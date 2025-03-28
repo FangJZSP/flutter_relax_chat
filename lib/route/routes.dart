@@ -1,9 +1,11 @@
 import 'package:get/get.dart';
 import 'package:relax_chat/pages/apply/apply_view.dart';
 import 'package:relax_chat/pages/chat/chat_view.dart';
+import 'package:relax_chat/pages/new_friend/new_friend_view.dart';
 import '../pages/add/add_view.dart';
 import '../pages/contact/contact_view.dart';
 import '../pages/email_login/email_login_view.dart';
+import '../pages/group_notice/group_notice_view.dart';
 import '../pages/home/home_view.dart';
 import '../pages/login/login_view.dart';
 import '../pages/message/message_view.dart';
@@ -21,6 +23,8 @@ class Routes {
   static const profile = '/profile';
   static const add = '/add';
   static const apply = '/apply';
+  static const newFriend = '/newFriend';
+  static const groupNotice = '/groupNotice';
 
   static List<GetPage> getPages = [
     GetPage(name: root, page: () => RootPage()),
@@ -51,5 +55,11 @@ class Routes {
 
     /// 申请好友/群聊
     GetPage(name: apply, page: () => ApplyPage()),
+
+    /// 新朋友
+    GetPage(name: newFriend, page: () => NewFriendPage()),
+
+    /// 群通知
+    GetPage(name: groupNotice, page: () => GroupNoticePage()),
   ];
 }

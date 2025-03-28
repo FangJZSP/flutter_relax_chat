@@ -83,4 +83,12 @@ class ContactLogic extends GetxController {
   void openDrawer() {
     Get.find<HomeLogic>().openDrawer();
   }
+
+  void goNewFriend() {
+    Get.toNamed(Routes.newFriend);
+  }
+
+  void goGroupNotice() {
+    Get.toNamed(Routes.groupNotice);
+  }
 }

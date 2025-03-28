@@ -28,12 +28,18 @@ class FriendModel {
   final String avatar;
   @JsonKey(defaultValue: 0)
   final int createTime;
+  @JsonKey(defaultValue: '')
+  final String message;
+  @JsonKey(defaultValue: 0)
+  final int status;
 
   FriendModel(
     this.friendId,
     this.name,
     this.avatar,
     this.createTime,
+    this.message,
+    this.status,
   );
 
   factory FriendModel.fromJson(Map<String, dynamic> json) =>

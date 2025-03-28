@@ -324,7 +324,7 @@ class AddPage extends StatelessWidget {
         borderRadius: BorderRadius.circular(8.w),
       ),
       child: Obx(() {
-        return state.findPeople.isEmpty
+        return state.findGroups.isEmpty
             ? Center(
                 child: Padding(
                   padding: EdgeInsets.only(bottom: SizeConfig.bottomMargin),

@@ -55,6 +55,7 @@ class AddLogic extends GetxController {
           await api.groupSearch(name: state.inputStr.value);
       if (result.ok) {
         state.findGroups.addAll(result.data?.list ?? []);
+        state.findGroups.refresh();
       }
     } else {
       state.findPeople.clear();
@@ -62,6 +63,7 @@ class AddLogic extends GetxController {
           await api.friendSearch(name: state.inputStr.value);
       if (result.ok) {
         state.findPeople.addAll(result.data?.list ?? []);
+        state.findPeople.refresh();
       }
     }
     cleanAllToast();

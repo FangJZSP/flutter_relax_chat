@@ -4,15 +4,21 @@ import '../../common/common.dart';
 class BaseAppBar extends StatelessWidget {
   final Widget child;
   final bool needTopMargin;
+  final Color? appBarColor;
 
-  const BaseAppBar({required this.child, this.needTopMargin = true, super.key});
+  const BaseAppBar({
+    required this.child,
+    this.needTopMargin = true,
+    this.appBarColor,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.only(top: needTopMargin ? SizeConfig.topMargin : 0),
       height: SizeConfig.navBarHeight,
-      color: Styles.appBarColor,
+      color: appBarColor ?? Styles.appBarColor,
       child: Column(
         children: [
           Expanded(

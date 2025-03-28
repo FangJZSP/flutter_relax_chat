@@ -27,8 +27,17 @@ class ContactPage extends StatelessWidget {
     return Column(
       children: [
         appBar(),
-        _buildSearchBar(),
-        _typeBar(),
+        buildSearchBar(),
+        buildNewFriendNotice(),
+        buildGroupNotice(),
+        Padding(
+          padding: EdgeInsets.fromLTRB(16.w, 12.w, 16.w, 12.w),
+          child: Divider(
+            height: 1,
+            color: Styles.grey.withOpacity(.2),
+          ),
+        ),
+        typeBar(),
         Expanded(
           child: _buildPageView(),
         ),
@@ -73,7 +82,7 @@ class ContactPage extends StatelessWidget {
   }
 
   // 搜索栏
-  Widget _buildSearchBar() {
+  Widget buildSearchBar() {
     return Container(
       color: Styles.white,
       child: GestureDetector(
@@ -104,7 +113,51 @@ class ContactPage extends StatelessWidget {
     );
   }
 
-  Widget _typeBar() {
+  Widget buildNewFriendNotice() {
+    return GestureDetector(
+      onTap: logic.goNewFriend,
+      child: Padding(
+        padding: EdgeInsets.fromLTRB(16.w, 16.w, 16.w, 8.w),
+        child: Row(
+          children: [
+            Expanded(
+                child: Text(
+              '新朋友',
+              style: Styles.textNormal(16.w).copyWith(color: Styles.blackText),
+            )),
+            Icon(
+              Icons.arrow_forward_ios,
+              size: 12.w,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget buildGroupNotice() {
+    return GestureDetector(
+      onTap: logic.goGroupNotice,
+      child: Padding(
+        padding: EdgeInsets.fromLTRB(16.w, 8.w, 16.w, 0),
+        child: Row(
+          children: [
+            Expanded(
+                child: Text(
+              '群通知',
+              style: Styles.textNormal(16.w).copyWith(color: Styles.blackText),
+            )),
+            Icon(
+              Icons.arrow_forward_ios,
+              size: 12.w,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget typeBar() {
     return Container(
       height: 30.w,
       margin: EdgeInsets.only(bottom: 10.w),
@@ -144,7 +197,7 @@ class ContactPage extends StatelessWidget {
                     height: 0.85,
                     color: state.selectedType.value == index
                         ? Styles.normalBlue
-                        : Styles.greyText,
+                        : Styles.blackText,
                   ),
                   textAlign: TextAlign.center,
                 ),
