@@ -39,7 +39,7 @@ void showTipsToast(
   TextStyle? textStyle,
   double? opacity,
   double? borderRadius,
-  TextAlign textAlign = TextAlign.start,
+  TextAlign textAlign = TextAlign.center,
 }) {
   if (!GlobalManager.instance.state.allowFirstFrame) {
     return;
@@ -51,7 +51,7 @@ void showTipsToast(
     onlyOne: true,
     onClose: onClose,
     toastBuilder: (CancelFunc cancelFunc) => Card(
-      margin: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+      margin: EdgeInsets.fromLTRB(16.w, 0, 16.w, 0),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(borderRadius ?? 8),
       ),
@@ -59,7 +59,7 @@ void showTipsToast(
       child: Container(
         padding: EdgeInsets.all(10.w),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
             const Icon(

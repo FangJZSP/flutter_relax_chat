@@ -38,6 +38,10 @@ class RoomModel {
   int role;
   @JsonKey(defaultValue: 0)
   int createTime;
+  @JsonKey(defaultValue: true)
+  bool isJoined;
+  @JsonKey(defaultValue: 0)
+  int memberCount;
 
   RoomModel(
     this.roomId,
@@ -46,6 +50,8 @@ class RoomModel {
     this.avatar,
     this.role,
     this.createTime,
+    this.isJoined,
+    this.memberCount,
   );
 
   factory RoomModel.fromJson(Map<String, dynamic> json) =>

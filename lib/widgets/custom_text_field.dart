@@ -7,19 +7,23 @@ class CustomTextField extends StatelessWidget {
   final Function(String)? onChanged;
   final Function()? onDone;
   final Function()? onPasteClick;
+
   final TextEditingController? controller;
-  final String? placeholder;
+
   final int? maxLine;
+
   final int? maxCharacter;
+
   final bool showSign;
-  final String title;
-  final double titleTextSize;
-  final double titleWidth;
+
+  final Widget? prefixIcon;
 
   final bool enable;
   final EdgeInsets? scrollPadding;
   final FocusNode? focusNode;
   final bool maxLengthEnforced;
+
+  /// 是否展示为盒子样式
   final bool boxField;
 
   // 最大高度
@@ -36,11 +40,11 @@ class CustomTextField extends StatelessWidget {
   final double counterSize;
   final double bottomPadding;
 
-  final TextStyle? inputTextStyle;
-  final TextStyle? placeHolderTextStyle;
-  final TextStyle? counterStyle;
+  final String? hintText;
 
-  final double titleFontHeight;
+  final TextStyle? inputTextStyle;
+  final TextStyle? hintTextStyle;
+  final TextStyle? counterStyle;
 
   final TextAlign textAlign;
 
@@ -63,15 +67,12 @@ class CustomTextField extends StatelessWidget {
     this.onChanged,
     this.needRequired = false,
     this.controller,
+    this.prefixIcon,
     this.onDone,
-    this.placeholder,
+    this.hintText,
     this.maxLine,
     this.maxCharacter,
-    this.titleFontHeight = 1.2,
     this.showSign = false,
-    this.title = '',
-    this.titleTextSize = 16,
-    this.titleWidth = 140,
     this.enable = true,
     this.scrollPadding,
     this.onPasteClick,
@@ -85,7 +86,7 @@ class CustomTextField extends StatelessWidget {
     this.counterSize = 12,
     this.bottomPadding = 0,
     this.inputTextStyle,
-    this.placeHolderTextStyle,
+    this.hintTextStyle,
     this.counterStyle,
     this.textAlign = TextAlign.left,
     this.isDense = true,
@@ -98,7 +99,7 @@ class CustomTextField extends StatelessWidget {
   Widget build(BuildContext context) {
     BoxConstraints? constraints;
     TextStyle inputTs = inputTextStyle ?? Styles.textNormal(14);
-    TextStyle placeHolderTs = placeHolderTextStyle ?? Styles.textNormal(14);
+    TextStyle hintTs = hintTextStyle ?? Styles.textNormal(14);
 
     if (maxHeight != null) {
       constraints = BoxConstraints(
@@ -112,19 +113,10 @@ class CustomTextField extends StatelessWidget {
     if (boxField) {
       return Column(
         children: [
-          if (title.isNotEmpty)
+          if (prefixIcon != null)
             Column(
               children: [
-                Container(
-                  height: 40,
-                  alignment: Alignment.bottomLeft,
-                  child: Text(
-                    title,
-                    textScaler: TextScaler.noScaling,
-                    style: Styles.textNormal(titleTextSize)
-                        .copyWith(height: titleFontHeight),
-                  ),
-                ),
+                prefixIcon!,
                 const SizedBox(
                   height: 14,
                 ),
@@ -160,7 +152,7 @@ class CustomTextField extends StatelessWidget {
                 decorationThickness: 0,
               ),
               cursorWidth: 3,
-              cursorColor: Styles.greyBgColor,
+              cursorColor: Styles.normalBlue,
               decoration: InputDecoration(
                 contentPadding: contentPadding,
                 filled: true,
@@ -179,11 +171,11 @@ class CustomTextField extends StatelessWidget {
                     width: 1,
                   ),
                 ),
-                hintText: placeholder,
+                hintText: hintText,
                 counterStyle: counterStyle ?? Styles.textLight(counterSize),
                 hintMaxLines: 20,
                 //使初始高度能看到hint，尽量给的大值
-                hintStyle: placeHolderTs,
+                hintStyle: hintTs,
               ),
               scrollPadding:
                   scrollPadding ?? EdgeInsets.all(20.0 * (maxLine ?? 0) + 15),
@@ -218,39 +210,19 @@ class CustomTextField extends StatelessWidget {
         style: inputTs.copyWith(
           decorationThickness: 0,
         ),
-        cursorColor: Styles.greyBgColor,
+        cursorColor: Styles.normalBlue,
         cursorWidth: 3,
         decoration: InputDecoration(
           isDense: isDense,
           contentPadding: EdgeInsets.only(bottom: bottomPadding),
-          prefixIcon: Container(
-              padding: EdgeInsets.only(bottom: bottomPadding),
-              alignment: Alignment.centerLeft,
-              width: titleWidth,
-              child: RichText(
-                  textScaler: TextScaler.noScaling,
-                  text: TextSpan(children: [
-                    TextSpan(
-                      text: title,
-                      style: Styles.textNormal(
-                        titleTextSize,
-                      ).copyWith(height: titleFontHeight),
-                    ),
-                    if (needRequired)
-                      TextSpan(
-                        text: '*',
-                        style: Styles.textNormal(titleTextSize).copyWith(
-                            height: titleFontHeight,
-                            color: const Color.fromRGBO(255, 126, 126, 1)),
-                      ),
-                  ]))),
+          prefixIcon: prefixIcon,
           prefixIconConstraints:
               const BoxConstraints(minWidth: 0, minHeight: 27),
-          hintText: placeholder,
+          hintText: hintText,
           counterStyle: counterStyle ?? Styles.textLight(counterSize),
           hintMaxLines: hintMaxLines,
           //使初始高度能看到hint，尽量给的大值
-          hintStyle: placeHolderTs,
+          hintStyle: hintTs,
           focusedBorder: UnderlineInputBorder(
             borderSide: BorderSide(
                 color: Styles.greyBgColor, width: focusedBorderWidth),

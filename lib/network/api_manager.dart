@@ -157,4 +157,14 @@ class ApiManager {
     );
     return result;
   }
+
+  /// 获取群了列表
+  Future<Result<GroupRoomListResp>> groupSearch({required String name}) async {
+    Result<GroupRoomListResp> result = await net.postRequest(
+      '$hostStr/group/search',
+      {'name': name},
+      fromJson: GroupRoomListResp.fromJson,
+    );
+    return result;
+  }
 }
