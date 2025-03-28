@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -126,7 +125,7 @@ class HomePage extends StatelessWidget {
                                 },
                                 child: Text(
                                   '退出账号',
-                                  style: Styles.textNormal(8.w)
+                                  style: Styles.textNormal(10.w)
                                       .copyWith(color: Styles.blackText),
                                 ),
                               ),

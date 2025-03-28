@@ -37,14 +37,17 @@ class Styles {
   static const Color greyText = Colors.grey;
 
   static TextStyle textLight(double size) {
-    return TextStyle(fontSize: size, color: white, fontWeight: FontWeight.w300);
+    return TextStyle(
+        fontSize: size, color: blackText, fontWeight: FontWeight.w300);
   }
 
   static TextStyle textNormal(double size) {
-    return TextStyle(fontSize: size, color: white, fontWeight: FontWeight.w500);
+    return TextStyle(
+        fontSize: size, color: blackText, fontWeight: FontWeight.w500);
   }
 
   static TextStyle textBold(double size) {
-    return TextStyle(fontSize: size, color: white, fontWeight: FontWeight.w900);
+    return TextStyle(
+        fontSize: size, color: blackText, fontWeight: FontWeight.w900);
   }
 }

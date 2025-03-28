@@ -1,15 +1,25 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:relax_chat/helper/toast_helper.dart';
+import 'package:relax_chat/model/room_model.dart';
+import 'package:relax_chat/model/user_model.dart';
 import 'package:relax_chat/network/api_manager.dart';
+import 'package:relax_chat/pages/apply/apply_state.dart';
 
 import '../../model/resp/group_room_list_resp.dart';
 import '../../model/resp/user_list_resp.dart';
 import '../../network/result.dart';
+import '../../route/routes.dart';
 import 'add_state.dart';
 
 class AddLogic extends GetxController {
   final AddState state = AddState();
+
+  @override
+  void onInit() {
+    super.onInit();
+    state.focusNode.requestFocus();
+  }
 
   @override
   void onClose() {
@@ -57,7 +67,19 @@ class AddLogic extends GetxController {
     cleanAllToast();
   }
 
-  void addFind() {}
+  void addFind({
+    RoomModel? room,
+    UserModel? user,
+  }) {
+    Get.toNamed(
+      Routes.apply,
+      arguments: ApplyPageArgs(
+        state.findType.value,
+        groupRoom: room,
+        user: user,
+      ),
+    );
+  }
 
   void onTapBg() {
     FocusManager.instance.primaryFocus?.unfocus();

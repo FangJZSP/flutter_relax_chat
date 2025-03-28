@@ -39,7 +39,7 @@ void showTipsToast(
   TextStyle? textStyle,
   double? opacity,
   double? borderRadius,
-  TextAlign textAlign = TextAlign.center,
+  TextAlign textAlign = TextAlign.start,
 }) {
   if (!GlobalManager.instance.state.allowFirstFrame) {
     return;
@@ -73,7 +73,8 @@ void showTipsToast(
               child: Text(
                 string,
                 textAlign: textAlign,
-                style: textStyle ?? Styles.textNormal(14.w),
+                style: textStyle ??
+                    Styles.textNormal(14.w).copyWith(color: Styles.whiteText),
                 maxLines: 10,
               ),
             ),

@@ -3,6 +3,7 @@ import 'package:relax_chat/network/result.dart';
 
 import '../common/common.dart';
 import '../manager/global_manager.dart';
+import '../model/resp/apply_resp.dart';
 import '../model/resp/group_room_list_resp.dart';
 import '../model/resp/msg_list_resp.dart';
 import '../model/resp/conversation_list_resp.dart';
@@ -159,7 +160,7 @@ class ApiManager {
     return result;
   }
 
-  /// 获取群了列表
+  /// 搜索群聊列表
   Future<Result<GroupRoomListResp>> groupSearch({required String name}) async {
     Result<GroupRoomListResp> result = await net.postRequest(
       '$hostStr/group/search',
@@ -169,12 +170,34 @@ class ApiManager {
     return result;
   }
 
-  /// 获取群了列表
+  /// 搜索用户列表
   Future<Result<UserListResp>> friendSearch({required String name}) async {
     Result<UserListResp> result = await net.postRequest(
       '$hostStr/friend/search',
       {'name': name},
       fromJson: UserListResp.fromJson,
+    );
+    return result;
+  }
+
+  /// 申请好友
+  Future<Result<ApplyResp>> applyFriend(
+      {required String friendId, required String message}) async {
+    Result<ApplyResp> result = await net.postRequest(
+      '$hostStr/friend/apply',
+      {'friendId': friendId, 'message': message},
+      fromJson: ApplyResp.fromJson,
+    );
+    return result;
+  }
+
+  /// 申请群聊
+  Future<Result<ApplyResp>> applyGroup(
+      {required int roomId, required String message}) async {
+    Result<ApplyResp> result = await net.postRequest(
+      '$hostStr/group/apply',
+      {'roomId': roomId, 'message': message},
+      fromJson: ApplyResp.fromJson,
     );
     return result;
   }

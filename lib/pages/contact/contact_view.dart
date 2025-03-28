@@ -76,26 +76,29 @@ class ContactPage extends StatelessWidget {
   Widget _buildSearchBar() {
     return Container(
       color: Styles.white,
-      child: Container(
-        height: 32,
-        margin: EdgeInsets.fromLTRB(16.w, 10.w, 16.w, 10.w),
-        decoration: const BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(4)),
-          color: Styles.greyBgColor,
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.search,
-              size: 16.w,
-              color: Styles.greyText,
-            ),
-            Text(
-              '搜索',
-              style: Styles.textNormal(14.w).copyWith(color: Styles.greyText),
-            )
-          ],
+      child: GestureDetector(
+        onTap: logic.goAdd,
+        child: Container(
+          height: 32,
+          margin: EdgeInsets.fromLTRB(16.w, 10.w, 16.w, 10.w),
+          decoration: const BoxDecoration(
+            borderRadius: BorderRadius.all(Radius.circular(4)),
+            color: Styles.greyBgColor,
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.search,
+                size: 16.w,
+                color: Styles.greyText,
+              ),
+              Text(
+                '搜索',
+                style: Styles.textNormal(14.w).copyWith(color: Styles.greyText),
+              )
+            ],
+          ),
         ),
       ),
     );

@@ -209,7 +209,12 @@ class AddPage extends StatelessWidget {
             ),
           ),
           GestureDetector(
-            onTap: room.isJoined ? null : logic.addFind,
+            onTap: () {
+              if (room.isJoined) {
+                return;
+              }
+              logic.addFind(room: room);
+            },
             child: Container(
               padding: EdgeInsets.fromLTRB(16.w, 8.w, 16.w, 8.w),
               decoration: BoxDecoration(
@@ -270,7 +275,12 @@ class AddPage extends StatelessWidget {
             ),
           ),
           GestureDetector(
-            onTap: user.isFriend ? null : logic.addFind,
+            onTap: () {
+              if (user.isFriend) {
+                return;
+              }
+              logic.addFind(user: user);
+            },
             child: Container(
               padding: EdgeInsets.fromLTRB(16.w, 8.w, 16.w, 8.w),
               decoration: BoxDecoration(
