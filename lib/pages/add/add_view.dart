@@ -181,20 +181,25 @@ class AddPage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(room.name),
+                Text(
+                  room.name,
+                  style: Styles.textLight(16.w).copyWith(
+                    color: Styles.blackText,
+                  ),
+                ),
                 SizedBox(height: 4.w),
                 Row(
                   children: [
                     tag(
                       Icon(
                         Icons.person_outline,
-                        size: 14.w,
+                        size: 12.w,
                         color: Styles.grey,
                       ),
                       Text(
                         room.memberCount.toString(),
-                        style: Styles.textLight(10.w).copyWith(
-                          color: Styles.grey,
+                        style: Styles.textLight(12.w).copyWith(
+                          color: Styles.greyText,
                         ),
                       ),
                     ),
@@ -237,7 +242,12 @@ class AddPage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(user.name),
+                Text(
+                  user.name,
+                  style: Styles.textLight(16.w).copyWith(
+                    color: Styles.blackText,
+                  ),
+                ),
                 SizedBox(height: 4.w),
                 Row(
                   children: [
@@ -281,6 +291,7 @@ class AddPage extends StatelessWidget {
 
   Widget tag(Icon icon, Widget child) {
     return Container(
+      padding: EdgeInsets.fromLTRB(4.w, 2.w, 4.w, 2.w),
       decoration: BoxDecoration(
         color: Styles.greyBgColor,
         borderRadius: BorderRadius.circular(4.w),
@@ -300,15 +311,30 @@ class AddPage extends StatelessWidget {
       margin: EdgeInsets.fromLTRB(8.w, 8.w, 8.w, 0),
       decoration: BoxDecoration(
         color: Styles.white,
-        borderRadius: BorderRadius.circular(4.w),
+        borderRadius: BorderRadius.circular(8.w),
       ),
       child: Obx(() {
-        return ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            ...state.findGroups.value.map((e) => groupCell(e)),
-          ],
-        );
+        return state.findPeople.isEmpty
+            ? Center(
+                child: Padding(
+                  padding: EdgeInsets.only(bottom: SizeConfig.bottomMargin),
+                  child: Text(
+                    '点击搜索，寻找更多群聊～',
+                    style: Styles.textNormal(16.w)
+                        .copyWith(color: Styles.greyText),
+                  ),
+                ),
+              )
+            : ListView.separated(
+                padding: EdgeInsets.zero,
+                itemCount: state.findGroups.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return groupCell(state.findGroups[index]);
+                },
+                separatorBuilder: (BuildContext context, int index) {
+                  return const Divider();
+                },
+              );
       }),
     );
   }
@@ -318,18 +344,31 @@ class AddPage extends StatelessWidget {
       margin: EdgeInsets.fromLTRB(8.w, 8.w, 8.w, 0),
       decoration: BoxDecoration(
         color: Styles.white,
-        borderRadius: BorderRadius.circular(4.w),
+        borderRadius: BorderRadius.circular(8.w),
       ),
-      child: ListView.separated(
-        padding: EdgeInsets.zero,
-        itemCount: state.findPeople.length,
-        itemBuilder: (BuildContext context, int index) {
-          return personCell(state.findPeople[index]);
-        },
-        separatorBuilder: (BuildContext context, int index) {
-          return const Divider();
-        },
-      ),
+      child: Obx(() {
+        return state.findPeople.isEmpty
+            ? Center(
+                child: Padding(
+                  padding: EdgeInsets.only(bottom: SizeConfig.bottomMargin),
+                  child: Text(
+                    '点击搜索，寻找更多好友～',
+                    style: Styles.textNormal(16.w)
+                        .copyWith(color: Styles.greyText),
+                  ),
+                ),
+              )
+            : ListView.separated(
+                padding: EdgeInsets.zero,
+                itemCount: state.findPeople.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return personCell(state.findPeople[index]);
+                },
+                separatorBuilder: (BuildContext context, int index) {
+                  return const Divider();
+                },
+              );
+      }),
     );
   }
 }

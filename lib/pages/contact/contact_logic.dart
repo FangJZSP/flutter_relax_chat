@@ -5,6 +5,7 @@ import 'package:relax_chat/model/widget/contact_type_model.dart';
 import '../../manager/contact_manager.dart';
 import '../../route/routes.dart';
 import '../chat/chat_state.dart';
+import '../home/home_logic.dart';
 import '../profile/profile_state.dart';
 import 'contact_state.dart';
 
@@ -77,5 +78,9 @@ class ContactLogic extends GetxController {
 
   void goAdd() {
     Get.toNamed(Routes.add);
+  }
+
+  void openDrawer() {
+    Get.find<HomeLogic>().openDrawer();
   }
 }

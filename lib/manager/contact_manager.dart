@@ -15,7 +15,7 @@ class ContactManager {
 
   ContactManagerState state = ContactManagerState();
 
-  void dispose() {
+  void reset() {
     state.friends.clear();
     state.groupRooms.clear();
   }

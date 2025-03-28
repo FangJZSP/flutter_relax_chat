@@ -6,6 +6,7 @@ import 'package:relax_chat/helper/toast_helper.dart';
 import 'package:relax_chat/manager/conversation_manager.dart';
 import 'package:relax_chat/manager/database/base/keys.dart';
 import 'package:relax_chat/manager/database/dao/user_box_dao.dart';
+import 'package:relax_chat/manager/database/dao_manager.dart';
 import 'package:relax_chat/manager/socket/socket_manager.dart';
 import 'package:relax_chat/pages/root/root_logic.dart';
 
@@ -35,7 +36,7 @@ class UserManager {
 
   static UserManager? _instance;
 
-  final UserState state = UserState();
+  UserState state = UserState();
 
   StreamSubscription? loginSuccessSubscription;
 
@@ -93,12 +94,25 @@ class UserManager {
   }
 
   Future<void> logOut() async {
-    showTipsToast('你已登出～');
+    showLoadingToast();
+
     LocalBoxDao.instance.set(userTokenKey, '');
+    LocalBoxDao.instance.set(userInfoKey, '');
+    await closeService();
 
     /// 手动删除HomeLogic
     Get.delete<HomeLogic>();
     Get.find<RootLogic>().backToLogin();
+
+    cleanAllToast();
+
+    state = UserState();
+  }
+
+  Future<void> closeService() async {
+    await DaoManager.instance.close();
+    ConversationManager.instance.reset();
+    ContactManager.instance.reset();
   }
 }
 

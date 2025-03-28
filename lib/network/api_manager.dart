@@ -21,7 +21,7 @@ class ApiManager {
   }
 
   /// 用户注册
-  Future<Result<String>> userRegister({
+  Future<Result> userRegister({
     required String name,
     required String email,
     required String code,

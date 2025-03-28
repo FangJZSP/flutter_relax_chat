@@ -1,4 +1,3 @@
-import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -8,7 +7,6 @@ import '../../model/resp/friend_list_resp.dart';
 import '../../model/room_model.dart';
 import '../../model/widget/contact_type_model.dart';
 import '../../widgets/base/base_app_bar.dart';
-import '../../widgets/drop_menu_item.dart';
 import '../../widgets/image/round_avatar.dart';
 import 'contact_logic.dart';
 import 'contact_state.dart';
@@ -45,9 +43,12 @@ class ContactPage extends StatelessWidget {
         child: Row(
           children: [
             Obx(() {
-              return RoundAvatar(
-                height: 28.w,
-                url: UserManager.instance.state.user.value.avatar,
+              return GestureDetector(
+                onTap: logic.openDrawer,
+                child: RoundAvatar(
+                  height: 28.w,
+                  url: UserManager.instance.state.user.value.avatar,
+                ),
               );
             }),
             SizedBox(width: 8.w),
