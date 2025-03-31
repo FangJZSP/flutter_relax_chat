@@ -19,6 +19,12 @@ class MySocket {
   });
 
   final String url;
+  Timer? _reconnectTimer;
+  Timer? _heartbeatTimer;
+  static const int _reconnectDelay = 3000; // 重连延迟3秒
+  static const int _maxReconnectAttempts = 5; // 最大重连次数
+  static const int _heartbeatInterval = 30000; // 心跳间隔30秒
+  int _reconnectAttempts = 0;
 
   Uri get _socketUri => Uri.parse(url);
 
@@ -43,27 +49,92 @@ class MySocket {
     try {
       _channel = WebSocketChannel.connect(_socketUri);
       _setConnectStatus(SocketConnectStatus.connected);
-      streamSubscription = _channel?.stream.listen((message) {
-        _onReceiveData(message);
-      }, onError: (error, trace) {
-        _setConnectStatus(SocketConnectStatus.disconnect);
-        logger.d('ws onError $error, $trace');
-      }, onDone: () {
-        logger.d('ws onDone');
-      });
+      streamSubscription = _channel?.stream.listen(
+        (message) {
+          _resetReconnectAttempts();
+          _onReceiveData(message);
+        },
+        onError: (error, trace) {
+          logger.d('ws onError $error, $trace');
+          _handleDisconnect();
+        },
+        onDone: () {
+          logger.d('ws onDone');
+          _handleDisconnect();
+        },
+      );
+      _startHeartbeat();
       result = true;
     } catch (e) {
       logger.d('ws 连接异常 $e');
-      _setConnectStatus(SocketConnectStatus.disconnect);
+      _handleDisconnect();
       result = false;
     }
-
     return result;
   }
 
   void close() {
+    _stopReconnect();
+    _stopHeartbeat();
     _channel?.sink.close();
+    streamSubscription?.cancel();
     logger.d('ws 关闭');
+  }
+
+  void _handleDisconnect() {
+    _setConnectStatus(SocketConnectStatus.disconnect);
+    _stopHeartbeat();
+    if (_reconnectAttempts < _maxReconnectAttempts) {
+      _startReconnect();
+    } else {
+      logger.d('ws 重连次数超过最大限制，停止重连');
+    }
+  }
+
+  void _startReconnect() {
+    _stopReconnect();
+    _reconnectTimer = Timer(Duration(milliseconds: _reconnectDelay), () {
+      if (isDisconnect) {
+        _reconnectAttempts++;
+        logger.d('ws 开始第 $_reconnectAttempts 次重连');
+        connect();
+      }
+    });
+  }
+
+  void _stopReconnect() {
+    _reconnectTimer?.cancel();
+    _reconnectTimer = null;
+  }
+
+  void _resetReconnectAttempts() {
+    _reconnectAttempts = 0;
+  }
+
+  void _startHeartbeat() {
+    _stopHeartbeat();
+    _heartbeatTimer = Timer.periodic(
+      Duration(milliseconds: _heartbeatInterval),
+      (timer) {
+        if (isConnect) {
+          _sendHeartbeat();
+        }
+      },
+    );
+  }
+
+  void _stopHeartbeat() {
+    _heartbeatTimer?.cancel();
+    _heartbeatTimer = null;
+  }
+
+  void _sendHeartbeat() {
+    try {
+      send(json.encode({'type': 'ping'}));
+    } catch (e) {
+      logger.d('ws 发送心跳失败: $e');
+      _handleDisconnect();
+    }
   }
 
   void _onReceiveData(dynamic message) {
