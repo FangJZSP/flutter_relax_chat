@@ -5,6 +5,7 @@ import '../common/common.dart';
 import '../manager/global_manager.dart';
 import '../model/resp/apply_resp.dart';
 import '../model/resp/friend_apply_list_resp.dart';
+import '../model/resp/group_apply_list_resp.dart';
 import '../model/resp/group_room_list_resp.dart';
 import '../model/resp/msg_list_resp.dart';
 import '../model/resp/conversation_list_resp.dart';
@@ -230,6 +231,22 @@ class ApiManager {
         'friendId': friendId,
         'isApprove': isApprove,
       },
+    );
+    return result;
+  }
+
+  /// 获取群申请列表
+  Future<Result<GroupApplyListResp>> getGroupApplyList({
+    int page = 1,
+    int size = 20,
+  }) async {
+    Result<GroupApplyListResp> result = await net.postRequest(
+      '$hostStr/group/apply/list',
+      {
+        'page': page,
+        'size': size,
+      },
+      fromJson: GroupApplyListResp.fromJson,
     );
     return result;
   }
