@@ -53,6 +53,8 @@ class MySocket {
   /// 连接成功平均耗时
   int _connectDurationMs = 0;
 
+  DateTime? _startConnectTime;
+
   int get badHeartBeatCount => _badHeartBeatCount;
 
   int get goodHeartBeatCount => _goodHeartBeatCount;
@@ -70,28 +72,15 @@ class MySocket {
   Uri get _socketUri => Uri.parse(url);
 
   bool connect() {
+    _startConnectTime = DateTime.now();
+    _channelReconnectTimes++;
     bool result = false;
     if (_channel != null) {
       _channel?.sink.close();
     }
     _setConnectStatus(SocketConnectStatus.connecting);
-
-    int startTime = DateTime.now().millisecondsSinceEpoch;
-    _channelReconnectTimes++;
-
     try {
       _channel = WebSocketChannel.connect(_socketUri);
-      _setConnectStatus(SocketConnectStatus.connected);
-
-      // 计算连接耗时
-      int endTime = DateTime.now().millisecondsSinceEpoch;
-      int duration = endTime - startTime;
-      if (_connectDurationMs == 0) {
-        _connectDurationMs = duration;
-      } else {
-        _connectDurationMs = (_connectDurationMs + duration) ~/ 2;
-      }
-
       streamSubscription = _channel?.stream.listen(
         (message) {
           _resetReconnectAttempts();
@@ -169,6 +158,10 @@ class MySocket {
     }
     _connectStatus = value;
     if (isConnect) {
+      if (_startConnectTime != null) {
+        _connectDurationMs =
+            DateTime.now().difference(_startConnectTime!).inMilliseconds;
+      }
       logger.d(
           'ws 连接成功, 重连次数: $_channelReconnectTimes, 平均连接耗时: ${_connectDurationMs}ms');
     } else if (isConnecting) {
@@ -263,6 +256,11 @@ class MySocket {
         break;
       case WSResType.heartBeat:
         _lastHeartBeatSuccess = true;
+        break;
+      case WSResType.connectSuccess:
+        if (isConnecting) {
+          _setConnectStatus(SocketConnectStatus.connected);
+        }
         break;
       default:
         logger.d('ws 未处理接收数据');

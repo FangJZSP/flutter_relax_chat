@@ -16,6 +16,7 @@ enum WSResType {
   memberChange(11, '成员变动'),
   loginEmail(12, '邮箱登录返回'),
   heartBeat(13, '心跳检测'),
+  connectSuccess(14, '心跳检测'),
   ;
 
   final int type;

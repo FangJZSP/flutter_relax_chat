@@ -6,17 +6,13 @@ import '../global_manager.dart';
 import 'my_socket.dart';
 
 class SocketManager {
-  static SocketManager get instance => _getInstance();
   static SocketManager? _instance;
 
-  static SocketManager _getInstance() {
-    _instance ??= SocketManager._();
-    return _instance!;
-  }
-
-  SocketManager._();
+  static SocketManager get instance => _instance ??= SocketManager._();
 
   static MySocket? _socket;
+
+  SocketManager._();
 
   RxBool get didConnect => (_socket?.isConnect ?? false).obs;
 
@@ -44,10 +40,6 @@ class SocketManager {
   }
 
   void send(String message) {
-    if (!didConnect.value) {
-      showTipsToast('ws 断连中...');
-      return;
-    }
     _socket?.send(message);
   }
 }
