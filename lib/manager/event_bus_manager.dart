@@ -17,6 +17,10 @@ class WSLoginSuccessEvent {
   WSLoginSuccessEvent(this.model);
 }
 
+class WSInvalidTokenEvent {
+  WSInvalidTokenEvent();
+}
+
 class UpdateConversationListEvent {
   UpdateConversationListEvent();
 }

@@ -27,9 +27,15 @@ class UserManager {
   UserManager._() {
     loginSuccessSubscription =
         eventBus.on<WSLoginSuccessEvent>().listen((event) {
+      net.updateTokenCallback(event.model.token);
+      loadUser();
       ConversationManager.instance.refreshConversationList();
       ContactManager.instance.refreshFriendList();
       ContactManager.instance.refreshGroupRoomList();
+    });
+    invalidTokenSubscription =
+        eventBus.on<WSInvalidTokenEvent>().listen((event) {
+      logOut();
     });
   }
 
@@ -40,6 +46,7 @@ class UserManager {
   UserState state = UserState();
 
   StreamSubscription? loginSuccessSubscription;
+  StreamSubscription? invalidTokenSubscription;
 
   Future<void> init() async {
     await initLocalUser();
