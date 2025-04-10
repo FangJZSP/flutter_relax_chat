@@ -2,10 +2,15 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:relax_chat/model/ws/resp/ws_msg_model.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
+import '../../model/ws/resp/ws_base_res.dart';
 import '../user_manager.dart';
 import '../../network/net_request.dart';
 import '../event_bus_manager.dart';
 import '../log_manager.dart';
+
+const int _reconnectDelay = 3000; // 重连延迟3秒
+const int _maxReconnectAttempts = 5; // 最大重连次数
+const int _heartbeatInterval = 30000; // 心跳间隔30秒
 
 enum SocketConnectStatus {
   connecting,
@@ -14,25 +19,25 @@ enum SocketConnectStatus {
 }
 
 class MySocket {
+  final String url;
+
   MySocket({
     required this.url,
   });
 
-  final String url;
   Timer? _reconnectTimer;
-  Timer? _heartbeatTimer;
-  static const int _reconnectDelay = 3000; // 重连延迟3秒
-  static const int _maxReconnectAttempts = 5; // 最大重连次数
-  static const int _heartbeatInterval = 30000; // 心跳间隔30秒
-  int _reconnectAttempts = 0;
 
-  Uri get _socketUri => Uri.parse(url);
+  Timer? _heartbeatTimer;
+
+  int _reconnectAttempts = 0;
 
   WebSocketChannel? _channel;
 
   StreamSubscription? streamSubscription;
 
   SocketConnectStatus _connectStatus = SocketConnectStatus.disconnect;
+
+  Uri get _socketUri => Uri.parse(url);
 
   bool get isConnect => _connectStatus == SocketConnectStatus.connected;
 
@@ -93,7 +98,7 @@ class MySocket {
 
   void _startReconnect() {
     _stopReconnect();
-    _reconnectTimer = Timer(Duration(milliseconds: _reconnectDelay), () {
+    _reconnectTimer = Timer(const Duration(milliseconds: _reconnectDelay), () {
       if (isDisconnect) {
         _reconnectAttempts++;
         logger.d('ws 开始第 $_reconnectAttempts 次重连');
@@ -114,7 +119,7 @@ class MySocket {
   void _startHeartbeat() {
     _stopHeartbeat();
     _heartbeatTimer = Timer.periodic(
-      Duration(milliseconds: _heartbeatInterval),
+      const Duration(milliseconds: _heartbeatInterval),
       (timer) {
         if (isConnect) {
           _sendHeartbeat();
@@ -142,39 +147,39 @@ class MySocket {
     WSBaseResponseModel wsBaseModel =
         WSBaseResponseModel.fromJson(json.decode(message));
     dynamic wsModel;
-    switch (WSRespTypeEnum.fromType(wsBaseModel.type)) {
-      case WSRespTypeEnum.newMessage:
+    switch (WSResType.fromType(wsBaseModel.type)) {
+      case WSResType.newMessage:
         wsModel = WSMessageModel.fromJson(wsBaseModel.res);
         eventBus.fire(WSReceivedMsgEvent(wsModel));
         break;
       case null:
         break;
-      case WSRespTypeEnum.loginUrl:
+      case WSResType.loginUrl:
         break;
-      case WSRespTypeEnum.loginScanSuccess:
+      case WSResType.loginScanSuccess:
         break;
-      case WSRespTypeEnum.loginSuccess:
+      case WSResType.loginSuccess:
         wsModel = WSLoginSuccessModel.fromJson(wsBaseModel.res);
         net.updateTokenCallback((wsModel as WSLoginSuccessModel).token);
         UserManager.instance.loadUser();
         eventBus.fire(WSLoginSuccessEvent(wsModel));
         break;
-      case WSRespTypeEnum.onlineOfflineNotify:
+      case WSResType.onlineOfflineNotify:
         break;
-      case WSRespTypeEnum.invalidToken:
+      case WSResType.invalidToken:
         UserManager.instance.logOut();
         break;
-      case WSRespTypeEnum.black:
+      case WSResType.black:
         break;
-      case WSRespTypeEnum.mark:
+      case WSResType.mark:
         break;
-      case WSRespTypeEnum.recall:
+      case WSResType.recall:
         break;
-      case WSRespTypeEnum.apply:
+      case WSResType.apply:
         break;
-      case WSRespTypeEnum.memberChange:
+      case WSResType.memberChange:
         break;
-      case WSRespTypeEnum.loginEmail:
+      case WSResType.loginEmail:
         break;
       default:
         logger.d('ws 未处理接收数据');

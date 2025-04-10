@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:relax_chat/manager/log_manager.dart';
 import 'package:relax_chat/manager/socket/socket_manager.dart';
 import 'package:relax_chat/manager/user_manager.dart';
+import 'package:relax_chat/model/ws/req/ws_base_req.dart';
 import 'package:relax_chat/network/api_manager.dart';
 import '../../../model/ws/req/ws_email_req.dart';
 import '../../../network/result.dart';
@@ -70,7 +71,8 @@ class EmailLoginLogic extends GetxController {
       return;
     }
     // 发送email信息，并根据邮箱发送验证码
-    WSEmailReq wsReq = WSEmailReq(4, EmailData(email, true));
+    WSEmailReq wsReq =
+        WSEmailReq(WSReqType.emailLogin.type, EmailData(email, true));
     SocketManager.instance.send(jsonEncode(wsReq.toJson()));
   }
 

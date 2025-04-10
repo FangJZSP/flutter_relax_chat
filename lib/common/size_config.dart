@@ -7,6 +7,7 @@ class SizeConfig {
 
   // static FlutterView view =
   //     WidgetsBinding.instance.platformDispatcher.views.first;
+  //
   // static double get screenWidth =>
   //     view.physicalSize.width / view.devicePixelRatio;
   //
