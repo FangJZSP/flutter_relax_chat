@@ -9,7 +9,7 @@ enum WSResType {
   newMessage(4, '新消息'),
   onlineOfflineNotify(5, '上下线通知'),
   invalidToken(6, '使客户端的token失效，意味着客户端需要重新登录'),
-  black(7, '拉黑用户'),
+  block(7, '拉黑用户'),
   mark(8, '消息标记'),
   recall(9, '消息撒回'),
   apply(10, '好友申请'),

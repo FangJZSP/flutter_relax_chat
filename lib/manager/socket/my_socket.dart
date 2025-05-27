@@ -27,7 +27,7 @@ class MySocket {
 
   WebSocketChannel? _channel;
 
-  StreamSubscription? streamSubscription;
+  StreamSubscription? wsStreamSub;
 
   SocketConnectStatus _connectStatus = SocketConnectStatus.disconnect;
 
@@ -81,7 +81,7 @@ class MySocket {
     _setConnectStatus(SocketConnectStatus.connecting);
     try {
       _channel = WebSocketChannel.connect(_socketUri);
-      streamSubscription = _channel?.stream.listen(
+      wsStreamSub = _channel?.stream.listen(
         (message) {
           _resetReconnectAttempts();
           _onReceiveData(message);
@@ -137,7 +137,7 @@ class MySocket {
   void _handleDisconnect() {
     _setConnectStatus(SocketConnectStatus.disconnect);
     _stopHeartbeat();
-    streamSubscription?.cancel();
+    wsStreamSub?.cancel();
     _channel?.sink.close();
 
     // 根据心跳状态决定是否需要重连
@@ -176,7 +176,7 @@ class MySocket {
     _stopReconnect();
     _stopHeartbeat();
     _channel?.sink.close();
-    streamSubscription?.cancel();
+    wsStreamSub?.cancel();
     logger.d('ws 关闭');
   }
 
@@ -242,7 +242,7 @@ class MySocket {
       case WSResType.invalidToken:
         eventBus.fire(WSInvalidTokenEvent());
         break;
-      case WSResType.black:
+      case WSResType.block:
         break;
       case WSResType.mark:
         break;
