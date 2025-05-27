@@ -98,8 +98,8 @@ class CustomTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     BoxConstraints? constraints;
-    TextStyle inputTs = inputTextStyle ?? Styles.textNormal(14);
-    TextStyle hintTs = hintTextStyle ?? Styles.textNormal(14);
+    TextStyle inputTs = inputTextStyle ?? Styles.textFiraNormal(14);
+    TextStyle hintTs = hintTextStyle ?? Styles.textFiraNormal(14);
 
     if (maxHeight != null) {
       constraints = BoxConstraints(
@@ -172,7 +172,7 @@ class CustomTextField extends StatelessWidget {
                   ),
                 ),
                 hintText: hintText,
-                counterStyle: counterStyle ?? Styles.textLight(counterSize),
+                counterStyle: counterStyle ?? Styles.textFiraLight(counterSize),
                 hintMaxLines: 20,
                 //使初始高度能看到hint，尽量给的大值
                 hintStyle: hintTs,
@@ -219,7 +219,7 @@ class CustomTextField extends StatelessWidget {
           prefixIconConstraints:
               const BoxConstraints(minWidth: 0, minHeight: 27),
           hintText: hintText,
-          counterStyle: counterStyle ?? Styles.textLight(counterSize),
+          counterStyle: counterStyle ?? Styles.textFiraLight(counterSize),
           hintMaxLines: hintMaxLines,
           //使初始高度能看到hint，尽量给的大值
           hintStyle: hintTs,

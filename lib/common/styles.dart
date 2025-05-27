@@ -36,18 +36,39 @@ class Styles {
   static const Color whiteText = Colors.white;
   static const Color greyText = Colors.grey;
 
-  static TextStyle textLight(double size) {
+  static TextStyle textFiraLight(double size) {
     return TextStyle(
-        fontSize: size, color: blackText, fontWeight: FontWeight.w300);
+      fontSize: size,
+      color: blackText,
+      fontWeight: FontWeight.w300,
+      fontFamily: 'FiraCode',
+    );
   }
 
-  static TextStyle textNormal(double size) {
+  static TextStyle textFiraNormal(double size) {
     return TextStyle(
-        fontSize: size, color: blackText, fontWeight: FontWeight.w500);
+      fontSize: size,
+      color: blackText,
+      fontWeight: FontWeight.w400,
+      fontFamily: 'FiraCode',
+    );
   }
 
-  static TextStyle textBold(double size) {
+  static TextStyle textFiraMedium(double size) {
     return TextStyle(
-        fontSize: size, color: blackText, fontWeight: FontWeight.w900);
+      fontSize: size,
+      color: blackText,
+      fontWeight: FontWeight.w500,
+      fontFamily: 'FiraCode',
+    );
+  }
+
+  static TextStyle textFiraBold(double size) {
+    return TextStyle(
+      fontSize: size,
+      color: blackText,
+      fontWeight: FontWeight.w700,
+      fontFamily: 'FiraCode',
+    );
   }
 }

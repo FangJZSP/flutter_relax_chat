@@ -30,7 +30,7 @@ class ProfilePage extends StatelessWidget {
                 title: Obx(() {
                   return Text(
                     '用户信息',
-                    style: Styles.textBold(16.w).copyWith(
+                    style: Styles.textFiraBold(16.w).copyWith(
                         color: Styles.blackText
                             .withOpacity(state.scrollColorOpacity.value)),
                   );
@@ -96,7 +96,7 @@ class ProfilePage extends StatelessWidget {
                               opacity: collapsePct,
                               child: Text(
                                 'Relax',
-                                style: Styles.textBold(24.w)
+                                style: Styles.textFiraBold(24.w)
                                     .copyWith(color: Styles.whiteText),
                               ),
                             ),
@@ -143,7 +143,7 @@ class ProfilePage extends StatelessWidget {
                                 children: [
                                   Text(
                                     state.user.value.name,
-                                    style: Styles.textBold(18.w)
+                                    style: Styles.textFiraBold(18.w)
                                         .copyWith(color: Styles.blackText),
                                   ),
                                   const SizedBox(
@@ -151,7 +151,7 @@ class ProfilePage extends StatelessWidget {
                                   ),
                                   Text(
                                     'uid: ${state.user.value.uid}',
-                                    style: Styles.textNormal(12.w)
+                                    style: Styles.textFiraNormal(12.w)
                                         .copyWith(color: Styles.greyText),
                                   ),
                                 ],
@@ -170,7 +170,7 @@ class ProfilePage extends StatelessWidget {
                               ),
                               Text(
                                 state.user.value.sex == 1 ? '男' : '女',
-                                style: Styles.textNormal(10.w)
+                                style: Styles.textFiraNormal(10.w)
                                     .copyWith(color: Styles.greyText),
                               ),
                               const Spacer(),

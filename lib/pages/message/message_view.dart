@@ -67,13 +67,13 @@ class MessagePage extends StatelessWidget {
                     UserManager.instance.state.user.value.name.isNotEmpty
                         ? UserManager.instance.state.user.value.name
                         : 'Loading...',
-                    style: Styles.textNormal(14.w)
+                    style: Styles.textFiraNormal(14.w)
                         .copyWith(color: Styles.blackText),
                   ),
                   Obx(() {
                     return Text(
                       SocketManager.instance.didConnect.value ? '在线>' : '离线>',
-                      style: Styles.textNormal(8.w)
+                      style: Styles.textFiraNormal(8.w)
                           .copyWith(color: Styles.blackText),
                     );
                   }),
@@ -163,12 +163,12 @@ class MessagePage extends StatelessWidget {
                     children: [
                       Text(
                         conversation.name,
-                        style: Styles.textNormal(16.w)
+                        style: Styles.textFiraNormal(16.w)
                             .copyWith(color: Styles.blackText),
                       ),
                       Text(
                         TimeUtils.timestamp3TimeString(conversation.activeTime),
-                        style: Styles.textNormal(10.w)
+                        style: Styles.textFiraNormal(10.w)
                             .copyWith(color: Styles.greyText),
                       )
                     ],
@@ -179,7 +179,7 @@ class MessagePage extends StatelessWidget {
                       Expanded(
                         child: Text(
                           conversation.text,
-                          style: Styles.textNormal(12.w)
+                          style: Styles.textFiraNormal(12.w)
                               .copyWith(color: Styles.greyText),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
@@ -196,7 +196,7 @@ class MessagePage extends StatelessWidget {
                               roomUnreadMsg > 99
                                   ? '99+'
                                   : roomUnreadMsg.toString(),
-                              style: Styles.textNormal(10)
+                              style: Styles.textFiraNormal(10)
                                   .copyWith(color: Styles.whiteText),
                             ),
                             child: Container(),
@@ -223,7 +223,7 @@ class MessagePage extends StatelessWidget {
       padding: const EdgeInsets.all(1),
       child: Text(
         roomUnreadMsg > 99 ? '99+' : roomUnreadMsg.toString(),
-        style: Styles.textNormal(10).copyWith(color: Styles.whiteText),
+        style: Styles.textFiraNormal(10).copyWith(color: Styles.whiteText),
       ),
     );
   }

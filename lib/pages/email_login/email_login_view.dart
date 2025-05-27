@@ -46,14 +46,14 @@ class EmailLoginPage extends StatelessWidget {
           ),
           Text(
             state.showRegisterView.value ? '邮箱注册' : '邮箱登录',
-            style: Styles.textNormal(24).copyWith(color: Styles.blackText),
+            style: Styles.textFiraNormal(24).copyWith(color: Styles.blackText),
           ),
           const SizedBox(
             height: 12,
           ),
           Text(
             '需要登录后，才能聊天哦～',
-            style: Styles.textNormal(12).copyWith(color: Styles.greyText),
+            style: Styles.textFiraNormal(12).copyWith(color: Styles.greyText),
           ),
           Padding(
             padding: const EdgeInsets.fromLTRB(50, 40, 50, 0),
@@ -120,7 +120,7 @@ class EmailLoginPage extends StatelessWidget {
                           ),
                           Text(
                             state.showRegisterView.value ? '密码登录' : '邮箱注册',
-                            style: Styles.textNormal(12)
+                            style: Styles.textFiraNormal(12)
                                 .copyWith(color: Styles.blackText),
                           ),
                         ],
@@ -135,7 +135,7 @@ class EmailLoginPage extends StatelessWidget {
                       ),
                       child: Text(
                         state.showRegisterView.value ? '获取邮箱验证码～' : '忘记密码？',
-                        style: Styles.textNormal(12)
+                        style: Styles.textFiraNormal(12)
                             .copyWith(color: Styles.blackText),
                       ),
                     )
@@ -161,7 +161,7 @@ class EmailLoginPage extends StatelessWidget {
                       children: [
                         Text(
                           state.showRegisterView.value ? '验证并登录' : '登录',
-                          style: Styles.textNormal(16.w)
+                          style: Styles.textFiraNormal(16.w)
                               .copyWith(color: Styles.whiteText),
                         ),
                       ],
@@ -210,16 +210,20 @@ class EmailLoginPage extends StatelessWidget {
           )),
           TextSpan(
               text: '已阅读并同意',
-              style: Styles.textNormal(12).copyWith(color: Styles.greyText)),
+              style:
+                  Styles.textFiraNormal(12).copyWith(color: Styles.greyText)),
           TextSpan(
               text: '服务协议',
-              style: Styles.textNormal(12).copyWith(color: Styles.normalBlue)),
+              style:
+                  Styles.textFiraNormal(12).copyWith(color: Styles.normalBlue)),
           TextSpan(
               text: '和',
-              style: Styles.textNormal(12).copyWith(color: Styles.greyText)),
+              style:
+                  Styles.textFiraNormal(12).copyWith(color: Styles.greyText)),
           TextSpan(
               text: 'RELAX隐私保护指引',
-              style: Styles.textNormal(12).copyWith(color: Styles.normalBlue)),
+              style:
+                  Styles.textFiraNormal(12).copyWith(color: Styles.normalBlue)),
         ]),
       ),
     );

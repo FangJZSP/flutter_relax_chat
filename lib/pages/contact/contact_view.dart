@@ -63,7 +63,7 @@ class ContactPage extends StatelessWidget {
             SizedBox(width: 8.w),
             Text(
               '联系人',
-              style: Styles.textNormal(18.w).copyWith(color: Styles.blackText),
+              style: Styles.textFiraNormal(18.w).copyWith(color: Styles.blackText),
             ),
             const Spacer(),
             IconButton(
@@ -104,7 +104,7 @@ class ContactPage extends StatelessWidget {
               ),
               Text(
                 '搜索',
-                style: Styles.textNormal(14.w).copyWith(color: Styles.greyText),
+                style: Styles.textFiraNormal(14.w).copyWith(color: Styles.greyText),
               )
             ],
           ),
@@ -123,7 +123,7 @@ class ContactPage extends StatelessWidget {
             Expanded(
                 child: Text(
               '新朋友',
-              style: Styles.textNormal(16.w).copyWith(color: Styles.blackText),
+              style: Styles.textFiraNormal(16.w).copyWith(color: Styles.blackText),
             )),
             Icon(
               Icons.arrow_forward_ios,
@@ -145,7 +145,7 @@ class ContactPage extends StatelessWidget {
             Expanded(
                 child: Text(
               '群通知',
-              style: Styles.textNormal(16.w).copyWith(color: Styles.blackText),
+              style: Styles.textFiraNormal(16.w).copyWith(color: Styles.blackText),
             )),
             Icon(
               Icons.arrow_forward_ios,
@@ -193,7 +193,7 @@ class ContactPage extends StatelessWidget {
                   model.contactType.desc,
                   maxLines: 1,
                   overflow: TextOverflow.visible,
-                  style: Styles.textNormal(14.w).copyWith(
+                  style: Styles.textFiraNormal(14.w).copyWith(
                     height: 0.85,
                     color: state.selectedType.value == index
                         ? Styles.normalBlue
@@ -286,13 +286,13 @@ class ContactPage extends StatelessWidget {
                 Text(
                   friend.name,
                   style:
-                      Styles.textNormal(16.w).copyWith(color: Styles.blackText),
+                      Styles.textFiraNormal(16.w).copyWith(color: Styles.blackText),
                 ),
                 SizedBox(height: 4.w),
                 Text(
                   '[设备在线～] go relaxing',
                   style:
-                      Styles.textNormal(10.w).copyWith(color: Styles.greyText),
+                      Styles.textFiraNormal(10.w).copyWith(color: Styles.greyText),
                 ),
               ],
             ),
@@ -318,7 +318,7 @@ class ContactPage extends StatelessWidget {
             SizedBox(width: 8.w),
             Text(
               room.name,
-              style: Styles.textNormal(16.w).copyWith(color: Styles.blackText),
+              style: Styles.textFiraNormal(16.w).copyWith(color: Styles.blackText),
             ),
           ],
         ),

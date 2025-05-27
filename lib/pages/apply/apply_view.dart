@@ -31,7 +31,7 @@ class ApplyPage extends StatelessWidget {
                     children: [
                       Text(
                         state.applyType == FindType.person ? '申请好友' : '申请加群',
-                        style: Styles.textNormal(18.w),
+                        style: Styles.textFiraNormal(18.w),
                       ),
                     ],
                   ),
@@ -75,7 +75,7 @@ class ApplyPage extends StatelessWidget {
                         children: [
                           Text(
                             '填写申请信息',
-                            style: Styles.textNormal(16.w)
+                            style: Styles.textFiraNormal(16.w)
                                 .copyWith(color: Styles.greyText),
                           ),
                         ],
@@ -95,7 +95,7 @@ class ApplyPage extends StatelessWidget {
                         ),
                         child: Text(
                           '发送申请',
-                          style: Styles.textNormal(16.w)
+                          style: Styles.textFiraNormal(16.w)
                               .copyWith(color: Styles.whiteText),
                         ),
                       ),
@@ -119,7 +119,7 @@ class ApplyPage extends StatelessWidget {
         ),
         Text(
           name,
-          style: Styles.textNormal(24.w),
+          style: Styles.textFiraNormal(24.w),
         ),
       ],
     );

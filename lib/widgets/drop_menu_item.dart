@@ -40,7 +40,8 @@ class DropMenuItems {
         Expanded(
           child: Text(
             item.text,
-            style: Styles.textNormal(16.w).copyWith(color: Styles.blackText),
+            style:
+                Styles.textFiraNormal(16.w).copyWith(color: Styles.blackText),
           ),
         ),
       ],

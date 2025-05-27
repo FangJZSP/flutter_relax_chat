@@ -29,7 +29,7 @@ class GroupNoticePage extends StatelessWidget {
                   children: [
                     Text(
                       '群通知',
-                      style: Styles.textNormal(18.w),
+                      style: Styles.textFiraNormal(18.w),
                     ),
                   ],
                 ),
@@ -52,7 +52,7 @@ class GroupNoticePage extends StatelessWidget {
                     children: [
                       Text(
                         '入群申请',
-                        style: Styles.textBold(12.w),
+                        style: Styles.textFiraBold(12.w),
                       ),
                     ],
                   ),
@@ -102,19 +102,19 @@ class GroupNoticePage extends StatelessWidget {
               children: [
                 Text(
                   apply.name,
-                  style: Styles.textBold(16.w),
+                  style: Styles.textFiraBold(16.w),
                 ),
                 SizedBox(height: 4.w),
                 Text(
                   '申请加入：${apply.groupName}',
-                  style:
-                      Styles.textNormal(14.w).copyWith(color: Styles.greyText),
+                  style: Styles.textFiraNormal(14.w)
+                      .copyWith(color: Styles.greyText),
                 ),
                 SizedBox(height: 4.w),
                 Text(
                   apply.message,
-                  style:
-                      Styles.textNormal(14.w).copyWith(color: Styles.greyText),
+                  style: Styles.textFiraNormal(14.w)
+                      .copyWith(color: Styles.greyText),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),

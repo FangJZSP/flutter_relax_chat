@@ -102,7 +102,8 @@ class ChatPage extends StatelessWidget {
             ),
             Text(
               actionName,
-              style: Styles.textNormal(12.w).copyWith(color: Styles.whiteText),
+              style:
+                  Styles.textFiraNormal(12.w).copyWith(color: Styles.whiteText),
             ),
           ],
         ),
@@ -131,13 +132,13 @@ class ChatPage extends StatelessWidget {
                   state.conversation.value.name.isNotEmpty
                       ? state.conversation.value.name
                       : 'Loading',
-                  style:
-                      Styles.textNormal(14.w).copyWith(color: Styles.blackText),
+                  style: Styles.textFiraNormal(14.w)
+                      .copyWith(color: Styles.blackText),
                 ),
                 Obx(() {
                   return Text(
                     SocketManager.instance.didConnect.value ? '在线>' : '离线>',
-                    style: Styles.textNormal(8.w)
+                    style: Styles.textFiraNormal(8.w)
                         .copyWith(color: Styles.blackText),
                   );
                 }),

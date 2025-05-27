@@ -47,7 +47,7 @@ class _MsgCellState extends State<MsgCell> {
       default:
         return Text(
           '消息气泡暂未处理这种类型',
-          style: Styles.textNormal(10).copyWith(color: Styles.greyText),
+          style: Styles.textFiraNormal(10).copyWith(color: Styles.greyText),
         );
     }
   }
@@ -92,7 +92,8 @@ class _MsgCellState extends State<MsgCell> {
             children: [
               Text(
                 _cell.messageModel.msg.senderName,
-                style: Styles.textNormal(12.w).copyWith(color: Styles.greyText),
+                style: Styles.textFiraNormal(12.w)
+                    .copyWith(color: Styles.greyText),
               ),
               SizedBox(height: 4.w),
               Stack(
@@ -116,14 +117,14 @@ class _MsgCellState extends State<MsgCell> {
                             padding: const EdgeInsets.only(bottom: 4.0),
                             child: Text(
                               '| ${_cell.messageModel.msg.reply.username}: ${_cell.messageModel.msg.reply.body}',
-                              style: Styles.textNormal(14)
+                              style: Styles.textFiraNormal(14)
                                   .copyWith(color: Styles.grey),
                               overflow: TextOverflow.fade,
                             ),
                           ),
                         Text(
                           _cell.messageModel.msg.body.content,
-                          style: Styles.textNormal(14)
+                          style: Styles.textFiraNormal(14)
                               .copyWith(color: Styles.blackText),
                         ),
                       ],
@@ -177,7 +178,8 @@ class _MsgCellState extends State<MsgCell> {
             children: [
               Text(
                 _cell.messageModel.msg.senderName,
-                style: Styles.textNormal(12.w).copyWith(color: Styles.greyText),
+                style: Styles.textFiraNormal(12.w)
+                    .copyWith(color: Styles.greyText),
               ),
               const SizedBox(
                 height: 4,
@@ -200,14 +202,14 @@ class _MsgCellState extends State<MsgCell> {
                         padding: const EdgeInsets.only(bottom: 4.0),
                         child: Text(
                           '| ${_cell.messageModel.msg.reply.username}: ${_cell.messageModel.msg.reply.body}',
-                          style: Styles.textNormal(14.w)
+                          style: Styles.textFiraNormal(14.w)
                               .copyWith(color: Styles.grey),
                           overflow: TextOverflow.fade,
                         ),
                       ),
                     Text(
                       _cell.messageModel.msg.body.content,
-                      style: Styles.textNormal(14.w)
+                      style: Styles.textFiraNormal(14.w)
                           .copyWith(color: Styles.blackText),
                     ),
                   ],
@@ -229,7 +231,7 @@ class _MsgCellState extends State<MsgCell> {
             borderRadius: BorderRadius.all(Radius.circular(4))),
         child: Text(
           _cell.messageModel.msg.body.toString(),
-          style: Styles.textNormal(12).copyWith(color: Styles.greyText),
+          style: Styles.textFiraNormal(12).copyWith(color: Styles.greyText),
         ));
   }
 }

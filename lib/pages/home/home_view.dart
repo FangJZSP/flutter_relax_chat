@@ -44,10 +44,12 @@ class HomePage extends StatelessWidget {
                           backgroundColor:
                               Styles.navigationBarColor.withOpacity(0.9),
                           enableFeedback: true,
-                          selectedLabelStyle: Styles.textNormal(10).copyWith(
+                          selectedLabelStyle:
+                              Styles.textFiraNormal(10).copyWith(
                             color: Styles.normalBlue,
                           ),
-                          unselectedLabelStyle: Styles.textNormal(10).copyWith(
+                          unselectedLabelStyle:
+                              Styles.textFiraNormal(10).copyWith(
                             color: Styles.blackText,
                           ),
                           onTap: (int index) {
@@ -115,7 +117,7 @@ class HomePage extends StatelessWidget {
                                         .isNotEmpty
                                     ? UserManager.instance.state.user.value.name
                                     : 'Loading...',
-                                style: Styles.textNormal(16.w)
+                                style: Styles.textFiraNormal(16.w)
                                     .copyWith(color: Styles.blackText),
                               ),
                               const Spacer(),
@@ -125,7 +127,7 @@ class HomePage extends StatelessWidget {
                                 },
                                 child: Text(
                                   '退出账号',
-                                  style: Styles.textNormal(10.w)
+                                  style: Styles.textFiraNormal(10.w)
                                       .copyWith(color: Styles.blackText),
                                 ),
                               ),
@@ -133,7 +135,7 @@ class HomePage extends StatelessWidget {
                           ),
                           Text(
                             'go relaxing',
-                            style: Styles.textNormal(10.w)
+                            style: Styles.textFiraNormal(10.w)
                                 .copyWith(color: Styles.greyText),
                           ),
                         ],
@@ -150,14 +152,14 @@ class HomePage extends StatelessWidget {
                     contentPadding: EdgeInsets.zero,
                     title: Text(
                       '当前连接ws url:',
-                      style: Styles.textNormal(16.w)
+                      style: Styles.textFiraNormal(16.w)
                           .copyWith(color: Styles.blackText),
                     ),
                     subtitle: Text(
                       GlobalManager.instance.state.isDev
                           ? Info.websocketDevUrl
                           : Info.websocketProdUrl,
-                      style: Styles.textNormal(10.w)
+                      style: Styles.textFiraNormal(10.w)
                           .copyWith(color: Styles.normalBlue),
                     ),
                   ),
@@ -165,12 +167,12 @@ class HomePage extends StatelessWidget {
                     contentPadding: EdgeInsets.zero,
                     title: Text(
                       '当前用户token:',
-                      style: Styles.textNormal(16.w)
+                      style: Styles.textFiraNormal(16.w)
                           .copyWith(color: Styles.blackText),
                     ),
                     subtitle: Text(
                       net.token,
-                      style: Styles.textNormal(10.w)
+                      style: Styles.textFiraNormal(10.w)
                           .copyWith(color: Styles.normalBlue),
                     ),
                     onTap: () {

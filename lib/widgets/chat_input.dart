@@ -123,7 +123,7 @@ class _ChatInputState extends State<ChatInput> {
                 isCollapsed: true,
                 contentPadding: EdgeInsets.all(8.w),
                 hintStyle: widget.hintStyle ??
-                    Styles.textNormal(16).copyWith(color: Styles.greyText),
+                    Styles.textFiraNormal(16).copyWith(color: Styles.greyText),
                 filled: true,
                 fillColor: Styles.white,
                 focusedBorder: const OutlineInputBorder(
@@ -197,7 +197,7 @@ class _ChatInputState extends State<ChatInput> {
                     ),
                     child: Text(
                       '发送',
-                      style: Styles.textNormal(12.w).copyWith(
+                      style: Styles.textFiraNormal(12.w).copyWith(
                         color: Styles.whiteText,
                       ),
                     ),

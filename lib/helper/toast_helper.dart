@@ -74,7 +74,8 @@ void showTipsToast(
                 string,
                 textAlign: textAlign,
                 style: textStyle ??
-                    Styles.textNormal(14.w).copyWith(color: Styles.whiteText),
+                    Styles.textFiraNormal(14.w)
+                        .copyWith(color: Styles.whiteText),
                 maxLines: 10,
               ),
             ),

@@ -40,7 +40,7 @@ class LoginPage extends StatelessWidget {
       children: [
         Text(
           'Relax',
-          style: Styles.textBold(48).copyWith(color: Styles.deepBlue),
+          style: Styles.textFiraBold(48).copyWith(color: Styles.deepBlue),
         ),
         const SizedBox(
           height: 200,
@@ -67,8 +67,8 @@ class LoginPage extends StatelessWidget {
                 ),
                 Text(
                   '登录',
-                  style:
-                      Styles.textNormal(14.w).copyWith(color: Styles.whiteText),
+                  style: Styles.textFiraNormal(14.w)
+                      .copyWith(color: Styles.whiteText),
                 )
               ],
             ),
@@ -112,16 +112,20 @@ class LoginPage extends StatelessWidget {
           )),
           TextSpan(
               text: '已阅读并同意',
-              style: Styles.textNormal(12).copyWith(color: Styles.greyText)),
+              style:
+                  Styles.textFiraNormal(12).copyWith(color: Styles.greyText)),
           TextSpan(
               text: '服务协议',
-              style: Styles.textNormal(12).copyWith(color: Styles.normalBlue)),
+              style:
+                  Styles.textFiraNormal(12).copyWith(color: Styles.normalBlue)),
           TextSpan(
               text: '和',
-              style: Styles.textNormal(12).copyWith(color: Styles.greyText)),
+              style:
+                  Styles.textFiraNormal(12).copyWith(color: Styles.greyText)),
           TextSpan(
               text: 'RELAX隐私保护指引',
-              style: Styles.textNormal(12).copyWith(color: Styles.normalBlue)),
+              style:
+                  Styles.textFiraNormal(12).copyWith(color: Styles.normalBlue)),
         ]),
       ),
     );

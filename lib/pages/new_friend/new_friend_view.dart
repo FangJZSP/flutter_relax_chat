@@ -32,7 +32,7 @@ class NewFriendPage extends StatelessWidget {
                   children: [
                     Text(
                       '新朋友',
-                      style: Styles.textNormal(18.w),
+                      style: Styles.textFiraNormal(18.w),
                     ),
                   ],
                 ),
@@ -51,7 +51,7 @@ class NewFriendPage extends StatelessWidget {
                     onTap: logic.goAdd,
                     child: Text(
                       '添加',
-                      style: Styles.textNormal(16.w),
+                      style: Styles.textFiraNormal(16.w),
                     ),
                   ),
                 ),
@@ -67,7 +67,7 @@ class NewFriendPage extends StatelessWidget {
                   children: [
                     Text(
                       '好友通知',
-                      style: Styles.textBold(14.w),
+                      style: Styles.textFiraBold(14.w),
                     ),
                   ],
                 ),
@@ -116,13 +116,13 @@ class NewFriendPage extends StatelessWidget {
               children: [
                 Text(
                   friend.name,
-                  style: Styles.textBold(16.w),
+                  style: Styles.textFiraBold(16.w),
                 ),
                 SizedBox(height: 4.w),
                 Text(
                   friend.message,
-                  style:
-                      Styles.textNormal(12.w).copyWith(color: Styles.greyText),
+                  style: Styles.textFiraNormal(12.w)
+                      .copyWith(color: Styles.greyText),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -132,12 +132,14 @@ class NewFriendPage extends StatelessWidget {
           if (friend.applyStatus == FriendApplyStatus.accepted)
             Text(
               '已同意',
-              style: Styles.textNormal(14.w).copyWith(color: Styles.greyText),
+              style:
+                  Styles.textFiraNormal(14.w).copyWith(color: Styles.greyText),
             )
           else if (friend.applyStatus == FriendApplyStatus.rejected)
             Text(
               '已拒绝',
-              style: Styles.textNormal(14.w).copyWith(color: Styles.greyText),
+              style:
+                  Styles.textFiraNormal(14.w).copyWith(color: Styles.greyText),
             )
           else
             Row(
@@ -154,8 +156,8 @@ class NewFriendPage extends StatelessWidget {
                     ),
                     child: Text(
                       '同意',
-                      style:
-                          Styles.textNormal(14.w).copyWith(color: Styles.white),
+                      style: Styles.textFiraNormal(14.w)
+                          .copyWith(color: Styles.white),
                     ),
                   ),
                 ),
@@ -171,7 +173,7 @@ class NewFriendPage extends StatelessWidget {
                     ),
                     child: Text(
                       '拒绝',
-                      style: Styles.textNormal(14.w)
+                      style: Styles.textFiraNormal(14.w)
                           .copyWith(color: Styles.greyText),
                     ),
                   ),

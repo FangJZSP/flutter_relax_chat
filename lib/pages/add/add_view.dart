@@ -82,7 +82,7 @@ class AddPage extends StatelessWidget {
               padding: EdgeInsets.fromLTRB(16.w, 8.w, 16.w, 8.w),
               child: Text(
                 '找人',
-                style: Styles.textNormal(12.w).copyWith(
+                style: Styles.textFiraNormal(12.w).copyWith(
                     color: state.findType.value == FindType.person
                         ? Styles.white
                         : Styles.black),
@@ -108,7 +108,7 @@ class AddPage extends StatelessWidget {
               ),
               padding: EdgeInsets.fromLTRB(16.w, 8.w, 16.w, 8.w),
               child: Text('找群',
-                  style: Styles.textNormal(12.w).copyWith(
+                  style: Styles.textFiraNormal(12.w).copyWith(
                       color: state.findType.value == FindType.group
                           ? Styles.white
                           : Styles.black)),
@@ -138,10 +138,10 @@ class AddPage extends StatelessWidget {
                     : '🔍群名~',
                 boxField: true,
                 contentPadding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 0),
-                hintTextStyle:
-                    Styles.textNormal(12.w).copyWith(color: Styles.greyText),
-                inputTextStyle:
-                    Styles.textNormal(12.w).copyWith(color: Styles.blackText),
+                hintTextStyle: Styles.textFiraNormal(12.w)
+                    .copyWith(color: Styles.greyText),
+                inputTextStyle: Styles.textFiraNormal(12.w)
+                    .copyWith(color: Styles.blackText),
               ),
             ),
             SizedBox(width: 8.w),
@@ -155,7 +155,7 @@ class AddPage extends StatelessWidget {
                 ),
                 child: Text(
                   '搜索',
-                  style: Styles.textNormal(12.w).copyWith(
+                  style: Styles.textFiraNormal(12.w).copyWith(
                     color: Styles.whiteText,
                   ),
                 ),
@@ -183,7 +183,7 @@ class AddPage extends StatelessWidget {
               children: [
                 Text(
                   room.name,
-                  style: Styles.textLight(16.w).copyWith(
+                  style: Styles.textFiraLight(16.w).copyWith(
                     color: Styles.blackText,
                   ),
                 ),
@@ -198,7 +198,7 @@ class AddPage extends StatelessWidget {
                       ),
                       Text(
                         room.memberCount.toString(),
-                        style: Styles.textLight(12.w).copyWith(
+                        style: Styles.textFiraLight(12.w).copyWith(
                           color: Styles.greyText,
                         ),
                       ),
@@ -222,7 +222,7 @@ class AddPage extends StatelessWidget {
                   border: Border.all(color: Styles.black)),
               child: Text(
                 room.isJoined ? '已加入' : '加入',
-                style: Styles.textNormal(12.w).copyWith(
+                style: Styles.textFiraNormal(12.w).copyWith(
                   color: Styles.blackText,
                 ),
               ),
@@ -249,7 +249,7 @@ class AddPage extends StatelessWidget {
               children: [
                 Text(
                   user.name,
-                  style: Styles.textLight(16.w).copyWith(
+                  style: Styles.textFiraLight(16.w).copyWith(
                     color: Styles.blackText,
                   ),
                 ),
@@ -264,7 +264,7 @@ class AddPage extends StatelessWidget {
                       ),
                       Text(
                         user.sex == 0 ? '男' : '女',
-                        style: Styles.textLight(10.w).copyWith(
+                        style: Styles.textFiraLight(10.w).copyWith(
                           color: Styles.grey,
                         ),
                       ),
@@ -288,7 +288,7 @@ class AddPage extends StatelessWidget {
                   border: Border.all(color: Styles.black)),
               child: Text(
                 user.isFriend ? '已添加' : '加好友',
-                style: Styles.textNormal(12.w).copyWith(
+                style: Styles.textFiraNormal(12.w).copyWith(
                   color: Styles.blackText,
                 ),
               ),
@@ -330,7 +330,7 @@ class AddPage extends StatelessWidget {
                   padding: EdgeInsets.only(bottom: SizeConfig.bottomMargin),
                   child: Text(
                     '点击搜索，寻找更多群聊～',
-                    style: Styles.textNormal(16.w)
+                    style: Styles.textFiraNormal(16.w)
                         .copyWith(color: Styles.greyText),
                   ),
                 ),
@@ -363,7 +363,7 @@ class AddPage extends StatelessWidget {
                   padding: EdgeInsets.only(bottom: SizeConfig.bottomMargin),
                   child: Text(
                     '点击搜索，寻找更多好友～',
-                    style: Styles.textNormal(16.w)
+                    style: Styles.textFiraNormal(16.w)
                         .copyWith(color: Styles.greyText),
                   ),
                 ),
