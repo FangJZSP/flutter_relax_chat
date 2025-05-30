@@ -116,7 +116,8 @@ class ChatLogic extends GetxController {
   }
 
   void onReceiveMsg(WSMessageModel wsMessageModel) {
-    if (wsMessageModel.senderIsMe) {
+    if (wsMessageModel.senderIsMe ||
+        wsMessageModel.msg.roomId != state.conversation.value.roomId) {
       return;
     }
     logger.d('聊天页面收到新消息');
