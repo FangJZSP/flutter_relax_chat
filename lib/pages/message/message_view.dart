@@ -6,7 +6,6 @@ import 'package:relax_chat/manager/global_manager.dart';
 import 'package:relax_chat/manager/socket/socket_manager.dart';
 import 'package:relax_chat/manager/user_manager.dart';
 import 'package:relax_chat/model/conversation_model.dart';
-import 'package:relax_chat/widgets/base/base_app_bar.dart';
 import 'package:relax_chat/widgets/image/round_avatar.dart';
 import '../../common/common.dart';
 import '../../widgets/drop_menu_item.dart';
@@ -22,13 +21,17 @@ class MessagePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     state.context = context;
-    return Container(color: Styles.bgColor, child: mainContent());
+    return Scaffold(
+        appBar: appBar(),
+        body: Container(
+          color: Styles.bgColor,
+          child: mainContent(),
+        ));
   }
 
   Widget mainContent() {
     return Column(
       children: [
-        appBar(),
         Expanded(
           child: GetBuilder<MessageLogic>(
             builder: (logic) {
@@ -42,78 +45,80 @@ class MessagePage extends StatelessWidget {
     );
   }
 
-  Widget appBar() {
-    return BaseAppBar(
-      child: Padding(
-        padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Obx(() {
-              return GestureDetector(
-                onTap: logic.openDrawer,
-                child: RoundAvatar(
-                  height: 28.w,
-                  url: UserManager.instance.state.user.value.avatar,
-                ),
-              );
-            }),
-            SizedBox(width: 8.w),
-            Obx(() {
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    UserManager.instance.state.user.value.name.isNotEmpty
-                        ? UserManager.instance.state.user.value.name
-                        : 'Loading...',
-                    style: Styles.textFiraNormal(14.w)
-                        .copyWith(color: Styles.blackText),
-                  ),
-                  Obx(() {
-                    return Text(
-                      SocketManager.instance.didConnect.value ? '在线>' : '离线>',
-                      style: Styles.textFiraNormal(8.w)
-                          .copyWith(color: Styles.blackText),
-                    );
-                  }),
-                ],
-              );
-            }),
-            const Spacer(),
-            DropdownButtonHideUnderline(
-              child: DropdownButton2(
-                customButton: Icon(
-                  Icons.add_sharp,
-                  size: 24.w,
-                ),
-                items: [
-                  ...DropMenuItems.messagePageItems.map(
-                    (item) => DropdownMenuItem<DropMenuItem>(
-                      value: item,
-                      child: DropMenuItems.buildItem(item),
-                    ),
-                  ),
-                ],
-                onChanged: (value) {
-                  DropMenuItems.onChanged(state.context, value!);
-                },
-                dropdownStyleData: DropdownStyleData(
-                  width: 160.w,
-                  padding: EdgeInsets.zero,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(4.w),
-                    color: Styles.bgColor,
-                  ),
-                  offset: const Offset(0, -20),
-                ),
-                menuItemStyleData: const MenuItemStyleData(),
+  AppBar appBar() {
+    return AppBar(
+      backgroundColor: Styles.appBarColor,
+      leadingWidth: double.infinity,
+      leading: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          SizedBox(width: SizeConfig.bodyPadding),
+          Obx(() {
+            return GestureDetector(
+              onTap: logic.openDrawer,
+              child: RoundAvatar(
+                height: 28.w,
+                url: UserManager.instance.state.user.value.avatar,
               ),
-            ),
-          ],
-        ),
+            );
+          }),
+          SizedBox(width: 8.w),
+          Obx(() {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  UserManager.instance.state.user.value.name.isNotEmpty
+                      ? UserManager.instance.state.user.value.name
+                      : 'Loading...',
+                  style: Styles.textFiraNormal(14.w)
+                      .copyWith(color: Styles.blackText),
+                ),
+                Obx(() {
+                  return Text(
+                    SocketManager.instance.didConnect.value ? '在线>' : '离线>',
+                    style: Styles.textFiraNormal(8.w)
+                        .copyWith(color: Styles.blackText),
+                  );
+                }),
+              ],
+            );
+          }),
+        ],
       ),
+      actions: [
+        DropdownButtonHideUnderline(
+          child: DropdownButton2(
+            customButton: Icon(
+              Icons.add_sharp,
+              size: 24.w,
+            ),
+            items: [
+              ...DropMenuItems.messagePageItems.map(
+                (item) => DropdownMenuItem<DropMenuItem>(
+                  value: item,
+                  child: DropMenuItems.buildItem(item),
+                ),
+              ),
+            ],
+            onChanged: (value) {
+              DropMenuItems.onChanged(state.context, value!);
+            },
+            dropdownStyleData: DropdownStyleData(
+              width: 160.w,
+              padding: EdgeInsets.zero,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(4.w),
+                color: Styles.bgColor,
+              ),
+              offset: const Offset(0, -20),
+            ),
+            menuItemStyleData: const MenuItemStyleData(),
+          ),
+        ),
+        SizedBox(width: SizeConfig.bodyPadding),
+      ],
     );
   }
 

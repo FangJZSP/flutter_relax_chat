@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:relax_chat/model/room_model.dart';
 import 'package:relax_chat/pages/add/add_state.dart';
-import 'package:relax_chat/widgets/base/base_app_bar.dart';
 import 'package:relax_chat/widgets/image/round_avatar.dart';
 
 import '../../common/common.dart';
@@ -22,25 +21,12 @@ class AddPage extends StatelessWidget {
       onTap: logic.onTapBg,
       child: Scaffold(
         backgroundColor: Styles.white,
+        appBar: AppBar(
+          backgroundColor: Styles.appBarColor,
+          title: selectSegment(),
+        ),
         body: Column(
           children: [
-            BaseAppBar(
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  selectSegment(),
-                  Positioned(
-                    left: 0,
-                    child: IconButton(
-                      icon: const Icon(Icons.arrow_back_ios),
-                      onPressed: () {
-                        Get.back();
-                      },
-                    ),
-                  ),
-                ],
-              ),
-            ),
             findInputBar(),
             Expanded(
                 child: Container(
@@ -60,7 +46,7 @@ class AddPage extends StatelessWidget {
   Widget selectSegment() {
     return Obx(() {
       return Row(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
         children: [
           GestureDetector(
             onTap: logic.findPerson,

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:relax_chat/pages/add/add_state.dart';
-import 'package:relax_chat/widgets/base/base_app_bar.dart';
+
 import 'package:relax_chat/widgets/custom_text_field.dart';
 import 'package:relax_chat/widgets/image/round_avatar.dart';
 
@@ -20,33 +20,15 @@ class ApplyPage extends StatelessWidget {
       onTap: logic.onTapBg,
       child: Scaffold(
         backgroundColor: Styles.white,
+        appBar: AppBar(
+          backgroundColor: Styles.appBarColor,
+          title: Text(
+            state.applyType == FindType.person ? '申请好友' : '申请加群',
+            style: Styles.textFiraNormal(18.w),
+          ),
+        ),
         body: Column(
           children: [
-            BaseAppBar(
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        state.applyType == FindType.person ? '申请好友' : '申请加群',
-                        style: Styles.textFiraNormal(18.w),
-                      ),
-                    ],
-                  ),
-                  Positioned(
-                    left: 0,
-                    child: IconButton(
-                      icon: const Icon(Icons.arrow_back_ios),
-                      onPressed: () {
-                        Get.back();
-                      },
-                    ),
-                  ),
-                ],
-              ),
-            ),
             Expanded(
               child: Padding(
                 padding: EdgeInsets.fromLTRB(

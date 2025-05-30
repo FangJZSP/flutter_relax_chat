@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../common/common.dart';
 import '../../model/resp/group_apply_list_resp.dart';
-import '../../widgets/base/base_app_bar.dart';
 import '../../widgets/image/round_avatar.dart';
 import 'group_notice_logic.dart';
 
@@ -17,32 +16,20 @@ class GroupNoticePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Styles.white,
+      appBar: AppBar(
+        backgroundColor: Styles.appBarColor,
+        title: Text(
+          '群通知',
+          style: Styles.textFiraNormal(18.w),
+        ),
+        actions: [
+          SizedBox(
+            width: SizeConfig.bodyPadding,
+          )
+        ],
+      ),
       body: Column(
         children: [
-          BaseAppBar(
-            appBarColor: Styles.white,
-            child: Stack(
-              alignment: Alignment.center,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      '群通知',
-                      style: Styles.textFiraNormal(18.w),
-                    ),
-                  ],
-                ),
-                Positioned(
-                  left: 0,
-                  child: IconButton(
-                    icon: const Icon(Icons.arrow_back_ios),
-                    onPressed: () => Get.back(),
-                  ),
-                ),
-              ],
-            ),
-          ),
           Expanded(
             child: Padding(
               padding: EdgeInsets.fromLTRB(16.w, 16.w, 16.w, 0),

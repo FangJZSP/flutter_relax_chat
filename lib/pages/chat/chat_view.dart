@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:relax_chat/common/size_config.dart';
-import 'package:relax_chat/widgets/base/base_app_bar.dart';
 
 import '../../common/styles.dart';
 
@@ -21,66 +20,104 @@ class ChatPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Obx(() {
-      return ChatWidget(
-        chatController: state.chatController,
-        roomId: state.conversation.value.roomId,
-        inputTextFocusNode: state.focusNode,
-        onTapBg: logic.onTapBg,
-        backgroundColor: Styles.white,
-        showLoading: state.showLoading.value,
-        loadingView: const CircularProgressIndicator(),
-        onRefresh: logic.refreshMessageList,
-        onLoad: state.isLast.value ? null : logic.loadMessageList,
-        customHeadBuilder: headBuilder,
-        customPinBuilder: pinBuilder,
-        customBottomBuilder: bottomBuilder,
-        customMessageCellBuilder: messageCellBuilder,
-        toBottomFloatWidget: toBottomFloatWidget(),
-        resizeToAvoidBottomInset: true,
-        popupMenuParams: PopupMenuParams(
-          menuBgColor: const Color.fromRGBO(80, 85, 87, 1),
-          onMenuShow: (messageCellModel) {},
-          getActions: (messageCellModel) {
-            return [
-              MessageActionType.copy,
-              MessageActionType.quote,
-              MessageActionType.pin,
-              MessageActionType.translate,
-            ];
-          },
-          buildAction: (messageActionType, messageCellModel,
-              dynamic Function()? removePop) {
-            if (messageActionType == MessageActionType.copy) {
-              return actionWidget(
-                icon: Icons.copy_outlined,
-                actionName: '复制',
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Styles.appBarColor,
+        title: Row(
+          children: [
+            Obx(() {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    state.conversation.value.name.isNotEmpty
+                        ? state.conversation.value.name
+                        : 'Loading',
+                    style: Styles.textFiraNormal(14.w)
+                        .copyWith(color: Styles.blackText),
+                  ),
+                  Obx(() {
+                    return Text(
+                      SocketManager.instance.didConnect.value ? '在线>' : '离线>',
+                      style: Styles.textFiraNormal(8.w)
+                          .copyWith(color: Styles.blackText),
+                    );
+                  }),
+                ],
               );
-            }
-            if (messageActionType == MessageActionType.pin) {
-              return actionWidget(
-                icon: Icons.upgrade_outlined,
-                actionName: '置顶',
-              );
-            }
-            if (messageActionType == MessageActionType.quote) {
-              return actionWidget(
-                icon: Icons.format_quote_outlined,
-                actionName: '引用',
-              );
-            }
-            if (messageActionType == MessageActionType.translate) {
-              return actionWidget(
-                icon: Icons.translate,
-                actionName: '翻译',
-              );
-            }
-            return Container();
-          },
-          bottomHeight: SizeConfig.bottomMargin,
+            }),
+          ],
         ),
-      );
-    });
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.dehaze),
+            onPressed: () {},
+          ),
+          SizedBox(width: SizeConfig.bodyPadding),
+        ],
+      ),
+      body: Obx(() {
+        return ChatWidget(
+          chatController: state.chatController,
+          roomId: state.conversation.value.roomId,
+          inputTextFocusNode: state.focusNode,
+          onTapBg: logic.onTapBg,
+          backgroundColor: Styles.white,
+          showLoading: state.showLoading.value,
+          loadingView: const CircularProgressIndicator(),
+          onRefresh: logic.refreshMessageList,
+          onLoad: state.isLast.value ? null : logic.loadMessageList,
+          customHeadBuilder: headBuilder,
+          customPinBuilder: pinBuilder,
+          customBottomBuilder: bottomBuilder,
+          customMessageCellBuilder: messageCellBuilder,
+          toBottomFloatWidget: toBottomFloatWidget(),
+          resizeToAvoidBottomInset: true,
+          popupMenuParams: PopupMenuParams(
+            menuBgColor: const Color.fromRGBO(80, 85, 87, 1),
+            onMenuShow: (messageCellModel) {},
+            getActions: (messageCellModel) {
+              return [
+                MessageActionType.copy,
+                MessageActionType.quote,
+                MessageActionType.pin,
+                MessageActionType.translate,
+              ];
+            },
+            buildAction: (messageActionType, messageCellModel,
+                dynamic Function()? removePop) {
+              if (messageActionType == MessageActionType.copy) {
+                return actionWidget(
+                  icon: Icons.copy_outlined,
+                  actionName: '复制',
+                );
+              }
+              if (messageActionType == MessageActionType.pin) {
+                return actionWidget(
+                  icon: Icons.upgrade_outlined,
+                  actionName: '置顶',
+                );
+              }
+              if (messageActionType == MessageActionType.quote) {
+                return actionWidget(
+                  icon: Icons.format_quote_outlined,
+                  actionName: '引用',
+                );
+              }
+              if (messageActionType == MessageActionType.translate) {
+                return actionWidget(
+                  icon: Icons.translate,
+                  actionName: '翻译',
+                );
+              }
+              return Container();
+            },
+            bottomHeight: SizeConfig.bottomMargin,
+          ),
+        );
+      }),
+    );
   }
 
   Widget actionWidget({
@@ -112,46 +149,9 @@ class ChatPage extends StatelessWidget {
   }
 
   Widget headBuilder(BuildContext ctx) {
-    return BaseAppBar(
-      needTopMargin: false,
-      child: Row(
-        children: [
-          IconButton(
-            icon: const Icon(Icons.arrow_back_ios),
-            onPressed: () {
-              Get.back();
-            },
-          ),
-          Container(),
-          Obx(() {
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  state.conversation.value.name.isNotEmpty
-                      ? state.conversation.value.name
-                      : 'Loading',
-                  style: Styles.textFiraNormal(14.w)
-                      .copyWith(color: Styles.blackText),
-                ),
-                Obx(() {
-                  return Text(
-                    SocketManager.instance.didConnect.value ? '在线>' : '离线>',
-                    style: Styles.textFiraNormal(8.w)
-                        .copyWith(color: Styles.blackText),
-                  );
-                }),
-              ],
-            );
-          }),
-          const Spacer(),
-          IconButton(
-            icon: const Icon(Icons.dehaze),
-            onPressed: () {},
-          ),
-        ],
-      ),
+    return Container(
+      height: 0,
+      color: Styles.normalBlue,
     );
   }
 

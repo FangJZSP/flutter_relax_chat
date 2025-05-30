@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:relax_chat/common/common.dart';
-
-import '../../../common/styles.dart';
 import 'email_login_logic.dart';
 
 class EmailLoginPage extends StatelessWidget {

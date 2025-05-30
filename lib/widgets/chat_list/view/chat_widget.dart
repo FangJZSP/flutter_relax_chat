@@ -1,5 +1,4 @@
 import 'package:easy_refresh/easy_refresh.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:get/get.dart';
@@ -310,7 +309,7 @@ class _ChatWidgetState extends State<ChatWidget>
   Widget _buildContent() {
     return Column(
       children: [
-        widget.customHeadBuilder?.call(context),
+        widget.customHeadBuilder?.call(context) ?? const SizedBox(),
         widget.customPinBuilder?.call(context) ?? const SizedBox(),
         Expanded(
             child: Stack(

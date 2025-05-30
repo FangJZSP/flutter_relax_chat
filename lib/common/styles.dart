@@ -14,12 +14,9 @@ class Styles {
   static const Color lightBlue = Color.fromRGBO(121, 187, 235, 1);
   static const Color coverBlue = Color.fromRGBO(66, 81, 98, 1);
 
-  /// app
-  static const Color appNameColor = Colors.deepOrange;
   static const Color appBarColor = Color.fromRGBO(251, 251, 251, 1);
-
-  /// bg
   static const Color navigationBarColor = Color.fromRGBO(250, 250, 250, 1);
+
   static const Color bgColor = Color.fromRGBO(255, 255, 255, 1);
   static const Color greyBgColor = Color.fromRGBO(242, 242, 242, 1);
 

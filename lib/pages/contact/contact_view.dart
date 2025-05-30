@@ -6,7 +6,6 @@ import '../../manager/user_manager.dart';
 import '../../model/resp/friend_list_resp.dart';
 import '../../model/room_model.dart';
 import '../../model/widget/contact_type_model.dart';
-import '../../widgets/base/base_app_bar.dart';
 import '../../widgets/image/round_avatar.dart';
 import 'contact_logic.dart';
 import 'contact_state.dart';
@@ -20,13 +19,56 @@ class ContactPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     state.context = context;
-    return Container(color: Styles.bgColor, child: mainContent());
+    return Scaffold(
+        appBar: appBar(),
+        body: Container(
+          color: Styles.bgColor,
+          child: mainContent(),
+        ));
+  }
+
+  AppBar appBar() {
+    return AppBar(
+      backgroundColor: Styles.appBarColor,
+      leadingWidth: double.infinity,
+      leading: Row(
+        children: [
+          SizedBox(width: SizeConfig.bodyPadding),
+          Obx(() {
+            return GestureDetector(
+              onTap: logic.openDrawer,
+              child: RoundAvatar(
+                height: 28.w,
+                url: UserManager.instance.state.user.value.avatar,
+              ),
+            );
+          }),
+          SizedBox(width: 8.w),
+          Text(
+            '联系人',
+            style:
+                Styles.textFiraNormal(18.w).copyWith(color: Styles.blackText),
+          ),
+        ],
+      ),
+      actions: [
+        IconButton(
+          onPressed: () {
+            logic.goAdd();
+          },
+          icon: Icon(
+            Icons.person_add_alt,
+            size: 24.w,
+          ),
+        ),
+        SizedBox(width: SizeConfig.bodyPadding),
+      ],
+    );
   }
 
   Widget mainContent() {
     return Column(
       children: [
-        appBar(),
         buildSearchBar(),
         buildNewFriendNotice(),
         buildGroupNotice(),
@@ -42,42 +84,6 @@ class ContactPage extends StatelessWidget {
           child: _buildPageView(),
         ),
       ],
-    );
-  }
-
-  Widget appBar() {
-    return BaseAppBar(
-      child: Padding(
-        padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 0),
-        child: Row(
-          children: [
-            Obx(() {
-              return GestureDetector(
-                onTap: logic.openDrawer,
-                child: RoundAvatar(
-                  height: 28.w,
-                  url: UserManager.instance.state.user.value.avatar,
-                ),
-              );
-            }),
-            SizedBox(width: 8.w),
-            Text(
-              '联系人',
-              style: Styles.textFiraNormal(18.w).copyWith(color: Styles.blackText),
-            ),
-            const Spacer(),
-            IconButton(
-              onPressed: () {
-                logic.goAdd();
-              },
-              icon: Icon(
-                Icons.person_add_alt,
-                size: 24.w,
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 
@@ -104,7 +110,8 @@ class ContactPage extends StatelessWidget {
               ),
               Text(
                 '搜索',
-                style: Styles.textFiraNormal(14.w).copyWith(color: Styles.greyText),
+                style: Styles.textFiraNormal(14.w)
+                    .copyWith(color: Styles.greyText),
               )
             ],
           ),
@@ -123,7 +130,8 @@ class ContactPage extends StatelessWidget {
             Expanded(
                 child: Text(
               '新朋友',
-              style: Styles.textFiraNormal(16.w).copyWith(color: Styles.blackText),
+              style:
+                  Styles.textFiraNormal(16.w).copyWith(color: Styles.blackText),
             )),
             Icon(
               Icons.arrow_forward_ios,
@@ -145,7 +153,8 @@ class ContactPage extends StatelessWidget {
             Expanded(
                 child: Text(
               '群通知',
-              style: Styles.textFiraNormal(16.w).copyWith(color: Styles.blackText),
+              style:
+                  Styles.textFiraNormal(16.w).copyWith(color: Styles.blackText),
             )),
             Icon(
               Icons.arrow_forward_ios,
@@ -285,14 +294,14 @@ class ContactPage extends StatelessWidget {
               children: [
                 Text(
                   friend.name,
-                  style:
-                      Styles.textFiraNormal(16.w).copyWith(color: Styles.blackText),
+                  style: Styles.textFiraNormal(16.w)
+                      .copyWith(color: Styles.blackText),
                 ),
                 SizedBox(height: 4.w),
                 Text(
                   '[设备在线～] go relaxing',
-                  style:
-                      Styles.textFiraNormal(10.w).copyWith(color: Styles.greyText),
+                  style: Styles.textFiraNormal(10.w)
+                      .copyWith(color: Styles.greyText),
                 ),
               ],
             ),
@@ -318,7 +327,8 @@ class ContactPage extends StatelessWidget {
             SizedBox(width: 8.w),
             Text(
               room.name,
-              style: Styles.textFiraNormal(16.w).copyWith(color: Styles.blackText),
+              style:
+                  Styles.textFiraNormal(16.w).copyWith(color: Styles.blackText),
             ),
           ],
         ),
