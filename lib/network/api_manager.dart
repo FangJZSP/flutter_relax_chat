@@ -82,12 +82,17 @@ class ApiManager {
   }
 
   /// 获取消息列表
-  Future<Result<MessageListResp>> getMessageList(
-      {required int roomId, String? cursor, int size = 20}) async {
+  Future<Result<MessageListResp>> getMessageList({
+    required int roomId,
+    required int page,
+    String? cursor,
+    int size = 20,
+  }) async {
     Result<MessageListResp> result = await net.postRequest(
       '$hostStr/chat/msg/list',
       {
         if (cursor != null) 'cursor': cursor,
+        'page': page,
         'size': size,
         'roomId': roomId,
       },

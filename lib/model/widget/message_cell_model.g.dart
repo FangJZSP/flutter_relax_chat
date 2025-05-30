@@ -8,7 +8,7 @@ part of 'message_cell_model.dart';
 
 MessageCellModel _$MessageCellModelFromJson(Map<String, dynamic> json) =>
     MessageCellModel(
-      defaultWSMessageModel(json['messageModel']),
+      defaultMessageModel(json['messageModel']),
       $enumDecodeNullable(_$MessageCellTypeEnumMap, json['msgCellType']) ??
           MessageCellType.addNew,
       json['messageId'] as String? ?? '',

@@ -12,7 +12,6 @@ import '../../manager/event_bus_manager.dart';
 import '../../manager/log_manager.dart';
 import '../../model/msg_body_model.dart';
 import '../../model/msg_model.dart';
-import '../../model/req/text_msg_req.dart';
 import '../../model/resp/msg_list_resp.dart';
 import '../../model/ws/resp/ws_msg_model.dart';
 import '../../network/api_manager.dart';
@@ -29,13 +28,12 @@ class ChatLogic extends GetxController {
     super.onInit();
     ConversationManager.instance.enterConversation(state.conversation.value);
     state.chatController = ChatController(
-      jumpToBottomCallback: () {},
       inputFocusNode: state.focusNode,
     );
     state.wsMsgReceiveBus = eventBus.on<WSReceivedMsgEvent>().listen((event) {
-      _onReceiveMsg(event.model);
+      onReceiveMsg(event.model);
     });
-    getMessageList();
+    refreshMessageList();
   }
 
   @override
@@ -54,31 +52,35 @@ class ChatLogic extends GetxController {
     Get.back(result: state.conversation.value.roomId);
   }
 
-  Future<void> getMessageList() async {
+  Future<void> refreshMessageList() async {
     if (state.isLast.value) {
       return;
     }
-    // state.showLoading.value = true;
+
     Result<MessageListResp> result = await api.getMessageList(
       roomId: state.conversation.value.roomId,
       cursor: state.cursor,
-      size: 20,
+      page: state.page,
+      size: state.pageSize,
     );
 
-    /// 保存分页数据
+    if (result.ok == false) {
+      showTipsToast('获取消息列表失败');
+      return;
+    }
+
+    state.page += 1;
     state.cursor = result.data?.cursor;
     state.isLast.value = result.data?.isLast ?? false;
 
-    /// 列表反转加入消息列表
-    state.messages.addAll(result.data?.list.reversed ?? []);
-    List<MessageCellModel> msgCells = state.messages
+    List<MessageCellModel> msgCells = (result.data?.list ?? [])
         .map(
           (element) => MessageCellModel.fromJson({})
             ..messageModel = element
             ..msgCellType = MessageCellType.addOld,
         )
         .toList();
-    _handleNewMsgList(msgCells);
+    state.chatController.updateMessage(msgCells);
     state.showLoading.value = false;
   }
 
@@ -86,57 +88,54 @@ class ChatLogic extends GetxController {
     if (state.isLast.value) {
       return;
     }
+
     Result<MessageListResp> result = await api.getMessageList(
       roomId: state.conversation.value.roomId,
       cursor: state.cursor,
-      size: 20,
+      page: state.page + 1,
+      size: state.pageSize,
     );
 
-    /// 保存分页数据
+    if (result.ok == false) {
+      showTipsToast('加载消息列表失败');
+      return;
+    }
+
+    state.page += 1;
     state.cursor = result.data?.cursor;
     state.isLast.value = result.data?.isLast ?? false;
 
-    /// 列表反转加入消息列表
-    state.messages.addAll(result.data?.list.reversed ?? []);
-    List<MessageCellModel> msgCells = state.messages
+    List<MessageCellModel> msgCells = (result.data?.list ?? [])
         .map(
           (element) => MessageCellModel.fromJson({})
             ..messageModel = element
             ..msgCellType = MessageCellType.addOld,
         )
         .toList();
-    _handleNewMsgList(msgCells);
+    state.chatController.updateMessage(msgCells);
   }
 
-  void _onReceiveMsg(WSMessageModel msg) {
-    if (msg.senderIsMe) {
+  void onReceiveMsg(WSMessageModel wsMessageModel) {
+    if (wsMessageModel.senderIsMe) {
       return;
     }
     logger.d('聊天页面收到新消息');
-    _handleNewMsgList([
+    state.chatController.updateMessage([
       MessageCellModel.fromJson({})
-        ..messageModel = msg
+        ..messageModel = wsMessageModel.msg
         ..msgCellType = MessageCellType.addNew
     ]);
   }
 
-  /// 处理消息，将list插入消息数据源中，
-  void _handleNewMsgList(List<MessageCellModel> list) {
-    list = list.reversed.toList();
-    updateMessage(list);
-  }
-
-  void updateMessage(dynamic message) {
-    state.chatController.updateMessage(message);
-  }
-
   Future<void> sendTextMsg(String message) async {
-    TextMsgReq textMsgReq = TextMsgReq.fromJson({})..content = message;
     UserModel me = UserManager.instance.state.user.value;
+
+    int sendTime = DateTime.now().millisecondsSinceEpoch;
 
     // 构建消息body
     MessageBodyModel messageBodyModel = MessageBodyModel.fromJson({})
-      ..content = message;
+      ..content = message
+      ..atUidList = [];
 
     // 构建消息model
     MessageModel messageModel = MessageModel.fromJson({})
@@ -144,21 +143,19 @@ class ChatLogic extends GetxController {
       ..msgType = MessageModelType.text.code
       ..senderAvatar = me.avatar
       ..senderId = me.uid
-      ..senderName = me.name;
-
-    // 构建ws消息model
-    WSMessageModel wsMessageModel = WSMessageModel(messageModel);
+      ..senderName = me.name
+      ..sendTime = sendTime;
 
     // 构建ui消息model
     MessageCellModel messageCellModel = MessageCellModel.fromJson({})
-      ..messageModel = wsMessageModel
+      ..messageModel = messageModel
       ..messageId =
-          '${UserManager.instance.state.user.value.uid}${DateTime.now().millisecondsSinceEpoch}${Random().nextInt(10000)}'
+          '${UserManager.instance.state.user.value.uid}$sendTime${Random().nextInt(10000)}'
       ..msgCellType = MessageCellType.addNew
       ..status = MessageStatus.delivering.code;
 
     // 处理ui消息model
-    _handleNewMsgList([messageCellModel]);
+    state.chatController.updateMessage([messageCellModel]);
 
     // 发送文本消息
     Result<WSMessageModel> result = await api.sendMsg(
@@ -166,20 +163,20 @@ class ChatLogic extends GetxController {
       msgType: MessageModelType.text.code,
       body: {
         'content': message,
-        if (textMsgReq.replyMsgId != null) 'replyMsgId': textMsgReq.replyMsgId,
-        'atUidList': textMsgReq.atUidList,
+        'replyMsgId': null,
+        'atUidList': [],
       },
     );
 
     if (result.ok) {
-      _handleNewMsgList([
+      state.chatController.updateMessage([
         messageCellModel
           ..msgCellType = MessageCellType.update
           ..status = MessageStatus.succeed.code
       ]);
     } else {
       showTipsToast(result.message ?? '发送消息失败～');
-      _handleNewMsgList([
+      state.chatController.updateMessage([
         messageCellModel
           ..msgCellType = MessageCellType.update
           ..status = MessageStatus.failed.code

@@ -4,7 +4,6 @@ import 'package:relax_chat/widgets/image/network_image_widget.dart';
 
 import '../../common/size_config.dart';
 import '../../common/styles.dart';
-import '../../manager/user_manager.dart';
 import '../../widgets/image/round_avatar.dart';
 import 'profile_logic.dart';
 

@@ -11,7 +11,7 @@ MessageListResp _$MessageListRespFromJson(Map<String, dynamic> json) =>
       json['cursor'] as String? ?? '',
       json['isLast'] as bool? ?? false,
       (json['list'] as List<dynamic>?)
-              ?.map((e) => WSMessageModel.fromJson(e as Map<String, dynamic>))
+              ?.map((e) => MessageModel.fromJson(e as Map<String, dynamic>))
               .toList() ??
           [],
     );

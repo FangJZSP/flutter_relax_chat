@@ -5,8 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:relax_chat/manager/log_manager.dart';
 import 'package:relax_chat/model/conversation_model.dart';
-import 'package:relax_chat/model/ws/resp/ws_msg_model.dart';
-
 import '../../widgets/chat_list/controller/chat_controller.dart';
 
 class ChatState {
@@ -20,11 +18,11 @@ class ChatState {
 
   Rx<ConversationModel> conversation = ConversationModel.fromJson({}).obs;
 
-  RxList<WSMessageModel> messages = RxList<WSMessageModel>.empty();
-
   RxDouble chatInputBottomHeight = 0.0.obs;
 
   String? cursor;
+
+  int page = 1;
 
   int pageSize = 20;
 

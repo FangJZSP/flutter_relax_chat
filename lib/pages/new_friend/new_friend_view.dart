@@ -1,9 +1,7 @@
 import 'package:easy_refresh/easy_refresh.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:relax_chat/model/resp/friend_list_resp.dart';
-import 'package:relax_chat/model/user_model.dart';
 import 'package:relax_chat/widgets/base/base_app_bar.dart';
 import 'package:relax_chat/widgets/image/round_avatar.dart';
 

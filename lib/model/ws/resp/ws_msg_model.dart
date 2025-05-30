@@ -1,6 +1,4 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:relax_chat/model/user_model.dart';
-
 import '../../../manager/user_manager.dart';
 import '../../msg_model.dart';
 

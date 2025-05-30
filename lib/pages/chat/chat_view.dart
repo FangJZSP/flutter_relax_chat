@@ -30,7 +30,7 @@ class ChatPage extends StatelessWidget {
         backgroundColor: Styles.white,
         showLoading: state.showLoading.value,
         loadingView: const CircularProgressIndicator(),
-        onRefresh: logic.getMessageList,
+        onRefresh: logic.refreshMessageList,
         onLoad: state.isLast.value ? null : logic.loadMessageList,
         customHeadBuilder: headBuilder,
         customPinBuilder: pinBuilder,

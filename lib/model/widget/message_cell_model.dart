@@ -1,5 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
-import '../ws/resp/ws_msg_model.dart';
+import '../msg_model.dart';
 
 part 'message_cell_model.g.dart';
 
@@ -35,8 +35,8 @@ enum MessageStatus {
 
 @JsonSerializable()
 class MessageCellModel {
-  @JsonKey(fromJson: defaultWSMessageModel)
-  WSMessageModel messageModel;
+  @JsonKey(fromJson: defaultMessageModel)
+  MessageModel messageModel;
 
   @JsonKey(defaultValue: MessageCellType.addNew)
   MessageCellType msgCellType;
@@ -72,7 +72,7 @@ class MessageCellModel {
 
   Map<String, dynamic> toJson() => _$MessageCellModelToJson(this);
 
-  void updateMessage(WSMessageModel message) {
+  void updateMessage(MessageModel message) {
     messageModel = message;
   }
 }

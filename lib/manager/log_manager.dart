@@ -15,4 +15,15 @@ class MyLogFilter extends LogFilter {
 }
 
 /// 自定义打点样式
-class MyLogPrinter extends PrettyPrinter {}
+class MyLogPrinter extends PrettyPrinter {
+  @override
+  int get methodCount => 0;
+
+  @override
+  bool get colors => false;
+
+  @override
+  Map<Level, bool> get excludeBox => {
+        Level.info: true,
+      };
+}

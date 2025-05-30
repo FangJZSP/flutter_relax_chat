@@ -1,5 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:relax_chat/model/msg_reply_model.dart';
+import '../manager/user_manager.dart';
 import 'msg_body_model.dart';
 import 'msg_mark_model.dart';
 
@@ -79,6 +80,10 @@ class MessageModel {
       _$MessageModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$MessageModelToJson(this);
+
+  bool get senderIsMe {
+    return senderId == UserManager.instance.state.user.value.uid;
+  }
 }
 
 MessageModel defaultMessageModel(var value) {

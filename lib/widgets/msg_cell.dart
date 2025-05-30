@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:relax_chat/helper/time_helper.dart';
 import 'package:relax_chat/model/msg_model.dart';
 import 'package:relax_chat/model/widget/message_cell_model.dart';
 
@@ -38,7 +39,7 @@ class _MsgCellState extends State<MsgCell> {
   }
 
   Widget _msgCell() {
-    switch (MessageModelType.fromCode(_cell.messageModel.msg.msgType)) {
+    switch (MessageModelType.fromCode(_cell.messageModel.msgType)) {
       case MessageModelType.text:
         return _cell.messageModel.senderIsMe ? sendMsgCell() : receiveMsgCell();
       case MessageModelType.system:
@@ -90,10 +91,22 @@ class _MsgCellState extends State<MsgCell> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              Text(
-                _cell.messageModel.msg.senderName,
-                style: Styles.textFiraNormal(12.w)
-                    .copyWith(color: Styles.greyText),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text(
+                    TimeUtils.timestamp3TimeString(_cell.messageModel.sendTime),
+                    style: Styles.textFiraNormal(8.w)
+                        .copyWith(color: Styles.greyText),
+                  ),
+                  SizedBox(width: 4.w),
+                  Text(
+                    _cell.messageModel.senderName,
+                    style: Styles.textFiraLight(12.w)
+                        .copyWith(color: Styles.greyText),
+                  ),
+                ],
               ),
               SizedBox(height: 4.w),
               Stack(
@@ -112,18 +125,18 @@ class _MsgCellState extends State<MsgCell> {
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        if (_cell.messageModel.msg.reply.id > 0)
+                        if (_cell.messageModel.reply.id > 0)
                           Padding(
                             padding: const EdgeInsets.only(bottom: 4.0),
                             child: Text(
-                              '| ${_cell.messageModel.msg.reply.username}: ${_cell.messageModel.msg.reply.body}',
+                              '| ${_cell.messageModel.reply.username}: ${_cell.messageModel.reply.body}',
                               style: Styles.textFiraNormal(14)
                                   .copyWith(color: Styles.grey),
                               overflow: TextOverflow.fade,
                             ),
                           ),
                         Text(
-                          _cell.messageModel.msg.body.content,
+                          _cell.messageModel.body.content,
                           style: Styles.textFiraNormal(14)
                               .copyWith(color: Styles.blackText),
                         ),
@@ -142,7 +155,7 @@ class _MsgCellState extends State<MsgCell> {
           SizedBox(width: 8.w),
           RoundAvatar(
             height: 35.w,
-            url: _cell.messageModel.msg.senderAvatar,
+            url: _cell.messageModel.senderAvatar,
             borderDecoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border: Border.all(
@@ -163,7 +176,7 @@ class _MsgCellState extends State<MsgCell> {
         children: [
           RoundAvatar(
             height: 35.w,
-            url: _cell.messageModel.msg.senderAvatar,
+            url: _cell.messageModel.senderAvatar,
             borderDecoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border: Border.all(
@@ -176,13 +189,25 @@ class _MsgCellState extends State<MsgCell> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                _cell.messageModel.msg.senderName,
-                style: Styles.textFiraNormal(12.w)
-                    .copyWith(color: Styles.greyText),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text(
+                    _cell.messageModel.senderName,
+                    style: Styles.textFiraNormal(12.w)
+                        .copyWith(color: Styles.greyText),
+                  ),
+                  SizedBox(width: 4.w),
+                  Text(
+                    TimeUtils.timestamp3TimeString(_cell.messageModel.sendTime),
+                    style: Styles.textFiraLight(8.w)
+                        .copyWith(color: Styles.greyText),
+                  ),
+                ],
               ),
-              const SizedBox(
-                height: 4,
+              SizedBox(
+                height: 4.w,
               ),
               Container(
                 constraints: BoxConstraints(
@@ -197,18 +222,18 @@ class _MsgCellState extends State<MsgCell> {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    if (_cell.messageModel.msg.reply.id > 0)
+                    if (_cell.messageModel.reply.id > 0)
                       Padding(
                         padding: const EdgeInsets.only(bottom: 4.0),
                         child: Text(
-                          '| ${_cell.messageModel.msg.reply.username}: ${_cell.messageModel.msg.reply.body}',
+                          '| ${_cell.messageModel.reply.username}: ${_cell.messageModel.reply.body}',
                           style: Styles.textFiraNormal(14.w)
                               .copyWith(color: Styles.grey),
                           overflow: TextOverflow.fade,
                         ),
                       ),
                     Text(
-                      _cell.messageModel.msg.body.content,
+                      _cell.messageModel.body.content,
                       style: Styles.textFiraNormal(14.w)
                           .copyWith(color: Styles.blackText),
                     ),
@@ -230,7 +255,7 @@ class _MsgCellState extends State<MsgCell> {
             color: Styles.transparent,
             borderRadius: BorderRadius.all(Radius.circular(4))),
         child: Text(
-          _cell.messageModel.msg.body.toString(),
+          _cell.messageModel.body.toString(),
           style: Styles.textFiraNormal(12).copyWith(color: Styles.greyText),
         ));
   }

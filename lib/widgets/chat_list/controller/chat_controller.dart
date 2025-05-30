@@ -12,7 +12,7 @@ import 'package:scrollview_observer/scrollview_observer.dart';
 class ChatController<T extends MessageCellModel> {
   ChatController({
     required this.inputFocusNode,
-    required this.jumpToBottomCallback,
+    this.jumpToBottomCallback,
     this.needJumpToBottomWhenSendNewMsg = true,
   }) {
     // 列表观察
@@ -47,7 +47,7 @@ class ChatController<T extends MessageCellModel> {
 
   Function()? updateState;
 
-  final Function() jumpToBottomCallback;
+  Function()? jumpToBottomCallback;
 
   final bool needJumpToBottomWhenSendNewMsg;
 
@@ -182,7 +182,7 @@ class ChatController<T extends MessageCellModel> {
       case MessageCellType.chatMarker:
         {
           for (T model in list) {
-            if (model.messageModel.msg.id == bean.messageModel.msg.id) {
+            if (model.messageModel.id == bean.messageModel.id) {
               if (bean.chatMarker != null) {
                 model.chatMarker = bean.chatMarker;
               }
@@ -203,7 +203,7 @@ class ChatController<T extends MessageCellModel> {
           for (T model in list) {
             // 远端拉取的消息有msgId，但messageId为''
             // 本地发送的消息有messageId(为自己创建的标识)，但msgId为0
-            if (model.messageModel.msg.id == bean.messageModel.msg.id &&
+            if (model.messageModel.id == bean.messageModel.id &&
                 model.messageId == bean.messageId) {
               model.updateMessage(bean.messageModel);
             }
@@ -246,7 +246,7 @@ class ChatController<T extends MessageCellModel> {
   void mergeMessages() {
     for (T cachedMsg in cachedMessageList) {
       if (messageList.indexWhere((element) =>
-              element.messageModel.msg.id == cachedMsg.messageModel.msg.id) ==
+              element.messageModel.id == cachedMsg.messageModel.id) ==
           -1) {
         messageList.add(cachedMsg);
       }
@@ -262,7 +262,7 @@ class ChatController<T extends MessageCellModel> {
   /// 处理撤回消息
   void handleRetract(T bean) {
     messageList.removeWhere(
-        (element) => element.messageModel.msg.id == bean.messageModel.msg.id);
+        (element) => element.messageModel.id == bean.messageModel.id);
   }
 
   void updateUnreadMsgCount({bool isReset = false, int changeCount = 1}) {
@@ -282,12 +282,12 @@ class ChatController<T extends MessageCellModel> {
       return null;
     }
     int index = showedMessageList.indexWhere(
-        (element) => element.messageModel.msg.id == cell.messageModel.msg.id);
+        (element) => element.messageModel.id == cell.messageModel.id);
     if (index != -1) {
       await observerController.jumpTo(
         index: index,
       );
-      return showedMessageList[index].messageModel.msg.id;
+      return showedMessageList[index].messageModel.id;
     }
     return null;
   }
@@ -316,7 +316,7 @@ class ChatController<T extends MessageCellModel> {
     );
     updateUnreadMsgCount(isReset: true);
     cachedMessageList.clear();
-    jumpToBottomCallback.call();
+    jumpToBottomCallback?.call();
     checkIfNeedShowJumpToBottom();
   }
 
@@ -332,7 +332,7 @@ class ChatController<T extends MessageCellModel> {
     }
     if (displayingChildIndexList.isNotEmpty) {
       updateLastViewedMessageId(
-          showedMessageList[displayingChildIndexList.last].messageModel.msg.id);
+          showedMessageList[displayingChildIndexList.last].messageModel.id);
     }
   }
 
@@ -356,14 +356,14 @@ class ChatController<T extends MessageCellModel> {
       return null;
     }
     int index = showedMessageList
-        .indexWhere((element) => element.messageModel.msg.id == messageId);
+        .indexWhere((element) => element.messageModel.id == messageId);
     return index >= 0 ? index : null;
   }
 
   void scrollToLastViewedMessage() {
     if (lastViewedMessageId.value != null && !hasReadLastViewedMessage.value) {
-      T? model = showedMessageList.firstWhereOrNull((element) =>
-          element.messageModel.msg.id == lastViewedMessageId.value);
+      T? model = showedMessageList.firstWhereOrNull(
+          (element) => element.messageModel.id == lastViewedMessageId.value);
       scrollToMessage(model).then((value) {
         if (value != null) {
           hasReadLastViewedMessage.value = true;

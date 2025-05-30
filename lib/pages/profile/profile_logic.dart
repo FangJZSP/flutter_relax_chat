@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:relax_chat/common/common.dart';
-
 import 'profile_state.dart';
 
 class ProfileLogic extends GetxController {

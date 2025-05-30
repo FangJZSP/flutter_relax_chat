@@ -1,6 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:relax_chat/model/ws/resp/ws_msg_model.dart';
-
+import '../msg_model.dart';
 part 'msg_list_resp.g.dart';
 
 @JsonSerializable()
@@ -10,7 +9,7 @@ class MessageListResp {
   @JsonKey(defaultValue: false)
   bool isLast;
   @JsonKey(defaultValue: [])
-  List<WSMessageModel> list;
+  List<MessageModel> list;
 
   MessageListResp(
     this.cursor,
