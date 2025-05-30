@@ -30,7 +30,7 @@ class ApiManager {
     required String code,
     required String password,
   }) async {
-    Result<String> result = await net.postRequest(
+    Result result = await net.postRequest(
       '$hostStr/user/register',
       {
         'name': name,
