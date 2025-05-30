@@ -2,6 +2,7 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:relax_chat/helper/time_helper.dart';
+import 'package:relax_chat/manager/global_manager.dart';
 import 'package:relax_chat/manager/socket/socket_manager.dart';
 import 'package:relax_chat/manager/user_manager.dart';
 import 'package:relax_chat/model/conversation_model.dart';
@@ -159,13 +160,19 @@ class MessagePage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
                         conversation.name,
                         style: Styles.textFiraNormal(16.w)
                             .copyWith(color: Styles.blackText),
                       ),
+                      if (GlobalManager.instance.isDev)
+                        Text(
+                          ' roomId:${conversation.roomId}',
+                          style: Styles.textFiraNormal(12.w)
+                              .copyWith(color: Styles.greyText),
+                        ),
+                      const Spacer(),
                       Text(
                         TimeUtils.timestamp3TimeString(conversation.activeTime),
                         style: Styles.textFiraNormal(10.w)

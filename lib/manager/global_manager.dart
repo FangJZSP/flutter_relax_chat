@@ -13,6 +13,8 @@ class GlobalManager {
 
   final GlobalState state = GlobalState();
 
+  bool get isDev => state.isDev;
+
   ///将方法推迟至应用第一帧绘制完成时执行，若已绘制完成则立即执行
   void doFirstFrameCallback(Function()? function) {
     if (state.allowFirstFrame) {

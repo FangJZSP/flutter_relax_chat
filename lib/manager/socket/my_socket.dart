@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:relax_chat/model/ws/req/ws_base_req.dart';
 import 'package:relax_chat/model/ws/resp/ws_msg_model.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
+import '../../model/ws/req/ws_token_req.dart';
 import '../../model/ws/resp/ws_base_res.dart';
 import '../event_bus_manager.dart';
 import '../log_manager.dart';
@@ -20,9 +21,11 @@ enum SocketConnectStatus {
 
 class MySocket {
   final String url;
+  final String Function() loginData;
 
   MySocket({
     required this.url,
+    required this.loginData,
   });
 
   WebSocketChannel? _channel;
@@ -164,6 +167,11 @@ class MySocket {
       }
       logger.d(
           'ws 连接成功, 重连次数: $_channelReconnectTimes, 平均连接耗时: ${_connectDurationMs}ms');
+
+      // 连接成功后执行鉴权
+      WSTokenReq wsReq =
+          WSTokenReq(WSReqType.authorize.type, TokenData(loginData()));
+      send(jsonEncode(wsReq.toJson()));
     } else if (isConnecting) {
       logger.d('ws 连接中..., 当前重连次数: $_channelReconnectTimes');
     } else if (isDisconnect) {
@@ -223,19 +231,18 @@ class MySocket {
     logger.d('ws 收到消息 $message');
     WSBaseResponseModel wsBaseModel =
         WSBaseResponseModel.fromJson(json.decode(message));
-    dynamic wsModel;
     switch (WSResType.fromType(wsBaseModel.type)) {
       case WSResType.newMessage:
-        wsModel = WSMessageModel.fromJson(wsBaseModel.res);
-        eventBus.fire(WSReceivedMsgEvent(wsModel));
+        eventBus
+            .fire(WSReceivedMsgEvent(WSMessageModel.fromJson(wsBaseModel.res)));
         break;
       case WSResType.loginUrl:
         break;
       case WSResType.loginScanSuccess:
         break;
       case WSResType.loginSuccess:
-        wsModel = WSLoginSuccessModel.fromJson(wsBaseModel.res);
-        eventBus.fire(WSLoginSuccessEvent(wsModel));
+        eventBus.fire(
+            WSLoginSuccessEvent(WSLoginSuccessModel.fromJson(wsBaseModel.res)));
         break;
       case WSResType.onlineOfflineNotify:
         break;

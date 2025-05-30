@@ -7,11 +7,7 @@ import 'package:relax_chat/manager/conversation_manager.dart';
 import 'package:relax_chat/manager/database/base/keys.dart';
 import 'package:relax_chat/manager/database/dao/user_box_dao.dart';
 import 'package:relax_chat/manager/database/dao_manager.dart';
-import 'package:relax_chat/manager/socket/socket_manager.dart';
-import 'package:relax_chat/model/ws/req/ws_base_req.dart';
 import 'package:relax_chat/pages/root/root_logic.dart';
-
-import '../model/ws/req/ws_token_req.dart';
 import '../pages/home/home_logic.dart';
 import '../route/routes.dart';
 import 'database/dao/local_box_dao.dart';
@@ -66,12 +62,7 @@ class UserManager {
   /// 初始化用户
   Future<void> initForLaunch() async {
     net.token = LocalBoxDao.instance.get(userTokenKey) ?? '';
-    if (net.token.isNotEmpty) {
-      // 发送token直接登录
-      WSTokenReq wsReq =
-          WSTokenReq(WSReqType.authorize.type, TokenData(net.token));
-      SocketManager.instance.send(jsonEncode(wsReq.toJson()));
-    } else {
+    if (net.token.isEmpty) {
       GlobalManager.instance.state.firstRoute = Routes.login;
     }
   }

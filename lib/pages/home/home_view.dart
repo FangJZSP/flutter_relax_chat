@@ -117,7 +117,13 @@ class HomePage extends StatelessWidget {
                                         .isNotEmpty
                                     ? UserManager.instance.state.user.value.name
                                     : 'Loading...',
-                                style: Styles.textFiraNormal(16.w)
+                                style: Styles.textFiraMedium(16.w)
+                                    .copyWith(color: Styles.blackText),
+                              ),
+                              SizedBox(width: 8.w),
+                              Text(
+                                UserManager.instance.state.user.value.email,
+                                style: Styles.textFiraNormal(12.w)
                                     .copyWith(color: Styles.blackText),
                               ),
                               const Spacer(),
@@ -134,7 +140,7 @@ class HomePage extends StatelessWidget {
                             ],
                           ),
                           Text(
-                            'go relaxing',
+                            'uid: ${UserManager.instance.state.user.value.uid}',
                             style: Styles.textFiraNormal(10.w)
                                 .copyWith(color: Styles.greyText),
                           ),

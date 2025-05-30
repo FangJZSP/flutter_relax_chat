@@ -22,7 +22,6 @@ class DaoManager {
   }
 
   Future<void> close() async {
-    await LocalBoxDao.instance.close();
     await UserBoxDao.instance.close();
     await ImBoxDao.instance.close();
     await CacheFileBoxDao.instance.close();
