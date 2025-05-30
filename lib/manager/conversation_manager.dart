@@ -28,7 +28,7 @@ class ConversationManager {
   ConversationState state = ConversationState();
 
   void reset() {
-    state.newMsgReceiveBus?.cancel();
+    // state.newMsgReceiveBus?.cancel();
   }
 
   void enterConversation(ConversationModel conversation) {
