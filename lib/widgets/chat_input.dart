@@ -1,8 +1,5 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:relax_chat/common/size_config.dart';
-
 import '../common/common.dart';
 
 enum InputBarState { normal, keyboardShow, pendingSend }

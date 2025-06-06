@@ -16,8 +16,6 @@ class ChatWidget extends StatefulWidget {
   /// 页面背景颜色
   final Color? backgroundColor;
 
-  final Widget? toBottomFloatWidget;
-
   /// 消息展示方式
   final Function(BuildContext context, MessageCellModel model, int index)
       customMessageCellBuilder;
@@ -32,10 +30,14 @@ class ChatWidget extends StatefulWidget {
   final Function(BuildContext context)? customBottomBuilder;
 
   /// 自定义列表的头
-  final Function(BuildContext context)? onHeaderBuilder;
+  final Function(BuildContext context)? customListHeadBuilder;
 
-  /// 自定义右下角未读消息提示框，注意不需要有点击事件
-  final Function(BuildContext context, int unReadCount)? unReadCountTipView;
+  /// 自定义跳转底部组件
+  final Function(BuildContext context)? customJumpBottomFloatBuilder;
+
+  /// 自定义未读消息提示框，注意不需要有点击事件
+  final Function(BuildContext context, int unReadCount)?
+      unreadCountFloatBuilder;
 
   /// 刷新最新数据
   final Future Function()? onRefresh;
@@ -90,12 +92,12 @@ class ChatWidget extends StatefulWidget {
     this.customPinBuilder,
     this.customHeadBuilder,
     this.customBottomBuilder,
-    this.toBottomFloatWidget,
+    this.customListHeadBuilder,
+    this.customJumpBottomFloatBuilder,
+    this.unreadCountFloatBuilder,
     this.popupMenuParams,
     this.backgroundColor,
-    this.unReadCountTipView,
     this.resizeToAvoidBottomInset = true,
-    this.onHeaderBuilder,
     this.showLoading = false,
     this.loadingView,
     this.cacheExtent,
@@ -134,8 +136,8 @@ class _ChatWidgetState extends State<ChatWidget>
   List<BuildContext> sliverListContexts = [];
 
   /// 如果列表头不为空，则增加一个构建项
-  int get dataCount {
-    int hc = widget.onHeaderBuilder == null ? 0 : 1;
+  int get _listItemCount {
+    int hc = widget.customListHeadBuilder == null ? 0 : 1;
     return chatController.showedMessageList.length + hc;
   }
 
@@ -243,25 +245,17 @@ class _ChatWidgetState extends State<ChatWidget>
   }
 
   Widget _buildToBottomView(BuildContext context) {
-    return widget.toBottomFloatWidget ??
+    return widget.customJumpBottomFloatBuilder?.call(context) ??
         Icon(
           Icons.arrow_drop_down_circle_outlined,
           size: 40.w,
           color: Styles.white,
-          shadows: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.5),
-              spreadRadius: 2,
-              blurRadius: 4,
-              offset: const Offset(0, 0),
-            ),
-          ],
         );
   }
 
   Widget _buildUnreadTipView(BuildContext context, int value) {
-    return widget.unReadCountTipView?.call(context, value) ??
-        const Text('消息未读');
+    return widget.unreadCountFloatBuilder?.call(context, value) ??
+        Text('消息未读$value');
   }
 
   @override
@@ -316,7 +310,7 @@ class _ChatWidgetState extends State<ChatWidget>
           children: [
             _buildListView(),
             if (widget.msgListOverlay != null) widget.msgListOverlay!,
-            buildLoadingView(),
+            _buildLoadingView(),
           ],
         )),
         CompositedTransformTarget(
@@ -328,7 +322,7 @@ class _ChatWidgetState extends State<ChatWidget>
     );
   }
 
-  Widget buildLoadingView() {
+  Widget _buildLoadingView() {
     return Positioned(
       top: 0,
       left: 0,
@@ -398,16 +392,16 @@ class _ChatWidgetState extends State<ChatWidget>
                         shrinkWrap: chatController.chatObserver.isShrinkWrap,
                         controller: chatController.scrollController,
                         cacheExtent: widget.cacheExtent ?? value,
-                        itemCount: dataCount,
+                        itemCount: _listItemCount,
                         itemBuilder: ((context, index) {
                           if (index == 0) {
                             sliverListContexts.clear();
                           }
                           sliverListContexts.add(context);
-                          if (widget.onHeaderBuilder != null &&
+                          if (widget.customListHeadBuilder != null &&
                               index ==
                                   chatController.showedMessageList.length) {
-                            return widget.onHeaderBuilder?.call(context);
+                            return widget.customListHeadBuilder?.call(context);
                           }
                           MessageCellModel cellModel =
                               chatController.showedMessageList[index];

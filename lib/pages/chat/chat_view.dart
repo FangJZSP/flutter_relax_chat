@@ -62,17 +62,18 @@ class ChatPage extends StatelessWidget {
           chatController: state.chatController,
           roomId: state.conversation.value.roomId,
           inputTextFocusNode: state.focusNode,
-          onTapBg: logic.onTapBg,
           backgroundColor: Styles.white,
           showLoading: state.showLoading.value,
           loadingView: const CircularProgressIndicator(),
+          onTapBg: logic.onTapBg,
           onRefresh: logic.refreshMessageList,
           onLoad: state.isLast.value ? null : logic.loadMessageList,
           customHeadBuilder: headBuilder,
           customPinBuilder: pinBuilder,
           customBottomBuilder: bottomBuilder,
           customMessageCellBuilder: messageCellBuilder,
-          toBottomFloatWidget: toBottomFloatWidget(),
+          unreadCountFloatBuilder: null,
+          customJumpBottomFloatBuilder: null,
           resizeToAvoidBottomInset: true,
           popupMenuParams: PopupMenuParams(
             menuBgColor: const Color.fromRGBO(80, 85, 87, 1),
@@ -207,23 +208,11 @@ class ChatPage extends StatelessWidget {
     );
   }
 
-  Widget toBottomFloatWidget() {
+  Widget jumpBottomFloatBuilder(BuildContext context) {
     return const SizedBox();
-    // return Obx(() {
-    //   return Visibility(
-    //       visible: state.unreadMessageCount.value <= 0 &&
-    //           !state.chatController.bottomNear,
-    //       child: Text('跳转底部'));
-    // });
   }
 
   Widget unreadTipFloatWidget() {
     return const SizedBox();
-    // return Obx(() {
-    //   return Visibility(
-    //       visible: state.unreadMessageCount.value > 0 &&
-    //           !state.chatController.bottomNear,
-    //       child: Text('新消息'));
-    // });
   }
 }
