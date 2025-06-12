@@ -162,7 +162,7 @@ class HomePage extends StatelessWidget {
                           .copyWith(color: Styles.blackText),
                     ),
                     subtitle: Text(
-                      GlobalManager.instance.isDev
+                      GlobalManager.instance.state.isDev
                           ? Info.websocketDevUrl
                           : Info.websocketProdUrl,
                       style: Styles.textFiraNormal(10.w)

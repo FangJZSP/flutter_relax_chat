@@ -13,7 +13,7 @@ class GlobalManager {
 
   final GlobalState state = GlobalState();
 
-  bool isDev = false;
+  bool get isDev => state.isDev;
 
   ///将方法推迟至应用第一帧绘制完成时执行，若已绘制完成则立即执行
   void doFirstFrameCallback(Function()? function) {
@@ -26,6 +26,8 @@ class GlobalManager {
 }
 
 class GlobalState {
+  bool isDev = false;
+
   String firstRoute = Routes.home;
 
   /// 存储页面绘制后回调的各方法

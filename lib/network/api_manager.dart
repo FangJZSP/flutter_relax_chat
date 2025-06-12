@@ -18,7 +18,9 @@ final api = ApiManager();
 
 class ApiManager {
   static String get hostStr {
-    return GlobalManager.instance.isDev ? Info.serveDevUrl : Info.serveProdUrl;
+    return GlobalManager.instance.state.isDev
+        ? Info.serveDevUrl
+        : Info.serveProdUrl;
   }
 
   /// 用户注册
