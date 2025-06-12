@@ -20,7 +20,7 @@ void main() {
 
 Future<void> launchApp() async {
   /// 配置app环境
-  GlobalManager.instance.state.isDev = true;
+  GlobalManager.instance.isDev = true;
 
   /// 初始化缓存
   await DaoManager.instance.init();
