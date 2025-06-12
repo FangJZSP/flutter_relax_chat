@@ -23,9 +23,8 @@ class Net {
   /// 获取自定义请求头
   Future<Map<String, dynamic>> getHeader(String url, Map? params) async {
     Map<String, dynamic> headers = {};
-    String sessionKey = token;
-    if (sessionKey.isNotEmpty) {
-      headers.putIfAbsent('Authorization', () => 'Bearer $sessionKey');
+    if (token.isNotEmpty) {
+      headers.putIfAbsent('Authorization', () => 'Bearer $token');
     }
     return headers;
   }
@@ -76,13 +75,14 @@ class Net {
   }) async {
     params = handleParams(params);
 
-    Response? response;
     Map<String, dynamic> header = await getHeader(url, params);
+
     Options options = Options()
       ..method = 'POST'
       ..receiveTimeout = const Duration(milliseconds: 10000)
       ..headers = header;
 
+    Response? response;
     Result<T> resultData;
     DioException? error;
     DateTime startTime = DateTime.now();
@@ -101,11 +101,11 @@ class Net {
 
     int responseTime = DateTime.now().difference(startTime).inMilliseconds;
     if (resultData.ok) {
-      logger.d('POST 成功 $url ${response?.statusCode}');
+      logger.d(
+          'POST 成功 $url ${response?.statusCode}\n消耗 ${responseTime / 1000}秒 ');
     } else {
-      logger.d('POST 失败 $url $resultData');
+      logger.d('POST 失败 $url $resultData\n消耗 ${responseTime / 1000}秒 ');
     }
-    logger.d('POST 消耗 ${responseTime / 1000}秒 ');
 
     return resultData;
   }
@@ -118,12 +118,13 @@ class Net {
   }) async {
     params = handleParams(params);
 
-    Response? response;
     Map<String, dynamic> header = await getHeader(url, params);
+
     Options options = Options()
       ..method = 'GET'
       ..headers = header;
 
+    Response? response;
     Result<T> resultData;
     DioException? error;
     DateTime startTime = DateTime.now();
@@ -143,11 +144,11 @@ class Net {
 
     int responseTime = DateTime.now().difference(startTime).inMilliseconds;
     if (resultData.ok) {
-      logger.d('GET 成功 $url ${response?.statusCode}');
+      logger.d(
+          'GET 成功 $url ${response?.statusCode}\n消耗 ${responseTime / 1000}秒 ');
     } else {
-      logger.d('GET 失败 $url $resultData');
+      logger.d('GET 失败 $url $resultData\n消耗 ${responseTime / 1000}秒 ');
     }
-    logger.d('GET 消耗 ${responseTime / 1000}秒 ');
 
     return resultData;
   }
