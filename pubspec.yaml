@@ -45,18 +45,23 @@ dependencies:
   hive: 2.2.3 # 缓存库
   badges: 3.1.2 # 红点
   bot_toast: 4.1.3 # toast提示
-  cupertino_icons: ^1.0.6
+  cupertino_icons: 1.0.6
   scroll_to_index: 3.0.1
   animate_do: 4.2.0
-  google_mlkit_language_id: ^0.11.0
-  google_mlkit_commons: ^0.8.0
+  google_mlkit_language_id: 0.11.0
+  google_mlkit_commons: 0.8.0
   dropdown_button2: 2.3.9
+  envied: 0.5.3 # 环境变量管理
+  encrypt: 5.0.3 # 加密库
+  crypto: ^3.0.3
+  random_string: ^2.3.1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   build_runner: 2.4.9
   json_serializable: 6.8.0 # 序列化
+  envied_generator: 0.5.3 # 环境变量代码生成
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is

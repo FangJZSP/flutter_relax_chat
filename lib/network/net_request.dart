@@ -1,8 +1,11 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:relax_chat/manager/database/base/keys.dart';
 import 'package:relax_chat/manager/database/dao/local_box_dao.dart';
+import 'package:relax_chat/network/network_helper.dart';
 import 'package:relax_chat/network/result.dart';
-
+import 'package:relax_chat/network/crypto_helper.dart';
 import '../manager/log_manager.dart';
 
 final net = Net();
@@ -20,13 +23,29 @@ class Net {
     LocalBoxDao.instance.set(userTokenKey, data);
   }
 
-  /// 获取自定义请求头
-  Future<Map<String, dynamic>> getHeader(String url, Map? params) async {
-    Map<String, dynamic> headers = {};
-    String sessionKey = token;
-    if (sessionKey.isNotEmpty) {
-      headers.putIfAbsent('Authorization', () => 'Bearer $sessionKey');
+  /// 加密请求数据
+  String _encryptRequestData(Map<String, dynamic>? params) {
+    if (params == null) {
+      return CryptoHelper.encryptJson({});
     }
+    return CryptoHelper.encryptJson(params);
+  }
+
+  /// 获取请求头
+  Future<Map<String, dynamic>> getHeader(
+      String url, String dataForSignature, bool isEncrypted) async {
+    Map<String, dynamic> headers = {};
+    if (token.isNotEmpty) {
+      headers.putIfAbsent('Authorization', () => 'Bearer $token');
+    }
+    headers.putIfAbsent('x-encrypted', () => isEncrypted ? 'true' : 'false');
+    int timestamp = DateTime.now().millisecondsSinceEpoch;
+    headers.putIfAbsent('x-timestamp', () => timestamp.toString());
+    String signature =
+        CryptoHelper.generateSignature(dataForSignature, timestamp.toString());
+    logger.d('url $signature');
+    headers.putIfAbsent('x-signature', () => signature);
+    headers['Content-Type'] = 'application/json';
     return headers;
   }
 
@@ -40,11 +59,29 @@ class Net {
 
   /// 处理请求结果
   Result<T> handleResponse<T>(
-      Response? response, T Function(Map<String, dynamic>)? fromJson) {
+    Response? response,
+    T Function(Map<String, dynamic>)? fromJson,
+  ) {
     Map responseMap = {};
     if (response != null && response.data is Map) {
       responseMap = response.data;
+    } else if (response != null && response.data is String) {
+      try {
+        final timestamp = response.headers.value('x-timestamp') ?? '';
+        final signature = response.headers.value('x-signature') ?? '';
+        if (timestamp.isNotEmpty && signature.isNotEmpty) {
+          if (!CryptoHelper.verifySignature(
+              response.data, timestamp, signature)) {
+            return Result.fail(400, '响应签名验证失败', responseMap: null);
+          }
+        }
+        responseMap = CryptoHelper.decryptJson(response.data);
+      } catch (e) {
+        logger.e('解密响应失败: $e');
+        return Result.fail(400, '解密响应失败', responseMap: null);
+      }
     }
+
     Result<T> result;
     if (response?.statusCode == 200) {
       var data = responseMap['data'];
@@ -75,9 +112,18 @@ class Net {
     bool needLogin = false,
   }) async {
     params = handleParams(params);
+    bool shouldEncrypt = !NetworkHelper.config.useDevHost;
+    String dataForSignature = params != null ? jsonEncode(params) : '{}';
+    dynamic requestData;
+    if (shouldEncrypt) {
+      requestData = _encryptRequestData(params);
+    } else {
+      requestData = params;
+    }
 
+    Map<String, dynamic> header =
+        await getHeader(url, dataForSignature, shouldEncrypt);
     Response? response;
-    Map<String, dynamic> header = await getHeader(url, params);
     Options options = Options()
       ..method = 'POST'
       ..receiveTimeout = const Duration(milliseconds: 10000)
@@ -88,7 +134,7 @@ class Net {
     DateTime startTime = DateTime.now();
 
     try {
-      response = await _dio.post(url, data: params, options: options);
+      response = await _dio.post(url, data: requestData, options: options);
       resultData = handleResponse(response, fromJson);
     } on DioException catch (e) {
       error = e;
@@ -117,9 +163,12 @@ class Net {
     bool needLogin = false,
   }) async {
     params = handleParams(params);
+    bool shouldEncrypt = !NetworkHelper.config.useDevHost;
+    String dataForSignature = params != null ? jsonEncode(params) : '{}';
 
     Response? response;
-    Map<String, dynamic> header = await getHeader(url, params);
+    Map<String, dynamic> header =
+        await getHeader(url, dataForSignature, shouldEncrypt);
     Options options = Options()
       ..method = 'GET'
       ..headers = header;

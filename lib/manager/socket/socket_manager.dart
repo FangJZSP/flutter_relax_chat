@@ -17,7 +17,7 @@ class SocketManager {
 
   void init() {
     setup(
-      wsUrl: GlobalManager.instance.state.isDev
+      wsUrl: GlobalManager.instance.isDev
           ? Info.websocketDevUrl
           : Info.websocketProdUrl,
       loginData: () => net.token,
