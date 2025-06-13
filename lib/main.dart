@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:minio_flutter/minio.dart';
 import 'app.dart';
+import 'common/common.dart';
 import 'manager/global_manager.dart';
 import 'manager/socket/socket_manager.dart';
 import 'manager/user_manager.dart';
@@ -17,11 +18,11 @@ void main() {
     statusBarBrightness: Brightness.light, // iOS状态栏亮度
   ));
   Minio.init(
-    endPoint: '8.153.38.39',
-    port: 9000,
-    accessKey: 'RhJkFRrfHpttD3n9',
-    secretKey: 'tWI2fPuEY64wBuqgQnV7kVVKfocSSHyZ',
-    useSSL: false,
+    endPoint: Info.minioEndPoint,
+    port: Info.minioPort,
+    accessKey: Info.minioAccessKey,
+    secretKey: Info.minioSecretKey,
+    useSSL: Info.minioUseSSL,
   );
   launchApp();
 }

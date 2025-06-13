@@ -1,20 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:minio_flutter/io.dart';
-import 'package:minio_flutter/minio.dart';
-import 'package:relax_chat/network/result.dart';
 import '../../common/common.dart';
 import '../../helper/toast_helper.dart';
 import '../../manager/global_manager.dart';
-import '../../manager/log_manager.dart';
 import '../../manager/user_manager.dart';
-import '../../network/api_manager.dart';
 import '../../network/net_request.dart';
 import '../../widgets/image/round_avatar.dart';
 import 'home_logic.dart';
-import 'package:path/path.dart' as path;
 
 class HomePage extends StatelessWidget {
   HomePage({super.key});
@@ -108,40 +101,7 @@ class HomePage extends StatelessWidget {
                     GestureDetector(
                       behavior: HitTestBehavior.opaque,
                       onTap: () async {
-                        final XFile? image = await state.picker
-                            .pickImage(source: ImageSource.gallery);
-                        if (image != null) {
-                          // 显示加载提示
-                          showLoadingToast();
-                          final fileName = path.basename(image.path);
-                          final extension = path.extension(fileName).isNotEmpty
-                              ? path.extension(fileName)
-                              : '.jpg';
-                          final timestamp =
-                              DateTime.now().millisecondsSinceEpoch;
-                          final objectName = 'images/$timestamp$extension';
-                          try {
-                            String url = await Minio.shared
-                                .fPutObject('relax', objectName, image.path);
-                            if (url.isEmpty) {
-                              showTipsToast('头像上传失败');
-                              return;
-                            }
-                            String avatar =
-                                'http://8.153.38.39:9000/relax/$objectName';
-                            // 更新用户头像
-                            Result result =
-                                await api.updateUserInfo(avatar: avatar);
-                            if (result.ok) {
-                              showTipsToast('头像更新成功');
-                            } else {
-                              showTipsToast('头像更新失败');
-                            }
-                          } catch (e) {
-                            logger.d('上传失败 $e');
-                            showTipsToast('上传失败');
-                          }
-                        }
+                        logic.pickAndUploadAvatar();
                       },
                       child: RoundAvatar(
                         height: 48.w,
