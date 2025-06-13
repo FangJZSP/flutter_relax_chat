@@ -2,6 +2,7 @@ import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../common/common.dart';
+import '../../model/resp/apply_resp.dart';
 import '../../model/resp/group_apply_list_resp.dart';
 import '../../widgets/image/round_avatar.dart';
 import 'group_notice_logic.dart';
@@ -108,6 +109,58 @@ class GroupNoticePage extends StatelessWidget {
               ],
             ),
           ),
+          // 添加同意和拒绝按钮
+          if (apply.status == ApplyStatus.accepted.code) // 已同意
+            Text(
+              '已同意',
+              style:
+                  Styles.textFiraNormal(14.w).copyWith(color: Styles.greyText),
+            )
+          else if (apply.status == ApplyStatus.rejected.code) // 已拒绝
+            Text(
+              '已拒绝',
+              style:
+                  Styles.textFiraNormal(14.w).copyWith(color: Styles.greyText),
+            )
+          else // 待处理
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                GestureDetector(
+                  onTap: () => logic.approve(apply, true),
+                  child: Container(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.w),
+                    decoration: BoxDecoration(
+                      color: Styles.normalBlue,
+                      borderRadius: BorderRadius.circular(4.w),
+                    ),
+                    child: Text(
+                      '同意',
+                      style: Styles.textFiraNormal(14.w)
+                          .copyWith(color: Styles.white),
+                    ),
+                  ),
+                ),
+                SizedBox(width: 8.w),
+                GestureDetector(
+                  onTap: () => logic.approve(apply, false),
+                  child: Container(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.w),
+                    decoration: BoxDecoration(
+                      color: Styles.greyBgColor,
+                      borderRadius: BorderRadius.circular(4.w),
+                    ),
+                    child: Text(
+                      '拒绝',
+                      style: Styles.textFiraNormal(14.w)
+                          .copyWith(color: Styles.greyText),
+                    ),
+                  ),
+                ),
+              ],
+            ),
         ],
       ),
     );

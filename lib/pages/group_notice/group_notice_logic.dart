@@ -1,5 +1,7 @@
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:get/get.dart';
+import 'package:relax_chat/model/resp/group_apply_list_resp.dart';
+import '../../helper/toast_helper.dart';
 import '../../network/api_manager.dart';
 import 'group_notice_state.dart';
 
@@ -65,5 +67,19 @@ class GroupNoticeLogic extends GetxController {
     }
 
     state.isLoading.value = false;
+  }
+
+  Future<void> approve(GroupApplyModel apply, bool isApprove) async {
+    showLoadingToast();
+    final result = await api.approveGroup(
+      userId: apply.userId,
+      roomId: apply.roomId,
+      isApprove: isApprove,
+    );
+
+    if (result.ok) {
+      refreshGroupApplyList(isRefresh: true);
+    }
+    cleanAllToast();
   }
 }

@@ -5,6 +5,7 @@ import 'package:relax_chat/model/resp/friend_list_resp.dart';
 import 'package:relax_chat/widgets/image/round_avatar.dart';
 
 import '../../common/common.dart';
+import '../../model/resp/apply_resp.dart';
 import 'new_friend_logic.dart';
 
 class NewFriendPage extends StatelessWidget {
@@ -109,13 +110,13 @@ class NewFriendPage extends StatelessWidget {
               ],
             ),
           ),
-          if (friend.applyStatus == FriendApplyStatus.accepted)
+          if (friend.applyStatus == ApplyStatus.accepted)
             Text(
               '已同意',
               style:
                   Styles.textFiraNormal(14.w).copyWith(color: Styles.greyText),
             )
-          else if (friend.applyStatus == FriendApplyStatus.rejected)
+          else if (friend.applyStatus == ApplyStatus.rejected)
             Text(
               '已拒绝',
               style:

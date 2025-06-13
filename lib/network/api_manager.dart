@@ -276,4 +276,21 @@ class ApiManager {
     }
     return result;
   }
+
+  /// 审批群申请
+  Future<Result> approveGroup({
+    required int userId,
+    required int roomId,
+    required bool isApprove,
+  }) async {
+    Result result = await net.postRequest(
+      '$hostStr/group/approve',
+      {
+        'userId': userId,
+        'roomId': roomId,
+        'isApprove': isApprove,
+      },
+    );
+    return result;
+  }
 }
