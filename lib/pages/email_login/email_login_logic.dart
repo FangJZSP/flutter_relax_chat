@@ -73,6 +73,7 @@ class EmailLoginLogic extends GetxController {
     WSEmailReq wsReq =
         WSEmailReq(WSReqType.emailLogin.type, EmailData(email, true));
     SocketManager.instance.send(jsonEncode(wsReq.toJson()));
+    api.sendEmailCode(email: email);
   }
 
   Future<void> register() async {
@@ -94,6 +95,7 @@ class EmailLoginLogic extends GetxController {
     cleanAllToast();
     if (result.ok) {
       showTipsToast('用户登录成功');
+      Get.find<RootLogic>().backToHome();
     } else {
       showTipsToast('用户或者密码错误');
     }

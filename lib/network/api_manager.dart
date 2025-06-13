@@ -118,11 +118,11 @@ class ApiManager {
   }
 
   /// 获取邮箱验证码
-  Future<Result<String>> sendEmailCode({
+  Future<Result> sendEmailCode({
     required String email,
   }) async {
-    Result<String> result = await net.getRequest(
-      '$hostStr/email/sendCode',
+    Result result = await net.postRequest(
+      '$hostStr/email/code',
       {
         'email': email,
       },
