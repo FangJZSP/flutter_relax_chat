@@ -1,4 +1,4 @@
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:relax_chat/common/size_config.dart';
 
@@ -13,15 +13,11 @@ class MyNetworkImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CachedNetworkImage(
+    return ExtendedImage.network(
+      imgUrl,
       width: width ?? 20.w,
       height: height ?? 20.w,
       fit: fit ?? BoxFit.fill,
-      placeholder: (context, url) => const CircularProgressIndicator(),
-      errorWidget: (context, url, dynamic err) {
-        return const Icon(Icons.error_outline);
-      },
-      imageUrl: imgUrl,
     );
   }
 }
