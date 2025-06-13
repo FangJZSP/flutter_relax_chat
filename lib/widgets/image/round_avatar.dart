@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:relax_chat/widgets/image/local_image_widget.dart';
 
+import '../../common/images.dart';
 import 'network_image_widget.dart';
 
 class RoundAvatar extends StatefulWidget {
@@ -39,9 +41,11 @@ class RoundAvatarState extends State<RoundAvatar> {
         height: widget.height,
       );
     } else {
-      return Icon(
-        Icons.error_outline,
-        size: widget.height,
+      return MyImage(
+        imgUrl: ImageNames.avatar,
+        width: widget.height,
+        height: widget.height,
+        fit: BoxFit.fitHeight,
       );
     }
   }

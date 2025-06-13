@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:relax_chat/pages/message/message_view.dart';
 import '../../common/common.dart';
 import '../contact/contact_view.dart';
@@ -30,6 +31,9 @@ class HomeState {
   ];
 
   int get tabCount => pages.length;
+
+  // 选择图片
+  final ImagePicker picker = ImagePicker();
 
   HomeState() {
     ///Initialize variables

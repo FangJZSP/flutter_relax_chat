@@ -1,3 +1,4 @@
+import 'package:relax_chat/manager/user_manager.dart';
 import 'package:relax_chat/model/ws/resp/ws_msg_model.dart';
 import 'package:relax_chat/network/result.dart';
 
@@ -251,6 +252,28 @@ class ApiManager {
       },
       fromJson: GroupApplyListResp.fromJson,
     );
+    return result;
+  }
+
+  /// 更新用户信息
+  Future<Result<UserModel>> updateUserInfo({
+    String? name,
+    String? avatar,
+    String? password,
+  }) async {
+    Map<String, dynamic> params = {};
+    if (name != null) params['name'] = name;
+    if (avatar != null) params['avatar'] = avatar;
+    if (password != null) params['password'] = password;
+
+    Result<UserModel> result = await net.postRequest(
+      '$hostStr/user/update',
+      params,
+      fromJson: UserModel.fromJson,
+    );
+    if (result.ok && result.data != null) {
+      UserManager.instance.loadUser();
+    }
     return result;
   }
 }
