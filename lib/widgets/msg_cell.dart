@@ -1,7 +1,9 @@
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:relax_chat/helper/time_helper.dart';
 import 'package:relax_chat/model/msg_model.dart';
 import 'package:relax_chat/model/widget/message_cell_model.dart';
+import 'package:relax_chat/widgets/image/network_image_widget.dart';
 
 import '../common/common.dart';
 import 'image/round_avatar.dart';
@@ -42,6 +44,10 @@ class _MsgCellState extends State<MsgCell> {
     switch (MessageModelType.fromCode(_cell.messageModel.msgType)) {
       case MessageModelType.text:
         return _cell.messageModel.senderIsMe ? sendMsgCell() : receiveMsgCell();
+      case MessageModelType.image:
+        return _cell.messageModel.senderIsMe
+            ? sendImageCell()
+            : receiveImageCell();
       case MessageModelType.system:
         return systemMsgCell();
       case null:
@@ -238,6 +244,133 @@ class _MsgCellState extends State<MsgCell> {
                           .copyWith(color: Styles.blackText),
                     ),
                   ],
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget sendImageCell() {
+    return Container(
+      padding: EdgeInsets.fromLTRB(10.w, 10.w, 10.w, 0),
+      color: Colors.transparent,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text(
+                    TimeUtils.timestamp3TimeString(_cell.messageModel.sendTime),
+                    style: Styles.textFiraNormal(8.w)
+                        .copyWith(color: Styles.greyText),
+                  ),
+                  SizedBox(width: 4.w),
+                  Text(
+                    _cell.messageModel.senderName,
+                    style: Styles.textFiraLight(12.w)
+                        .copyWith(color: Styles.greyText),
+                  ),
+                ],
+              ),
+              SizedBox(height: 4.w),
+              Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  Container(
+                    constraints: BoxConstraints(
+                      maxWidth: (_cell.messageModel.body.width > 132.w ||
+                              _cell.messageModel.body.width <= 0)
+                          ? 132.w
+                          : _cell.messageModel.body.width.toDouble(),
+                    ),
+                    child: MyNetworkImage(
+                      imgUrl: _cell.messageModel.body.url,
+                    ),
+                  ),
+                  Positioned(
+                    bottom: 1,
+                    left: -18,
+                    child: msgStatus(),
+                  )
+                ],
+              ),
+            ],
+          ),
+          SizedBox(width: 8.w),
+          RoundAvatar(
+            height: 35.w,
+            url: _cell.messageModel.senderAvatar,
+            borderDecoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: Styles.grey.withOpacity(.1),
+                )),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget receiveImageCell() {
+    return Container(
+      padding: EdgeInsets.fromLTRB(10.w, 10.w, 10.w, 0),
+      color: Colors.transparent,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          RoundAvatar(
+            height: 35.w,
+            url: _cell.messageModel.senderAvatar,
+            borderDecoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: Styles.grey.withOpacity(.1),
+                )),
+          ),
+          SizedBox(
+            width: 8.w,
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text(
+                    _cell.messageModel.senderName,
+                    style: Styles.textFiraNormal(12.w)
+                        .copyWith(color: Styles.greyText),
+                  ),
+                  SizedBox(width: 4.w),
+                  Text(
+                    TimeUtils.timestamp3TimeString(_cell.messageModel.sendTime),
+                    style: Styles.textFiraLight(8.w)
+                        .copyWith(color: Styles.greyText),
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: 4.w,
+              ),
+              Container(
+                constraints: BoxConstraints(
+                  maxWidth: (_cell.messageModel.body.width > 132.w ||
+                          _cell.messageModel.body.width <= 0)
+                      ? 132.w
+                      : _cell.messageModel.body.width.toDouble(),
+                ),
+                child: MyNetworkImage(
+                  imgUrl: _cell.messageModel.body.url,
                 ),
               ),
             ],

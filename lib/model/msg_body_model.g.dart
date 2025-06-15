@@ -15,6 +15,9 @@ MessageBodyModel _$MessageBodyModelFromJson(Map<String, dynamic> json) =>
               .toList() ??
           [],
       defaultMessageReplyModel(json['reply']),
+      json['url'] as String? ?? '',
+      (json['width'] as num?)?.toInt() ?? 0,
+      (json['height'] as num?)?.toInt() ?? 0,
     );
 
 Map<String, dynamic> _$MessageBodyModelToJson(MessageBodyModel instance) =>
@@ -23,4 +26,7 @@ Map<String, dynamic> _$MessageBodyModelToJson(MessageBodyModel instance) =>
       'urlContentMap': instance.urlContentMap,
       'atUidList': instance.atUidList,
       'reply': instance.reply,
+      'url': instance.url,
+      'width': instance.width,
+      'height': instance.height,
     };

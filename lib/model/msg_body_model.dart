@@ -17,8 +17,24 @@ class MessageBodyModel {
   @JsonKey(fromJson: defaultMessageReplyModel)
   MessageReplyModel reply;
 
+  @JsonKey(defaultValue: '')
+  String url;
+
+  @JsonKey(defaultValue: 0)
+  int width;
+
+  @JsonKey(defaultValue: 0)
+  int height;
+
   MessageBodyModel(
-      this.content, this.urlContentMap, this.atUidList, this.reply);
+    this.content,
+    this.urlContentMap,
+    this.atUidList,
+    this.reply,
+    this.url,
+    this.width,
+    this.height,
+  );
 
   factory MessageBodyModel.fromJson(Map<String, dynamic> json) =>
       _$MessageBodyModelFromJson(json);

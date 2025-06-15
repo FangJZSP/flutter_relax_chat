@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../common/common.dart';
@@ -13,6 +14,7 @@ class ChatInput extends StatefulWidget {
   final String? placeHolder;
   final TextStyle? hintStyle;
   final Color? bgColor;
+  final Function()? onImagePickCallback;
 
   const ChatInput({
     this.focusNode,
@@ -23,6 +25,7 @@ class ChatInput extends StatefulWidget {
     this.onClickInput,
     this.sendCallback,
     this.onTypingCallback,
+    this.onImagePickCallback,
     super.key,
   });
 
@@ -169,9 +172,12 @@ class _ChatInputState extends State<ChatInput> {
                 SizedBox(
                   width: 6.w,
                 ),
-                Icon(
-                  Icons.add_circle_outline,
-                  size: 24.w,
+                GestureDetector(
+                  onTap: widget.onImagePickCallback,
+                  child: Icon(
+                    Icons.add_circle_outline,
+                    size: 24.w,
+                  ),
                 ),
               ],
             )

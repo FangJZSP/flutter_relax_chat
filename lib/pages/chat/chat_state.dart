@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:relax_chat/manager/log_manager.dart';
 import 'package:relax_chat/model/conversation_model.dart';
 import '../../widgets/chat_list/controller/chat_controller.dart';
@@ -31,6 +32,8 @@ class ChatState {
   RxInt unreadMessageCount = 0.obs;
 
   RxBool showLoading = true.obs;
+
+  ImagePicker picker = ImagePicker();
 
   ChatState() {
     if (Get.arguments != null && Get.arguments is ChatPageArgs) {

@@ -88,6 +88,7 @@ class Net {
     DateTime startTime = DateTime.now();
 
     try {
+      logger.d('POST 开始 $url $params');
       response = await _dio.post(url, data: params, options: options);
       resultData = handleResponse(response, fromJson);
     } on DioException catch (e) {
@@ -133,6 +134,7 @@ class Net {
       if (needLogin) {
         resultData = Result.fail(400, null, responseMap: null);
       } else {
+        logger.d('GET 开始 $url $params');
         response =
             await _dio.get(url, queryParameters: params, options: options);
         resultData = handleResponse(response, fromJson);

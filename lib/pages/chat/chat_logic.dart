@@ -1,11 +1,16 @@
+import 'dart:io';
 import 'dart:math';
+import 'dart:typed_data';
+import 'dart:ui' as ui;
 
 import 'package:flutter/cupertino.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:relax_chat/helper/toast_helper.dart';
 import 'package:get/get.dart';
 import 'package:relax_chat/model/user_model.dart';
 import 'package:relax_chat/network/result.dart';
 
+import '../../helper/file_upload_helper.dart';
 import '../../manager/conversation_manager.dart';
 import '../../manager/user_manager.dart';
 import '../../manager/event_bus_manager.dart';
@@ -60,7 +65,7 @@ class ChatLogic extends GetxController {
     Result<MessageListResp> result = await api.getMessageList(
       roomId: state.conversation.value.roomId,
       cursor: state.cursor,
-      page: state.page,
+      page: 1,
       size: state.pageSize,
     );
 
@@ -71,7 +76,6 @@ class ChatLogic extends GetxController {
 
     state.page += 1;
     state.cursor = result.data?.cursor;
-    state.isLast.value = result.data?.isLast ?? false;
 
     List<MessageCellModel> msgCells = (result.data?.list ?? [])
         .map(
@@ -177,6 +181,86 @@ class ChatLogic extends GetxController {
       ]);
     } else {
       showTipsToast(result.message ?? '发送消息失败～');
+      state.chatController.updateMessage([
+        messageCellModel
+          ..msgCellType = MessageCellType.update
+          ..status = MessageStatus.failed.code
+      ]);
+    }
+  }
+
+  Future<void> pickAndSendImage() async {
+    final XFile? image =
+        await state.picker.pickImage(source: ImageSource.gallery);
+    if (image != null) {
+      // 获取图片尺寸
+      final File imageFile = File(image.path);
+      final Uint8List bytes = await imageFile.readAsBytes();
+      final ui.Image decodedImage = await decodeImageFromList(bytes);
+      final int width = decodedImage.width;
+      final int height = decodedImage.height;
+
+      // 上传图片到Minio
+      String imageUrl = await FileUploadHelper.uploadToMinio(image.path);
+
+      if (imageUrl.isEmpty) {
+        showTipsToast('图片上传失败');
+        return;
+      }
+
+      // 发送图片消息，包含尺寸信息
+      await sendImageMsg(imageUrl, width, height);
+    }
+  }
+
+  Future<void> sendImageMsg(String imageUrl, int width, int height) async {
+    UserModel me = UserManager.instance.state.user.value;
+
+    int sendTime = DateTime.now().millisecondsSinceEpoch;
+
+    // 构建消息body
+    MessageBodyModel messageBodyModel = MessageBodyModel.fromJson({})
+      ..url = imageUrl;
+
+    // 构建消息model
+    MessageModel messageModel = MessageModel.fromJson({})
+      ..body = messageBodyModel
+      ..msgType = MessageModelType.image.code
+      ..senderAvatar = me.avatar
+      ..senderId = me.uid
+      ..senderName = me.name
+      ..sendTime = sendTime;
+
+    // 构建ui消息model
+    MessageCellModel messageCellModel = MessageCellModel.fromJson({})
+      ..messageModel = messageModel
+      ..messageId =
+          '${UserManager.instance.state.user.value.uid}$sendTime${Random().nextInt(10000)}'
+      ..msgCellType = MessageCellType.addNew
+      ..status = MessageStatus.delivering.code;
+
+    // 处理ui消息model
+    state.chatController.updateMessage([messageCellModel]);
+
+    // 发送图片消息
+    Result<WSMessageModel> result = await api.sendMsg(
+      roomId: state.conversation.value.roomId,
+      msgType: MessageModelType.image.code,
+      body: {
+        'content': imageUrl,
+        'width': width,
+        'height': height,
+      },
+    );
+
+    if (result.ok) {
+      state.chatController.updateMessage([
+        messageCellModel
+          ..msgCellType = MessageCellType.update
+          ..status = MessageStatus.succeed.code
+      ]);
+    } else {
+      showTipsToast(result.message ?? '发送图片失败～');
       state.chatController.updateMessage([
         messageCellModel
           ..msgCellType = MessageCellType.update
