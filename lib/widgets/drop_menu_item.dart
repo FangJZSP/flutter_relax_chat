@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 import '../common/common.dart';
 import '../route/routes.dart';
 
@@ -48,13 +49,21 @@ class DropMenuItems {
     );
   }
 
-  static void onChanged(BuildContext context, DropMenuItem item) {
+  static Future<void> onChanged(BuildContext context, DropMenuItem item) async {
     switch (item) {
       case DropMenuItems.add:
         Get.toNamed(Routes.add);
         break;
       case DropMenuItems.scan:
         //Do something
+        try {
+          throw StateError('Sentry Test Exception');
+        } catch (exception, stackTrace) {
+          await Sentry.captureException(
+            exception,
+            stackTrace: stackTrace,
+          );
+        }
         break;
     }
   }
